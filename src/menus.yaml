@@ -1,0 +1,6 @@
+header:
+  home: '/'
+  accomodation: '/accomodation'
+  services: '/services'
+  'about/contact': '/about-contact'
+  gallery: '/gallery'

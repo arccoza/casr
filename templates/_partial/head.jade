@@ -1,0 +1,50 @@
+block page_meta
+  meta(charset="utf-8")
+  meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+  meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+  <!-- Chrome, Firefox OS and Opera -->
+  meta(name="theme-color", content="#191919")
+  <!-- Windows Phone -->
+  meta(name="msapplication-navbutton-color", content="#191919")
+  <!-- iOS Safari -->
+  meta(name="apple-mobile-web-app-status-bar-style", content="#191919")
+
+  if favicons && favicons.html
+    each item in favicons.html
+      != item
+
+if site.author
+  meta(name="author", content=site.author)
+
+block page_description
+  if site.description
+    meta(name="description", content=site.description)
+
+title
+  block site_title
+    if site.title
+      = site.title
+
+//- link(href="/favicon.png", rel="icon")
+
+
+//- RSS
+link(rel="alternate", href=site.rss ? site.rss : "/rss2.xml", title="#{site.title}", type="application/rss2.xml")
+
+//- Stylesheets
+//- != css("css/main")
+link(href="/css/main.css", rel="stylesheet", type="text/css")
+
+//- JS
+script(src="/js/main.js")
+// != js("js/jquery.js")
+// != js("js/main.js")
+
+//- script.
+//-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+//-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+//-   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+//-   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+//-   ga('create', 'UA-30286268-1', 'auto');
+//-   ga('send', 'pageview');
