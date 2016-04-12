@@ -5,44 +5,39 @@ block main_body
   section.slider
     each img in collections.imgSlider
       img.slider__item(src='#{img.src}')
+  ul.infobar
+    li.infobar__item
+      |phone:&nbsp;
+      a(href='tel:#{site.telephone.main}')= site.telephone.emergency
+    li.infobar__item
+      |alt:&nbsp;
+      a(href='tel:#{site.telephone.alt}')= site.telephone.emergency
+    li.infobar__item
+      |emergency:&nbsp;
+      a(href='tel:#{site.telephone.emergency}')= site.telephone.emergency
+    li.infobar__item
+      |email:&nbsp;
+      a(href='mailto:#{site.email}')= site.email
   section.welcome
     != contents
   section.rooms
     h1 Accomodation
     ul.rooms__inner
-      each room in collections.rooms
+      each room in collections.rooms.slice(0, 3)
         li.rooms__item
           article.room.room--compact
             .room__inner
-              .room__title
-                h2
-                  a(href='/accomodation')= room.title
               .room__body
                 div(style="position:relative; display:table-cell; overflow:hidden;")
                   if room.featuredImage
                     //- img.post__featured-image(src='/img/' + post.featuredImage)
                     .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
-                  .room__excerpt!= room.excerpt
-                  a.room__read-more(href='/accomodation')
-                    .rom__button Read More
 
-  section.rooms
-    h1 Services
-    ul.rooms__inner
-      each room in collections.rooms
-        li.rooms__item
-          article.room.room--compact
-            .room__inner
+                  a.button(href='/accomodation') more info
               .room__title
-                h2
-                  a(href='/accomodation')= room.title
-              .room__body
-                div(style="position:relative; display:table-cell; overflow:hidden;")
-                  if room.featuredImage
-                    //- img.post__featured-image(src='/img/' + post.featuredImage)
-                    .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
-                  .room__excerpt!= room.excerpt
-                  a.room__read-more(href='/accomodation')
-                    .rom__button Read More
+                h3
+                  = room.title
+              .room__excerpt!= room.contents
+
 
   //- include _partial/post/list_pagination

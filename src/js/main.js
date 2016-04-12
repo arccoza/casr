@@ -1,9 +1,19 @@
 var $ = require('jquery');
-require('./ideal-image-slider');
+var IdealImageSlider = require('./ideal-image-slider');
 
 
-// new IdealImageSlider.Slider('.slider');
-
+(function(undefined) {
+  document.addEventListener('DOMContentLoaded', function() {
+    var q = document.querySelectorAll.bind(document);
+    var slider = new IdealImageSlider.Slider({
+      selector: '.slider',
+      height: 400, // Required but can be set by CSS
+      transitionDuration: 1000,
+      interval: 4000
+    });
+    // slider.start();
+  }, false);
+})();
 
 (function(undefined) {
   document.addEventListener('DOMContentLoaded', function() {
