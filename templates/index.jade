@@ -28,16 +28,38 @@ block main_body
           article.room.room--compact
             .room__inner
               .room__body
-                div(style="position:relative; display:table-cell; overflow:hidden;")
-                  if room.featuredImage
-                    //- img.post__featured-image(src='/img/' + post.featuredImage)
-                    .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
+                if room.featuredImage
+                  //- img.post__featured-image(src='/img/' + post.featuredImage)
+                  .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
 
-                  a.button(href='/accomodation') more info
+                a.room__button.button(href='/accomodation') more info
               .room__title
                 h3
                   = room.title
               .room__excerpt!= room.contents
+    .rooms__more
+      a.button.button--large.button--dark(href='/accomodation') see all our rooms
+
+  section.service
+    h1 Services & Facilities
+    ul.services__inner
+      each service in collections.services.slice(0, 2)
+        li.services__item
+          article.service.service--compact
+            .service__inner
+              .service__image
+                if service.featuredImage
+                  //- img.post__featured-image(src='/img/' + post.featuredImage)
+                  .service__featured-image(style='background-image:url(#{"/img/" + service.featuredImage})')
+
+                a.service__button.button(href='/services-facilities') more info
+              .service__body
+                .service__title
+                  h3
+                    = service.title
+                .service__excerpt!= service.contents
+    .services__more
+      a.button.button--large.button--dark(href='/services') see all our services
 
 
   //- include _partial/post/list_pagination

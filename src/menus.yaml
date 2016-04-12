@@ -1,6 +1,6 @@
 header:
   home: '/'
   accomodation: '/accomodation'
-  services: '/services'
+  services: '/services-facilities'
   'about/contact': '/about-contact'
   gallery: '/gallery'

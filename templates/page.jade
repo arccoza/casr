@@ -4,16 +4,63 @@ prepend site_title
   | #{title} &mdash;&nbsp;
 
 block main_body
-  .posts.posts--single
-    ul.posts__inner
-      li.posts__item
-        article.page.page--full
-          .page__inner
-            h1.page__title= title
-            if featuredImage
-              img.page__featured-image(src='/img/' + featuredImage)
-            //- .post__excerpt!= page.excerpt
-            .page__content!= contents
-            
+  //- .posts.posts--single
+  //-   ul.posts__inner
+  //-     li.posts__item
+  //-       article.page.page--full
+  //-         .page__inner
+  //-           h1.page__title= title
+  //-           if featuredImage
+  //-             img.page__featured-image(src='/img/' + featuredImage)
+  //-           //- .post__excerpt!= page.excerpt
+  //-           .page__content!= contents
+
+  if page == 'accomodation'
+    section.rooms
+      h1 Accomodation
+      .welcome
+        != contents
+      ul.rooms__inner
+        each room in collections.rooms
+          li.rooms__item
+            article.room.room--compact
+              .room__inner
+                .room__body
+                  if room.featuredImage
+                    //- img.post__featured-image(src='/img/' + post.featuredImage)
+                    .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
+
+                  a.room__button.button(href='/booking##{room.type}') book now
+                .room__title
+                  h3
+                    = room.title
+                .room__excerpt!= room.contents
+  else if page == 'services'
+    section.service
+      h1 Services & Facilities
+      .welcome
+        != contents
+      ul.services__inner
+        each service in collections.services
+          li.services__item
+            article.service.service--compact
+              .service__inner
+                .service__image
+                  if service.featuredImage
+                    //- img.post__featured-image(src='/img/' + post.featuredImage)
+                    .service__featured-image(style='background-image:url(#{"/img/" + service.featuredImage})')
+
+                  a.service__button.button(href='/accomodation') more info
+                .service__body
+                  .service__title
+                    h3
+                      = service.title
+                  .service__excerpt!= service.contents
+  else if page == 'about-contact'
+    section.about-contact
+      h1 About & Contact
+      .about-contact__inner
+        != contents
+
 
   //- include _partial/post/list_pagination

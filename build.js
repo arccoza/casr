@@ -142,6 +142,11 @@ metalsmith(__dirname)
       sortBy: 'index',
       reverse: false
     },
+    services: {
+      pattern: 'services/**/*.md',
+      sortBy: 'index',
+      reverse: false
+    },
     // posts: {
     //   pattern: 'posts/**/*.md',
     //   sortBy: 'date',

@@ -114,7 +114,7 @@ hr {
 
 p {
   margin-bottom: 1em;
-  line-height: 1.2em;
+  line-height: 1.4em;
   font-size: 0.9em;
 }
 
@@ -132,8 +132,8 @@ pre {
   position: relative;
   min-height: 100%;
   padding-top: 8.2rem;
-  padding-bottom: 3.2rem;
-  padding-top: 3.2rem ?if media (--small);
+  padding-bottom: 4.2rem;
+  /*padding-top: 3.2rem ?if media (--small);*/
   layout: stack center;
 }
 
@@ -266,31 +266,98 @@ pre {
   padding: 2rem 8rem;
 }
 
+.rooms {
+
+}
 .rooms__inner {
   position: relative;
-  layout: flow;
+  layout: lines;
   grid: g12/main;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 .rooms__item {
   position: relative;
   g12/main-span: 4;
 }
+.rooms__more {
+  position: relative;
+  layout: lines center;
+  margin: 1rem 0;
+}
 .room {
 
 }
 .room__inner {
-    layout: rows;
+  /*layout: rows;*/
 }
 .room__body {
   position: relative;
+  height: 240px;
 }
 .room__featured-image {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: left center;
   width: 100%;
+  height: 100%;
+}
+.room__button {
+  position: absolute;
+  display: inline-block;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.services {
+
+}
+.services__inner {
+  position: relative;
+  layout: stack;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.services__item {
+  position: relative;
+  /*grid: g12/main;*/
+  /*g12/main-span: 4;*/
+}
+.services__more {
+  position: relative;
+  layout: lines center;
+  margin: 1rem 0;
+}
+.service {
+
+}
+.service__inner {
+  layout: lines;
+  grid: g12/main;
+}
+.service__image {
+  position: relative;
+  g12/main-span: 6;
   height: 240px;
 }
+.service__body {
+  position: relative;
+  g12/main-span: 6;
+}
+.service__featured-image {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: left center;
+  width: 100%;
+  height: 100%;
+}
+.service__button {
+  position: absolute;
+  display: inline-block;
+  bottom: 1rem;
+  right: 1rem;
+}
+
 
 .posts {
   position: relative;
@@ -577,7 +644,7 @@ button,
 .button, a.button,
 input[type=submit],
 input[type=submit] {
-  position: relative;
+  /*position: relative;*/
   /*display: inline-block;*/
   background-color: #a39d19;
   padding: 0.5rem 0.7rem;
@@ -591,6 +658,13 @@ input[type=submit] {
   border: none;
   cursor: pointer;
 }
+.button--large, a.button--large {
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+.button--dark, a.button--dark {
+  background-color: #52423b;
+}
 
 button:hover,
 button:hover, a.button:hover,
@@ -600,6 +674,10 @@ input[type=submit]:hover {
   color: #fff;
   /*border-color: #E64A42;*/
 }
+.button--dark:hover, a.button--dark:hover {
+  background-color: #69544b;
+}
+
 .post input[name=send],
 .page input[name=send] {
   float: right;
