@@ -4,6 +4,8 @@
 @import "_partials/hljs-tomorrow.css";
 @import "_partials/ideal-image-slider.css";
 @import "_partials/ideal-theme.css";
+@import "_partials/lightgallery.css";
+@import "_partials/lg-transitions.css";
 
 
 @custom-media --small (width <= 640px);
@@ -357,6 +359,24 @@ pre {
   bottom: 1rem;
   right: 1rem;
 }
+
+.gallery {
+  position: relative;
+}
+.gallery__items {
+  text-align: center;
+}
+.gallery__items a {
+  display: inline-block;
+  margin: 0.2rem;
+}
+.gallery__items img {
+  width: 150px;
+  height: 150px;
+}
+
+
+
 
 
 .posts {

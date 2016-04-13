@@ -1,5 +1,7 @@
 var $ = require('jquery');
+jQuery = $;
 var IdealImageSlider = require('./ideal-image-slider');
+require('./lightgallery-all');
 
 
 (function(undefined) {
@@ -11,7 +13,9 @@ var IdealImageSlider = require('./ideal-image-slider');
       transitionDuration: 1000,
       interval: 4000
     });
-    // slider.start();
+    slider.start();
+
+    $(".gallery").lightGallery();
   }, false);
 })();
 

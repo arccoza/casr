@@ -28,7 +28,7 @@ block main_body
                 .room__body
                   if room.featuredImage
                     //- img.post__featured-image(src='/img/' + post.featuredImage)
-                    .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
+                    .room__featured-image(style='background-image:url(/img/#{room.featuredImage})')
 
                   a.room__button.button(href='/booking##{room.type}') book now
                 .room__title

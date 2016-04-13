@@ -30,7 +30,7 @@ block main_body
               .room__body
                 if room.featuredImage
                   //- img.post__featured-image(src='/img/' + post.featuredImage)
-                  .room__featured-image(style='background-image:url(#{"/img/rooms/" + room.featuredImage})')
+                  .room__featured-image(style='background-image:url(/img/#{room.featuredImage})')
 
                 a.room__button.button(href='/accomodation') more info
               .room__title
@@ -50,7 +50,7 @@ block main_body
               .service__image
                 if service.featuredImage
                   //- img.post__featured-image(src='/img/' + post.featuredImage)
-                  .service__featured-image(style='background-image:url(#{"/img/" + service.featuredImage})')
+                  .service__featured-image(style='background-image:url(/img/#{service.featuredImage})')
 
                 a.service__button.button(href='/services-facilities') more info
               .service__body

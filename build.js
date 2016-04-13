@@ -61,6 +61,56 @@ metalsmith(__dirname)
   // ]))
   // .use(justAMoment())
   // .use(require('./favi')())
+  // .use(function(){
+  //   return function(files, metalsmith, done) {
+  //     'use strict';
+  //     for(var path in files) {
+  //       if(minimatch(path, 'img/**/*.@(jpg|png|gif|JPG|PNG|GIF)', { matchBase: true })) {
+  //         var parts = npath.parse(path);
+
+  //         if(!files[path].title)
+  //           files[path].title = parts.name;
+
+  //         parts.name = slug(files[path].title, {lower: true});
+  //         parts.ext = parts.ext.toLowerCase();
+  //         parts.base = parts.name + parts.ext;
+
+  //         files[path].slug = slug(files[path].title, {lower: true});
+  //         files[path].src = npath.format(parts);
+  //         files[npath.format(parts)] = files[path];
+
+  //         delete files[path];
+  //       }
+  //     }
+  //     done();
+  //   }
+  // }())
+  // .use(slug({
+  //   patterns: ['img/**/*.@(jpg|png|gif|JPG|PNG|GIF)'],
+  //   // property: 'filename',
+  //   lowercase: true,
+  //   renameFiles: true
+  // }))
+  .use(convert([
+    {
+      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc|slider)/**/*.@(jpg|JPG)',
+      target: 'jpg',
+      resize: { width: 1280, height: 720, resizeStyle: 'aspectfit' },
+      nameFormat: '%b_hd%e'
+    },
+    {
+      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
+      target: 'jpg',
+      resize: { width: 500, height: 300, resizeStyle: 'aspectfit' },
+      nameFormat: '%b_lthb%e'
+    },
+    {
+      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
+      target: 'jpg',
+      resize: { width: 150, height: 150, resizeStyle: 'aspectfill' },
+      nameFormat: "%b_mthb%e"
+    }
+  ]))
   .use(function(){
     return function(files, metalsmith, done) {
       'use strict';
@@ -85,55 +135,29 @@ metalsmith(__dirname)
       done();
     }
   }())
-  // .use(slug({
-  //   patterns: ['img/**/*.@(jpg|png|gif|JPG|PNG|GIF)'],
-  //   // property: 'filename',
-  //   lowercase: true,
-  //   renameFiles: true
-  // }))
-  // .use(convert([
-  //   {
-  //     src: 'img/@(rooms|restaurant-bar|conference|misc)/**/*.jpg',
-  //     target: 'jpg',
-  //     resize: { width: 1280, height: 720, resizeStyle: 'aspectfit' },
-  //     nameFormat: '%b_hd%e'
-  //   },
-  //   {
-  //     src: 'img/@(rooms|restaurant-bar|conference|misc)/**/*.jpg',
-  //     target: 'jpg',
-  //     resize: { width: 300, height: 260, resizeStyle: 'aspectfit' },
-  //     nameFormat: '%b_thb_lrg%e'
-  //   },
-  //   {
-  //     src: 'img/@(rooms|restaurant-bar|conference|misc)/**/*.jpg',
-  //     target: 'jpg',
-  //     resize: { width: 150, height: 150, resizeStyle: 'aspectfit' },
-  //     nameFormat: "%b_thb_med%e"
-  //   }
-  // ]))
   .use(collections({
     imgGallery: {
-      pattern: 'img/@(rooms|restaurant-bar|conference|misc)/**/*.jpg',
+      pattern: 'img/@(rooms|restaurant-bar|conference|misc)/**/*_mthb.jpg',
       sortBy: 'date',
       reverse: true
     },
     imgRooms: {
-      pattern: 'img/rooms/**/*.jpg',
+      pattern: 'img/rooms/**/*_mthb.jpg',
       sortBy: 'date',
       reverse: true
     },
     imgSlider: {
-      pattern: 'img/slider/**/*.jpg',
+      pattern: 'img/slider/**/*_hd.jpg',
       sortBy: 'date',
       reverse: true
     },
     imgRestaurant: {
-      pattern: 'img/restaurant-bar/**/*.jpg',
+      pattern: 'img/restaurant-bar/**/*_mthb.jpg',
       sortBy: 'date',
       reverse: true
     },
     imgConference: {
-      pattern: 'img/conference/**/*.jpg',
+      pattern: 'img/conference/**/*_mthb.jpg',
       sortBy: 'date',
       reverse: true
     },
@@ -213,17 +237,17 @@ metalsmith(__dirname)
     //   }
     // ]
   }))
-  // .use(function(){
-  //   return function(files, metalsmith, done) {
-  //     for(f in files) {
-  //       console.log(f, files[f].contents.length);
-  //     }
-  //     // console.log(files);
-  //     // console.log(metalsmith._metadata.collections.pages);
-  //     // console.log(metalsmith._metadata);
-  //     done();
-  //   }
-  // }())
+  .use(function(){
+    return function(files, metalsmith, done) {
+      // for(f in files) {
+      //   console.log(f, files[f].contents.length);
+      // }
+      // console.log(files);
+      console.log(metalsmith._metadata.collections.imgGallery);
+      // console.log(metalsmith._metadata);
+      done();
+    }
+  }())
   .use(inPlace({
     engine: 'mustache',
     pattern: ['**/*.html']
