@@ -129,7 +129,7 @@ metalsmith(__dirname)
           files[path].src = npath.format(parts);
           files[npath.format(parts)] = files[path];
 
-          delete files[path];
+          // delete files[path];
         }
       }
       done();
