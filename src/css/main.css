@@ -6,6 +6,7 @@
 @import "_partials/ideal-theme.css";
 @import "_partials/lightgallery.css";
 @import "_partials/lg-transitions.css";
+@import "_partials/daterangepicker.css";
 
 
 @custom-media --small (width <= 640px);
@@ -298,6 +299,7 @@ pre {
   height: 240px;
 }
 .room__featured-image {
+  background-color: #f0f0f0;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: left center;
@@ -309,6 +311,9 @@ pre {
   display: inline-block;
   bottom: 1rem;
   right: 1rem;
+}
+.room__rate {
+  font-weight: 600;
 }
 
 .services {
@@ -347,6 +352,7 @@ pre {
   g12/main-span: 6;
 }
 .service__featured-image {
+  background-color: #f0f0f0;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: left center;
@@ -639,24 +645,46 @@ pre {
   color: #ffc125;
 }
 
-.post textarea,
-.page textarea,
-.post input[type=text],
-.page input[type=text],
-.post input[type=email],
-.page input[type=email] {
-  width: 100%;
-  padding: 0.4em;
+.booking {
+  position: relative;
+  width: 500px;
+  margin: 0 auto;
+}
+.booking__guest, .booking__room,.booking__period, .booking__confirm {
+  margin: 1rem 0;
+}
+.booking__guest, .booking__room {
+  grid: g12/main;
+}
+.booking__guest > *, .booking__room > * {
+  g12/main-span: 6;
+}
+.booking__sent {
+  display: none;
+}
+
+select,
+textarea,
+textarea,
+input,
+input[type=text],
+input[type=text],
+input[type=email],
+input[type=email] {
+  background-color: #fff;
+  /*width: 100%;*/
+  padding: 0.5rem 0.7rem;
   border: 1px solid #e0e0e0;
   border-left: 2px solid #e0e0e0;
   border-radius: 2px;
 }
-.post textarea,
-.page textarea,
-.post input[type=text][required],
-.page input[type=text][required],
-.post input[type=email][required],
-.page input[type=email][required] {
+textarea,
+textarea,
+input[required],
+input[type=text][required],
+input[type=text][required],
+input[type=email][required],
+input[type=email][required] {
   border-left: 2px solid #ffc125;
 }
 

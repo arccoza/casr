@@ -1,5 +1,6 @@
 ---
 title: Booking
+layout: booking.jade
 page: booking
 ---
 

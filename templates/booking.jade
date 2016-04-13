@@ -1,0 +1,23 @@
+extends base
+
+prepend site_title
+  | #{title} &mdash;&nbsp;
+
+block main_body
+  h1 Booking
+  form.booking
+    != contents
+    .booking__guest
+      input.booking__name(name='name', required=true, placeholder='Your name?')
+      input.booking__email(name='email', required=true, placeholder='Your email address?', type='email')
+    .booking__room
+      select.booking__room-type(name='room_type')
+        each room in collections.rooms
+          option(value=room.type, data-rate=room.rate)= room.title
+      label.booking__rate
+    .booking__period
+      input.booking__date(name='date', required=true, type='hidden')
+    .booking__confirm
+      .booking__sent Your request was successfully sent, someone will respond shortly.
+      input.booking__send(name='send', value='request booking', type='submit')
+

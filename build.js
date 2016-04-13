@@ -91,26 +91,26 @@ metalsmith(__dirname)
   //   lowercase: true,
   //   renameFiles: true
   // }))
-  .use(convert([
-    {
-      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc|slider)/**/*.@(jpg|JPG)',
-      target: 'jpg',
-      resize: { width: 1280, height: 720, resizeStyle: 'aspectfit' },
-      nameFormat: '%b_hd%e'
-    },
-    {
-      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
-      target: 'jpg',
-      resize: { width: 500, height: 300, resizeStyle: 'aspectfit' },
-      nameFormat: '%b_lthb%e'
-    },
-    {
-      src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
-      target: 'jpg',
-      resize: { width: 150, height: 150, resizeStyle: 'aspectfill' },
-      nameFormat: "%b_mthb%e"
-    }
-  ]))
+  // .use(convert([
+  //   {
+  //     src: 'img/@(rooms|restaurant-bar|conference|wedding|misc|slider)/**/*.@(jpg|JPG)',
+  //     target: 'jpg',
+  //     resize: { width: 1280, height: 720, resizeStyle: 'aspectfit' },
+  //     nameFormat: '%b_hd%e'
+  //   },
+  //   {
+  //     src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
+  //     target: 'jpg',
+  //     resize: { width: 500, height: 300, resizeStyle: 'aspectfit' },
+  //     nameFormat: '%b_lthb%e'
+  //   },
+  //   {
+  //     src: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*.@(jpg|JPG)',
+  //     target: 'jpg',
+  //     resize: { width: 150, height: 150, resizeStyle: 'aspectfill' },
+  //     nameFormat: "%b_mthb%e"
+  //   }
+  // ]))
   .use(function(){
     return function(files, metalsmith, done) {
       'use strict';
