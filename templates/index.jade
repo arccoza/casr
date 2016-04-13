@@ -21,7 +21,7 @@ block main_body
   section.welcome
     != contents
   section.rooms
-    h1 Accomodation
+    h1 Accommodation
     ul.rooms__inner
       each room in collections.rooms.slice(0, 3)
         li.rooms__item
@@ -32,13 +32,13 @@ block main_body
                   //- img.post__featured-image(src='/img/' + post.featuredImage)
                   .room__featured-image(style='background-image:url(/img/#{room.featuredImage})')
 
-                a.room__button.button(href='/accomodation') more info
+                a.room__button.button(href='/accommodation') more info
               .room__title
                 h3
                   = room.title
               .room__excerpt!= room.contents
     .rooms__more
-      a.button.button--large.button--dark(href='/accomodation') see all our rooms
+      a.button.button--large.button--dark(href='/accommodation') see all our rooms
 
   section.service
     h1 Services & Facilities

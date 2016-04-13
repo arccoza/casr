@@ -15,9 +15,9 @@ block main_body
   //-           //- .post__excerpt!= page.excerpt
   //-           .page__content!= contents
 
-  if page == 'accomodation'
+  if page == 'accommodation'
     section.rooms
-      h1 Accomodation
+      h1 Accommodation
       .welcome
         != contents
       ul.rooms__inner
@@ -52,7 +52,7 @@ block main_body
                     //- img.post__featured-image(src='/img/' + post.featuredImage)
                     .service__featured-image(style='background-image:url(#{"/img/" + service.featuredImage})')
 
-                  //- a.service__button.button(href='/accomodation') more info
+                  //- a.service__button.button(href='/accommodation') more info
                 .service__body
                   .service__title
                     h3
