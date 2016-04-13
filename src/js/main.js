@@ -31,14 +31,6 @@ require('./jquery.daterangepicker');
       container: '.booking__period',
       alwaysOpen:true
     });
-    // $('.booking__period').DatePicker({
-    //   flat: true,
-    //   date: ['2008-07-28','2008-07-31'],
-    //   // current: '2008-07-31',
-    //   calendars: 2,
-    //   mode: 'range',
-    //   starts: 1
-    // });
   }, false);
 })();
 
@@ -53,7 +45,9 @@ require('./jquery.daterangepicker');
     });
     slider.start();
 
-    $(".gallery").lightGallery();
+    $(".gallery").lightGallery({
+      selector: '.gallery__item'
+    });
   }, false);
 })();
 

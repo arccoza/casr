@@ -9,5 +9,5 @@ block main_body
     .gallery__items
       each img in collections.imgGallery
         - var src = img.src.replace('_mthb', '_hd');
-        a(href='/#{src}', data-src='/#{src}')
+        a.gallery__item(href='/#{src}', data-src='/#{src}')
           img(src='/#{img.src}')
