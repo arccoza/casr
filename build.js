@@ -137,7 +137,7 @@ metalsmith(__dirname)
   }())
   .use(collections({
     imgGallery: {
-      pattern: 'img/@(rooms|restaurant-bar|conference|misc)/**/*_mthb.jpg',
+      pattern: 'img/@(rooms|restaurant-bar|conference|wedding|misc)/**/*_mthb.jpg',
       sortBy: 'date',
       reverse: true
     },

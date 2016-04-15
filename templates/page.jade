@@ -4,16 +4,6 @@ prepend site_title
   | #{title} &mdash;&nbsp;
 
 block main_body
-  //- .posts.posts--single
-  //-   ul.posts__inner
-  //-     li.posts__item
-  //-       article.page.page--full
-  //-         .page__inner
-  //-           h1.page__title= title
-  //-           if featuredImage
-  //-             img.page__featured-image(src='/img/' + featuredImage)
-  //-           //- .post__excerpt!= page.excerpt
-  //-           .page__content!= contents
 
   if page == 'accommodation'
     section.rooms
@@ -42,6 +32,8 @@ block main_body
       h1 Services & Facilities
       .welcome
         != contents
+      .services__more
+        a.button.button--dark(href='/about-contact') for booking and more info, contact us
       ul.services__inner
         each service in collections.services
           li.services__item

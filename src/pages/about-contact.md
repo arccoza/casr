@@ -19,6 +19,12 @@ Situated 3 kilometres North of Christiana Town on the N12 towards Bloemhof.
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3526.5820532463413!2d25.193255714822154!3d-27.884106341129012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDUzJzAyLjgiUyAyNcKwMTEnNDMuNiJF!5e0!3m2!1sen!2sjp!4v1460490165341" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
 </section>
 
+## Have a look.
+
+<section class="video">
+<iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F1142890662409199%2Fvideos%2F1164407490257516%2F&show_text=0&width=560" width="560" height="315" style="border:none;overflow:hidden; display: block; margin: 0 auto;" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+</section>
+
 ## Contact us.
 
 ### Telephone
@@ -31,4 +37,4 @@ Situated 3 kilometres North of Christiana Town on the N12 towards Bloemhof.
 <a href="mailto:{{email}}">{{email}}</a>
 
 ### Social
-Visit our [Facebook page](https://www.facebook.com/Christiana-All-Seasons-Resort-1142890662409199/) and like us to keep up to date with our upcoming specials.
+Visit our <a href="https://www.facebook.com/Christiana-All-Seasons-Resort-1142890662409199/" target="_blank">Facebook page</a> and like us to keep up to date with our upcoming specials.
