@@ -197,7 +197,7 @@ pre {
 }
 
 
-.main-header__hamburger {
+/*.main-header__hamburger {
   display: none ?if media (--medium_large);
   ?if media (--small) {
     position: absolute;
@@ -208,8 +208,10 @@ pre {
     line-height: 3rem;
     display: block;
     text-align: center;
-    /*transform: translateZ(0);*/
   }
+}*/
+.main-header__hamburger {
+  display: none;
 }
 .main-header__hamburger > svg {
   ?if media (--small) {
