@@ -229,17 +229,17 @@ metalsmith(__dirname)
   // }))
   // TODO: Check why linksets are interfering with CSS.
   .use(permalinks({
-    pattern: ':title',
-    relative: false,
-    date: 'YYYY/MM/DD'
-    // linksets: [
-    //   {
-    //     match: { collection: 'pages' },
-    //     pattern: 'page/:title',
-    //     relative: false,
-    //     date: 'YYYY/MM/DD'
-    //   }
-    // ]
+    // pattern: ':title',
+    // relative: false,
+    // date: 'YYYY/MM/DD'
+    linksets: [
+      {
+        match: { collection: 'pages' },
+        pattern: ':title',
+        relative: false,
+        date: 'YYYY/MM/DD'
+      }
+    ]
   }))
   .use(function(){
     return function(files, metalsmith, done) {
