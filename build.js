@@ -117,6 +117,7 @@ metalsmith(__dirname)
       for(var path in files) {
         if(minimatch(path, 'img/**/*.@(jpg|png|gif|JPG|PNG|GIF)', { matchBase: true })) {
           var parts = npath.parse(path);
+          var newPath = null;
 
           if(!files[path].title)
             files[path].title = parts.name;
@@ -126,10 +127,13 @@ metalsmith(__dirname)
           parts.base = parts.name + parts.ext;
 
           files[path].slug = slug(files[path].title, {lower: true});
-          files[path].src = npath.format(parts);
-          files[npath.format(parts)] = files[path];
+          newPath = npath.format(parts);
+          files[path].src = newPath;
+          // console.log(path, '---', newPath);
+          files[newPath] = files[path];
 
-          // delete files[path];
+          if(newPath && newPath != path)
+            delete files[path];
         }
       }
       done();
@@ -243,7 +247,7 @@ metalsmith(__dirname)
       //   console.log(f, files[f].contents.length);
       // }
       // console.log(files);
-      console.log(metalsmith._metadata.collections.imgGallery);
+      // console.log(metalsmith._metadata.collections.imgGallery);
       // console.log(metalsmith._metadata);
       done();
     }
