@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var glyph = require('./components/glyph.vue');
   var toggle = require('./components/toggle.vue');
+  var _switch = require('./components/switch.vue');
   console.log(glyph);
 
   var app = new Vue({
@@ -61,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
     data: {},
     components: {
       glyph,
-      toggle
+      toggle,
+      switch: _switch
     },
     methods: {
       logger(ev) {

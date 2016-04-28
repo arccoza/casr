@@ -104,20 +104,86 @@ pre {
   border: 3px solid #9ac0cd;
   border-radius: 2px;
   color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 #9ac0cd inset;
 }
 .toggle--on {
   background-color: #9ac0cd;
-  transition: background-color 0.3s;
+  border-color: #9ac0cd;
+  box-shadow: 0 0 0 1em #9ac0cd inset;
+  transition: background-color 0s 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .toggle--off {
-  transition: background-color 0.5s;
+  transition: border-color 0.3s 0.3s, box-shadow 0.3s;
 }
+
+.toggle--positive {
+  box-shadow: 0 0 0 0 #90ee90 inset;
+}
+.toggle--positive.toggle--on {
+  background-color: #90ee90;
+  border-color: #90ee90;
+  box-shadow: 0 0 0 1em #90ee90 inset;
+}
+.toggle--negative {
+  box-shadow: 0 0 0 0 #f08080 inset;
+}
+.toggle--negative.toggle--on {
+  background-color: #f08080;
+  border-color: #f08080;
+  box-shadow: 0 0 0 1em #f08080 inset;
+}
+
 .toggle--on .glyph {
   transform: scale(1);
   transition: transform 0.3s;
 }
 .toggle--off .glyph {
-  transform: scale(1.5);
+  transform: scale(2);
   opacity: 0;
   transition: transform 0.3s, opacity 0.5s;
+}
+
+.switch {
+  background-color: #9ac0cd;
+  border: 3px solid #9ac0cd;
+  border-radius: 1000px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 #9ac0cd inset;
+}
+.switch--on {
+  /*background-color: #9ac0cd;*/
+  border-color: #9ac0cd;
+  /*box-shadow: 0 0 0 1em #9ac0cd inset;*/
+  transition: background-color 0s 0.6s, border-color 0.3s, box-shadow 0.3s 0.15s;
+}
+.switch--off {
+  transition: border-color 0.3s 0.3s, box-shadow 0.3s;
+}
+
+.switch--positive {
+  box-shadow: 0 0 0 0 #90ee90 inset;
+}
+.switch--positive.switch--on {
+  background-color: #90ee90;
+  border-color: #90ee90;
+  box-shadow: 0 0 0 1em #90ee90 inset;
+}
+.switch--negative {
+  box-shadow: 0 0 0 0 #f08080 inset;
+}
+.switch--negative.switch--on {
+  background-color: #f08080;
+  border-color: #f08080;
+  box-shadow: 0 0 0 1em #f08080 inset;
+}
+
+.switch__grip {
+  background-color: #fff;
+  color: #fff;
+  transition: margin-left 0.3s;
+}
+.switch--on .switch__grip {
+  margin-left: 100%;
 }

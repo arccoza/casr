@@ -1,17 +1,35 @@
 // app.vue
 <style>
-  .toggle {
+  .switch {
+    /*width: 3em;*/
+    /*height: 1em;*/
     display: inline-block;
     vertical-align: middle;
+    padding: 0.05em;
   }
-  .toggle__input {
+  .switch:before {
+    content: "";
+    display: block;
+    width: 2em;
+    height: 0;
+  }
+  .switch__grip {
+    position: relative;
+    left: -0.9em;
+    width: 0.9em;
+    height: 0.9em;
+    margin-left: 0.9em;
+    display: block;
+    border-radius: inherit;
+  }
+  .switch__input {
     display: none;
   }
 </style>
 
 <template>
   <label :class="classes.container">
-    <glyph :type="glyph" :class="classes.glyph"></glyph>
+    <i :class="classes.grip"></i>
     <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
   </label>
 </template>
@@ -20,12 +38,7 @@
 export default {
   data() {
     return {
-      glyphs: {
-        none: 'none',
-        positive: 'interface-tick',
-        negative: 'interface-cross'
-        // radio: ''
-      }
+
     }
   },
   props: {
@@ -64,16 +77,16 @@ export default {
     classes() {
       return {
         container: {
-          'toggle': true,
-          ['toggle--' + this.type]: true,
-          'toggle--on': this.isOn,
-          'toggle--off': this.isOff
+          'switch': true,
+          ['switch--' + this.type]: true,
+          'switch--on': this.isOn,
+          'switch--off': this.isOff
         },
-        glyph: {
-          'toggle__glyph': true
+        grip: {
+          'switch__grip': true
         },
         input: {
-          'toggle__input': true
+          'switch__input': true
         }
       }
     },
@@ -82,21 +95,8 @@ export default {
     },
     isOff() {
       return !this.isOn;
-    },
-    glyph() {
-      // return this.isOn ? this.glyphs[this.type] : this.glyphs.none;
-      return this.glyphs[this.type];
     }
   },
-  // watch: {
-  //   state(val, oldVal) {
-  //     console.log(val, oldVal);
-  //     if(val === true || val == 1 || val == '1' || (val.toLowerCase && val.toLowerCase() == 'on'))
-  //       this.state = 'on';
-  //     else if(val === false || val == 0 || val == '0' || (val.toLowerCase && val.toLowerCase() == 'off'))
-  //       this.state = 'off';
-  //   }
-  // },
   methods: {
     toggle() {
       this.state = this.isOn ? 'off' : 'on';
@@ -111,9 +111,6 @@ export default {
         value: this.value
       });
     }
-  },
-  components: {
-    glyph: require('./glyph.vue')
   }
 }
 </script>
