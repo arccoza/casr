@@ -4,18 +4,18 @@ module.exports = {
   //   includePaths: [...]
   // },
   // provide your own postcss plugins
-  postcss: [
-      'postcss-import',
-      'postcss-if-media',
-      'postcss-custom-media',
-      'postcss-media-minmax',
-      'postcss-layout',
-      'postcss-aspect-ratio'
-    ],
+  // postcss: [
+  //     'postcss-import',
+  //     'postcss-if-media',
+  //     'postcss-custom-media',
+  //     'postcss-media-minmax',
+  //     'postcss-layout',
+  //     'postcss-aspect-ratio'
+  //   ],
   // configure autoprefixer
   autoprefixer: {
     browsers: ['last 2 versions']
-  }
+  },
   // configure html minification in production mode
   // see https://github.com/kangax/html-minifier#options-quick-reference
   // htmlMinifier: {
@@ -34,4 +34,5 @@ module.exports = {
   //     cb(null, result)
   //   }
   // }
+  devtools: true
 }

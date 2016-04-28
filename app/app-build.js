@@ -24,7 +24,8 @@ metalsmith(__dirname)
       'postcss-layout': {},
       'postcss-aspect-ratio': {},
       'autoprefixer': {}
-    }
+    },
+    removeExcluded: false
   }))
   .use(b)
   .build(function (err) {

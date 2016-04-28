@@ -1,9 +1,12 @@
 html
   head
+    link(href='css/main.css', rel="stylesheet", type="text/css")
     script(src='js/main.js')
-    body
+    body#app
       .login
         label Username:
         input(type='text', v-model='username', v-on:change='change', placeholder='{{ usernamePlaceholder }}')
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
+        glyph
+        toggle(type="positive", @on="logger")

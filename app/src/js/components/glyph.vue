@@ -1,24 +1,42 @@
 // app.vue
 <style>
   .glyph {
-    /*display: inline-block;*/
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    display: inline-block;
     font-family: budicon;
     font-style: normal;
     font-weight: normal;
+    font-size: 1em;
   }
 </style>
 
 <template>
-  <i class="glyph {{ glyphId }}">
-  </i>
+  <i :class="classes"></i>
 </template>
 
 <script>
 export default {
-  props: ['type'],
   data () {
     return {
-      glyphId: 'glyph--animal-fish'
+
+    }
+  },
+  props: {
+    type: {
+      type: String,
+      default() {
+        return 'animal-cat';
+      }
+    }
+  },
+  computed: {
+    classes() {
+      return {
+        'glyph': true,
+        ['glyph--' + this.type]: true
+      }
     }
   }
 }

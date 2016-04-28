@@ -1,4 +1,123 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:400,300,500,600,800,300italic,400italic,500italic);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic);
 
 @import "_partials/reset.css";
-@import "_partials/budicon-embedded.css";
+@import "_partials/budicon.css";
+
+::selection {
+  color: #000;
+  background: #d59527;
+}
+
+html, body {
+  position: relative;
+  background-color: #fff;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: #3e3e3e;
+  font-family: 'Open Sans', sans-serif;
+  /*font-size: calc(8px + 0.9vw);*/
+  /*font-size: calc(10*0.0007812 * 100vw + 10*1px);
+  font-size: calc(10*0.0009766 * 100vw + 10*1px) ?if media (--medium);
+  font-size: calc(10*0.001562 * 100vw + 10*1px) ?if media (--small);*/
+  font-size: 16px;
+}
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+a {
+  text-decoration: none;
+}
+a, a:link, a:visited {
+  color: #d59527;
+}
+a:active, a:hover {
+  /*color: #95b2b2;*/
+  color: #d59527;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  position: relative;
+  line-height: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.25em;
+  /*border-bottom: 1px solid #f0f0f0;*/
+  /*border-bottom: 1px solid rgba(0,0,0,0.1);*/
+  color: #af8439;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
+}
+h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a,
+h1 > a:link, h2 > a:link, h3 > a:link, h4 > a:link, h5 > a:link, h6 > a:link {
+  color: #528b8b;
+}
+
+h1 {
+  font-size: 1.8rem;
+  text-align: center;
+}
+h1:after {
+  position: absolute;
+  content: '';
+  bottom: 0px;
+  left: 47.5%;
+  width:5%;
+  height: 0px;
+  border-bottom: 1px solid #af8439;
+}
+h2 {
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #52423b;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+p {
+  margin-bottom: 1em;
+  line-height: 1.4em;
+  font-size: 0.9em;
+}
+
+pre {
+  white-space: nowrap;
+  overflow: auto;
+}
+
+
+
+
+/*Vue components*/
+
+.toggle {
+  background-color: transparent;
+  border: 3px solid #9ac0cd;
+  border-radius: 2px;
+  color: #fff;
+}
+.toggle--on {
+  background-color: #9ac0cd;
+  transition: background-color 0.3s;
+}
+.toggle--off {
+  transition: background-color 0.5s;
+}
+.toggle--on .glyph {
+  transform: scale(1);
+  transition: transform 0.3s;
+}
+.toggle--off .glyph {
+  transform: scale(1.5);
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.5s;
+}
