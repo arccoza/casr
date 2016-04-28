@@ -1,0 +1,9 @@
+html
+  head
+    script(src='js/main.js')
+    body
+      .login
+        label Username:
+        input(type='text', v-model='username', v-on:change='change', placeholder='{{ usernamePlaceholder }}')
+        label Password:
+        input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')

@@ -1,0 +1,19 @@
+Did you know that Budicon Classic set contain 2 different styles?
+
+- 16,32,48,64 are the regular line icon style
+- 25,50 are dedicated for iOS8 style
+
+Folder explanation
+- Ai ( You will find Adobe Illustrator files)
+- EPS ( You will find EPS files )
+- PNG ( You will find PNG files, sorted by sizeand have nested categories) 
+- PSD ( You will find PSD files ) 
+- Sketch ( Use this .SVG only for sketch, drag and drop it into Sketch app for use it)
+- Webfont Files ( You will find all formats for webfont, use 3rd party to convert this into your
+selected font)
+
+Enjoy!
+
+
+Hey, I'm going to release another set, make sure you subscribe your email on the footer (budicon.buditanrim.co)
+I will just send an email whenever I have an update or new release or discount, no spam of course!

@@ -1,0 +1,42 @@
+-----------------------------
+What is Cheatsheet Folder?
+- Inside this folder, you will find all cheatsheet for Budicon.
+
+
+
+-----------------------------
+
+How to use Budicon font?
+- Grab anything inside "Font File" folder, and upload this, make sure you link it into your css using font-face.
+- Please notes, this will upload all 852 icons into your server
+
+
+
+-----------------------------
+What is the best practice to use Budicon font?
+- Don't upload all font of Budicon on your project, it will take too much memory
+- Select the SVG collection from "Font File" folder, and convert it (look below, how to do that)
+
+
+
+-----------------------------
+How to convert Individual SVG into Icon Font?
+
+All you need is SVG (budicon.svg) file that included in "Font File" folder and convert it using 3rd party Icon Font Generator. (Budicon is temporary using 3rd party Icon Font Generator)
+Recommended Icon Font Generator are:
+- Fontastic - http://fontastic.me/
+- Icomoon - http://icomoon.io/
+
+Follow these step to generate your selected icon using Fontastic:
+1. Go to Fontastic website and signup/login.
+2. Select import icon and select the "budicon.svg" file.
+3. After all icons uploaded, select icons you want to use in your project.
+4. Select "customize name"/"customize codes", here you can bind character mapping and css class maping.
+5. Once you done, download the files (you'll get the proper files for your website project).
+
+Please go to this link for full explanation: 
+http://budicon.buditanrim.co/faq
+
+
+-----------------------------
+Goodluck!

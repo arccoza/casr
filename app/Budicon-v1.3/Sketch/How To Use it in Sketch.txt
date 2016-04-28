@@ -1,0 +1,5 @@
+Drag and drop svg file in this folder into your Sketch App
+
+
+Why it's not .sketch file instead?
+Answer : The file is really huge when I tried to save it as .sketch, so I decided to let you guys use svg
