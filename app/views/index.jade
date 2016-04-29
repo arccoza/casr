@@ -3,12 +3,14 @@ html
     link(href='css/main.css', rel="stylesheet", type="text/css")
     script(src='js/main.js')
     body#app
+      glyphs
+      <svg class=""><use xlink:href="#glyph--animal-fish"></use></svg>
       .login
         label Username:
         input(type='text', v-model='username', v-on:change='change', placeholder='{{ usernamePlaceholder }}')
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
         glyph
-        toggle(type="positive", :state="off", @state-change="logger")
-        toggle(type="negative", :state="off", @state-change="logger")
-        switch(type="positive")
+        toggle(type="positive", state="on", @state-change="logger", @click="logger")
+        toggle(type="negative", state="on", @state-change="logger")
+        switch(type="negative")

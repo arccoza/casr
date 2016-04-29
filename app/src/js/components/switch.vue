@@ -1,24 +1,18 @@
 // app.vue
 <style>
   .switch {
-    /*width: 3em;*/
-    /*height: 1em;*/
+
+  }
+  .switch__inner {
     display: inline-block;
     vertical-align: middle;
-    padding: 0.05em;
-  }
-  .switch:before {
-    content: "";
-    display: block;
-    width: 2em;
-    height: 0;
   }
   .switch__grip {
     position: relative;
-    left: -0.9em;
-    width: 0.9em;
-    height: 0.9em;
-    margin-left: 0.9em;
+    /*left: -0.8em;
+    width: 1em;
+    height: 1em;
+    margin-left: 0.8em;*/
     display: block;
     border-radius: inherit;
   }
@@ -28,10 +22,12 @@
 </style>
 
 <template>
-  <label :class="classes.container">
-    <i :class="classes.grip"></i>
-    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
-  </label>
+  <button :class="classes.container">
+    <label :class="classes.inner">
+      <i :class="classes.grip"></i>
+      <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
+    </label>
+  </button>
 </template>
 
 <script>
@@ -81,6 +77,9 @@ export default {
           ['switch--' + this.type]: true,
           'switch--on': this.isOn,
           'switch--off': this.isOff
+        },
+        inner: {
+          'switch__inner': true
         },
         grip: {
           'switch__grip': true

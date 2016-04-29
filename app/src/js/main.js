@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
   //   login.username = res.username;
   // });
 
+  var glyphs = require('./components/glyphs.vue');
   var glyph = require('./components/glyph.vue');
   var toggle = require('./components/toggle.vue');
   var _switch = require('./components/switch.vue');
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     el: '#app',
     data: {},
     components: {
+      glyphs,
       glyph,
       toggle,
       switch: _switch

@@ -1,6 +1,9 @@
 // app.vue
 <style>
   .toggle {
+
+  }
+  .toggle__inner {
     display: inline-block;
     vertical-align: middle;
   }
@@ -10,10 +13,12 @@
 </style>
 
 <template>
-  <label :class="classes.container">
-    <glyph :type="glyph" :class="classes.glyph"></glyph>
-    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
-  </label>
+  <button :class="classes.container">
+    <label :class="classes.inner">
+      <glyph :type="glyph" :class="classes.glyph"></glyph>
+      <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
+    </label>
+  </button>
 </template>
 
 <script>
@@ -68,6 +73,9 @@ export default {
           ['toggle--' + this.type]: true,
           'toggle--on': this.isOn,
           'toggle--off': this.isOff
+        },
+        inner: {
+          'toggle__inner': true
         },
         glyph: {
           'toggle__glyph': true

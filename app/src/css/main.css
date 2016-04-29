@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic);
 
 @import "_partials/reset.css";
-@import "_partials/budicon.css";
+/*@import "_partials/budicon.css";*/
 
 ::selection {
   color: #000;
@@ -12,7 +12,7 @@ html, body {
   position: relative;
   background-color: #fff;
   min-height: 100vh;
-  margin: 0;
+  margin: 10px;
   padding: 0;
   color: #3e3e3e;
   font-family: 'Open Sans', sans-serif;
@@ -98,8 +98,21 @@ pre {
 
 
 /*Vue components*/
+.glyph, .toggle, .switch, .button, .range {
+  background: none;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0;
+  border: none;
+  margin: 0;
+  outline: none;
+  font-size: 1em;
+}
 
 .toggle {
+
+}
+.toggle__inner {
   background-color: transparent;
   border: 3px solid #9ac0cd;
   border-radius: 2px;
@@ -107,44 +120,53 @@ pre {
   cursor: pointer;
   box-shadow: 0 0 0 0 #9ac0cd inset;
 }
-.toggle--on {
+.toggle--on .toggle__inner {
   background-color: #9ac0cd;
   border-color: #9ac0cd;
   box-shadow: 0 0 0 1em #9ac0cd inset;
   transition: background-color 0s 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
-.toggle--off {
+.toggle--off .toggle__inner {
   transition: border-color 0.3s 0.3s, box-shadow 0.3s;
 }
 
-.toggle--positive {
+.toggle--positive .toggle__inner {
   box-shadow: 0 0 0 0 #90ee90 inset;
 }
-.toggle--positive.toggle--on {
+.toggle--positive.toggle--on .toggle__inner {
   background-color: #90ee90;
   border-color: #90ee90;
   box-shadow: 0 0 0 1em #90ee90 inset;
 }
-.toggle--negative {
+.toggle--negative .toggle__inner {
   box-shadow: 0 0 0 0 #f08080 inset;
 }
-.toggle--negative.toggle--on {
+.toggle--negative.toggle--on .toggle__inner {
   background-color: #f08080;
   border-color: #f08080;
   box-shadow: 0 0 0 1em #f08080 inset;
 }
 
+.toggle .glyph {
+  width: 1em;
+  height: 1em;
+  fill: #fff;
+}
 .toggle--on .glyph {
   transform: scale(1);
   transition: transform 0.3s;
 }
 .toggle--off .glyph {
+  visibility: hidden;
   transform: scale(2);
   opacity: 0;
   transition: transform 0.3s, opacity 0.5s;
 }
 
 .switch {
+
+}
+.switch__inner {
   background-color: #9ac0cd;
   border: 3px solid #9ac0cd;
   border-radius: 1000px;
@@ -152,38 +174,44 @@ pre {
   cursor: pointer;
   box-shadow: 0 0 0 0 #9ac0cd inset;
 }
-.switch--on {
+.switch--on .switch__inner {
   /*background-color: #9ac0cd;*/
   border-color: #9ac0cd;
   /*box-shadow: 0 0 0 1em #9ac0cd inset;*/
   transition: background-color 0s 0.6s, border-color 0.3s, box-shadow 0.3s 0.15s;
 }
-.switch--off {
+.switch--off .switch__inner {
   transition: border-color 0.3s 0.3s, box-shadow 0.3s;
 }
 
-.switch--positive {
+.switch--positive .switch__inner {
   box-shadow: 0 0 0 0 #90ee90 inset;
 }
-.switch--positive.switch--on {
+.switch--positive.switch--on .switch__inner {
   background-color: #90ee90;
   border-color: #90ee90;
   box-shadow: 0 0 0 1em #90ee90 inset;
 }
-.switch--negative {
+.switch--negative .switch__inner {
   box-shadow: 0 0 0 0 #f08080 inset;
 }
-.switch--negative.switch--on {
+.switch--negative.switch--on .switch__inner {
   background-color: #f08080;
   border-color: #f08080;
   box-shadow: 0 0 0 1em #f08080 inset;
 }
 
 .switch__grip {
+  left: -0.8em;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.8em;
+}
+.switch__grip {
   background-color: #fff;
   color: #fff;
-  transition: margin-left 0.3s;
+  transition: left 0.3s;
 }
 .switch--on .switch__grip {
-  margin-left: 100%;
+  left: 0;
 }

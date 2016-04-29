@@ -1,19 +1,21 @@
 // app.vue
 <style>
   .glyph {
-    width: 1em;
+    /*width: 1em;
     height: 1em;
-    line-height: 1em;
-    display: inline-block;
-    font-family: budicon;
-    font-style: normal;
+    line-height: 1em;*/
+    /*display: inline-block;*/
+    /*text-align: center;*/
+    /*font-family: budicon;*/
+    /*font-style: normal;
     font-weight: normal;
     font-size: 1em;
+    fill: #fff;*/
   }
 </style>
 
 <template>
-  <i :class="classes"></i>
+  <svg :class="classes"><use :xlink:href="xlink"></use></svg>
 </template>
 
 <script>
@@ -37,6 +39,9 @@ export default {
         'glyph': true,
         ['glyph--' + this.type]: true
       }
+    },
+    xlink() {
+      return '#glyph-' + this.type
     }
   }
 }

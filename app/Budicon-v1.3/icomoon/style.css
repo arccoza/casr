@@ -1,0 +1,726 @@
+.glyph {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+/* =======================================================================================
+Example showing how to change the color/size of the icons:
+.glyph--name {
+	font-size: 32px; // works because "width" & "height" were set using em units
+	color: red; // works for single-colored icons, because "fill" was set to "currentColor"
+}
+======================================================================================== */
+
+.glyph--sport-tape {
+	width: 1.125em;
+}
+
+.glyph--sport-tennisball {
+	width: 1.125em;
+}
+
+.glyph--sport-time {
+	width: 1.125em;
+}
+
+.glyph--sport-trophy {
+	width: 1.125em;
+}
+
+.glyph--sport-trophy-a {
+	width: 1.125em;
+}
+
+.glyph--sport-tv {
+	width: 1.125em;
+}
+
+.glyph--sport-tv-a {
+	width: 1.125em;
+}
+
+.glyph--medicine-heart {
+	width: 1.125em;
+}
+
+.glyph--medicine-lab {
+	width: 1.125em;
+}
+
+.glyph--medicine-lab-a {
+	width: 1.125em;
+}
+
+.glyph--sport-alt-badge {
+	width: 1.125em;
+}
+
+.glyph--sport-alt-badge-a {
+	width: 1.125em;
+}
+
+.glyph--sport-badge {
+	width: 1.125em;
+}
+
+.glyph--sport-badge-a {
+	width: 1.125em;
+}
+
+.glyph--sport-badge-b {
+	width: 1.125em;
+}
+
+.glyph--sport-badge-c {
+	width: 1.125em;
+}
+
+.glyph--sport-badge-one {
+	width: 1.125em;
+}
+
+.glyph--sport-badge-one-a {
+	width: 1.125em;
+}
+
+.glyph--sport-baseball {
+	width: 1.125em;
+}
+
+.glyph--sport-basketball {
+	width: 1.125em;
+}
+
+.glyph--sport-basketball-a {
+	width: 1.125em;
+}
+
+.glyph--sport-bottle {
+	width: 1.125em;
+}
+
+.glyph--sport-cards {
+	width: 1.125em;
+}
+
+.glyph--sport-dumbell {
+	width: 1.125em;
+}
+
+.glyph--sport-dumbell-a {
+	width: 1.125em;
+}
+
+.glyph--sport-flag {
+	width: 1.125em;
+}
+
+.glyph--sport-flag-a {
+	width: 1.125em;
+}
+
+.glyph--sport-football {
+	width: 1.125em;
+}
+
+.glyph--sport-medic {
+	width: 1.125em;
+}
+
+.glyph--sport-mic {
+	width: 1.125em;
+}
+
+.glyph--sport-puzzle {
+	width: 1.125em;
+}
+
+.glyph--sport-stadium {
+	width: 1.125em;
+}
+
+.glyph--sport-stadium-a {
+	width: 1.125em;
+}
+
+.glyph--time-alarm {
+	width: 1.0634765625em;
+}
+
+.glyph--time-alt-wall-clock {
+	width: 1.0634765625em;
+}
+
+.glyph--time-calendar {
+	width: 1.0634765625em;
+}
+
+.glyph--time-calendar-a {
+	width: 1.0634765625em;
+}
+
+.glyph--time-calendar-b {
+	width: 1.0634765625em;
+}
+
+.glyph--time-clock {
+	width: 1.0634765625em;
+}
+
+.glyph--time-clock-a {
+	width: 1.0634765625em;
+}
+
+.glyph--time-clock-b {
+	width: 1.0634765625em;
+}
+
+.glyph--time-clock-c {
+	width: 1.0634765625em;
+}
+
+.glyph--time-hour-glass {
+	width: 1.0634765625em;
+}
+
+.glyph--time-speed-meter {
+	width: 1.0634765625em;
+}
+
+.glyph--time-stopwatch {
+	width: 1.0634765625em;
+}
+
+.glyph--time-stopwatch-a {
+	width: 1.0634765625em;
+}
+
+.glyph--time-stopwatch-b {
+	width: 1.0634765625em;
+}
+
+.glyph--time-timer {
+	width: 1.0634765625em;
+}
+
+.glyph--time-wall-clock {
+	width: 1.0634765625em;
+}
+
+.glyph--time-watches {
+	width: 1.0634765625em;
+}
+
+.glyph--time-watches-a {
+	width: 1.0634765625em;
+}
+
+.glyph--time-watches-b {
+	width: 1.0634765625em;
+}
+
+.glyph--location-alt-pin {
+	width: 1.0634765625em;
+}
+
+.glyph--location-avenue {
+	width: 1.0634765625em;
+}
+
+.glyph--location-compass {
+	width: 1.0634765625em;
+}
+
+.glyph--location-map {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-blank {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-check {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-map {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-map-a {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-minus {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-plus {
+	width: 1.0634765625em;
+}
+
+.glyph--location-pin-regular {
+	width: 1.0634765625em;
+}
+
+.glyph--location-sign-street {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-console {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-console-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-console-old {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-disk {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-disk-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-flashlight {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-flashlight-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-flashlight-a-s {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-flashlight-s {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-gameboy {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-hammer {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-headphone {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-headphone-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-laptop {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-magic-wand {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-magic-wand-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-magnet {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-magnifier {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-medical-tape {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-mobile {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-mobile-l {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-monitor {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-monitor-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-mouse {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-net {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-paint-roler {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-projector {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-radio {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-ruler {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-scissor {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-tablet {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-tablet-l {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-television {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-toothbrush {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-umbrella {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-video {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-alt-camera {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-alt-camera-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-android {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-android-l {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-binoculars {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-brush {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-brush-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-calculator {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-camera {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-camera-a {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-camera-b {
+	width: 1.0634765625em;
+}
+
+.glyph--tool-compass {
+	width: 1.0634765625em;
+}
+
+.glyph--web-bug {
+	width: 1.0634765625em;
+}
+
+.glyph--web-code {
+	width: 1.0634765625em;
+}
+
+.glyph--web-database {
+	width: 1.0634765625em;
+}
+
+.glyph--web-download {
+	width: 1.0634765625em;
+}
+
+.glyph--web-graph {
+	width: 1.0634765625em;
+}
+
+.glyph--web-inspect {
+	width: 1.0634765625em;
+}
+
+.glyph--web-internet {
+	width: 1.0634765625em;
+}
+
+.glyph--web-internet-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-logout {
+	width: 1.0634765625em;
+}
+
+.glyph--web-menu-collapse-down {
+	width: 1.0634765625em;
+}
+
+.glyph--web-menu-collapse-left {
+	width: 1.0634765625em;
+}
+
+.glyph--web-menu-collapse-right {
+	width: 1.0634765625em;
+}
+
+.glyph--web-menu-collapse-up {
+	width: 1.0634765625em;
+}
+
+.glyph--web-reading-list {
+	width: 1.0634765625em;
+}
+
+.glyph--web-report {
+	width: 1.0634765625em;
+}
+
+.glyph--web-report-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-rss {
+	width: 1.0634765625em;
+}
+
+.glyph--web-share {
+	width: 1.0634765625em;
+}
+
+.glyph--web-share-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-share-b {
+	width: 1.0634765625em;
+}
+
+.glyph--web-statistic {
+	width: 1.0634765625em;
+}
+
+.glyph--web-traffic {
+	width: 1.0634765625em;
+}
+
+.glyph--web-traffic-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-traffic-b {
+	width: 1.0634765625em;
+}
+
+.glyph--web-traffic-c {
+	width: 1.0634765625em;
+}
+
+.glyph--web-upload {
+	width: 1.0634765625em;
+}
+
+.glyph--web-url {
+	width: 1.0634765625em;
+}
+
+.glyph--web-url-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-url-b {
+	width: 1.0634765625em;
+}
+
+.glyph--web-warning {
+	width: 1.0634765625em;
+}
+
+.glyph--web-webcam {
+	width: 1.0634765625em;
+}
+
+.glyph--web-broken-link {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-a {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-b {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-cross {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-minus {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-plus {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tab {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tab-cross {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tab-minus {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tab-plus {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tab-tick {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-tick {
+	width: 1.0634765625em;
+}
+
+.glyph--web-browser-window {
+	width: 1.0634765625em;
+}
+
+.glyph--logo-vimeo {
+	width: 0.94140625em;
+}
+
+.glyph--logo-windows {
+	width: 0.94140625em;
+}
+
+.glyph--logo-zerply {
+	width: 0.94140625em;
+}
+
+.glyph--logo-amazon {
+	width: 0.94140625em;
+}
+
+.glyph--logo-dribbble {
+	width: 0.94140625em;
+}
+
+.glyph--logo-dropbox {
+	width: 0.94140625em;
+}
+
+.glyph--logo-evernote {
+	width: 0.94140625em;
+}
+
+.glyph--logo-facebook {
+	width: 0.94140625em;
+}
+
+.glyph--logo-grooveshark {
+	width: 0.94140625em;
+}
+
+.glyph--logo-instagram {
+	width: 0.94140625em;
+}
+
+.glyph--logo-linkedin {
+	width: 0.94140625em;
+}
+
+.glyph--logo-musio {
+	width: 0.94140625em;
+}
+
+.glyph--logo-path {
+	width: 0.94140625em;
+}
+
+.glyph--logo-paypal {
+	width: 0.94140625em;
+}
+
+.glyph--logo-picasa {
+	width: 0.94140625em;
+}
+
+.glyph--logo-pinterest {
+	width: 0.94140625em;
+}
+
+.glyph--logo-rdio {
+	width: 0.94140625em;
+}
+
+.glyph--logo-squarespace {
+	width: 0.94140625em;
+}
+
+.glyph--logo-squareup {
+	width: 0.94140625em;
+}
+
+.glyph--logo-twitter {
+	width: 0.94140625em;
+}
