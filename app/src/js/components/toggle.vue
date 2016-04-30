@@ -1,9 +1,6 @@
 // app.vue
 <style>
   .toggle {
-
-  }
-  .toggle__inner {
     display: inline-block;
     vertical-align: middle;
   }
@@ -13,12 +10,10 @@
 </style>
 
 <template>
-  <button :class="classes.container">
-    <label :class="classes.inner">
+    <label :class="classes.container">
       <glyph :type="glyph" :class="classes.glyph"></glyph>
       <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
     </label>
-  </button>
 </template>
 
 <script>
@@ -96,23 +91,14 @@ export default {
       return this.glyphs[this.type];
     }
   },
-  // watch: {
-  //   state(val, oldVal) {
-  //     console.log(val, oldVal);
-  //     if(val === true || val == 1 || val == '1' || (val.toLowerCase && val.toLowerCase() == 'on'))
-  //       this.state = 'on';
-  //     else if(val === false || val == 0 || val == '0' || (val.toLowerCase && val.toLowerCase() == 'off'))
-  //       this.state = 'off';
-  //   }
-  // },
   methods: {
     toggle() {
       this.state = this.isOn ? 'off' : 'on';
     },
     change(ev) {
       this.state = ev.target.checked ? 'on' : 'off';
-      this.$dispatch('state-change', {
-        eventType: 'state-change',
+      this.$dispatch('change', {
+        eventType: 'change',
         eventValue: this.state,
         target: this,
         name: this.name,

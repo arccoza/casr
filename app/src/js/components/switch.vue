@@ -1,20 +1,20 @@
 // app.vue
 <style>
   .switch {
-
-  }
-  .switch__inner {
     display: inline-block;
     vertical-align: middle;
   }
   .switch__grip {
-    position: relative;
+    /*position: relative;*/
     /*left: -0.8em;
     width: 1em;
     height: 1em;
     margin-left: 0.8em;*/
-    display: block;
+    display: inline-block;
     border-radius: inherit;
+  }
+  .switch__grip > img {
+    height:100%;
   }
   .switch__input {
     display: none;
@@ -22,12 +22,10 @@
 </style>
 
 <template>
-  <button :class="classes.container">
-    <label :class="classes.inner">
-      <i :class="classes.grip"></i>
-      <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
-    </label>
-  </button>
+  <label :class="classes.container">
+    <i :class="classes.grip"></i>
+    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
+  </label>
 </template>
 
 <script>
@@ -102,8 +100,8 @@ export default {
     },
     change(ev) {
       this.state = ev.target.checked ? 'on' : 'off';
-      this.$dispatch('state-change', {
-        eventType: 'state-change',
+      this.$dispatch('change', {
+        eventType: 'change',
         eventValue: this.state,
         target: this,
         name: this.name,

@@ -11,6 +11,6 @@ html
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
         glyph
-        toggle(type="positive", state="on", @state-change="logger", @click="logger")
-        toggle(type="negative", state="on", @state-change="logger")
+        toggle(type="positive", state="on", @change="logger")
+        toggle(type="negative", state="on", @change="logger")
         switch(type="negative")
