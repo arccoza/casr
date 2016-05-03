@@ -1,4 +1,5 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic);
+@import url(https://fonts.googleapis.com/css?family=Catamaran:400,300,200,100,500,600,700,800,900);
+/*@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic);*/
 
 @import "_partials/reset.css";
 /*@import "_partials/budicon.css";*/
@@ -15,7 +16,7 @@ html, body {
   margin: 10px;
   padding: 0;
   color: #3e3e3e;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Catamaran', sans-serif;
   /*font-size: calc(8px + 0.9vw);*/
   /*font-size: calc(10*0.0007812 * 100vw + 10*1px);
   font-size: calc(10*0.0009766 * 100vw + 10*1px) ?if media (--medium);
@@ -47,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
   /*border-bottom: 1px solid #f0f0f0;*/
   /*border-bottom: 1px solid rgba(0,0,0,0.1);*/
   color: #af8439;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Catamaran', sans-serif;
   font-weight: 300;
 }
 h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a,
@@ -98,7 +99,7 @@ pre {
 
 
 /*Vue components*/
-.glyph, .toggle, .switch, .button, .range {
+.glyph, .toggle, .switch, .button, .range, .text {
   background: none;
   display: inline-block;
   vertical-align: middle;
@@ -110,10 +111,10 @@ pre {
 }
 
 .toggle {
-  width: calc(1em + 6px);
-  height: calc(1em + 6px);
+  width: calc(1em + 4px);
+  height: calc(1em + 4px);
   background-color: transparent;
-  border: 3px solid #9ac0cd;
+  border: 2px solid #9ac0cd;
   border-radius: 2px;
   color: #fff;
   cursor: pointer;
@@ -162,12 +163,13 @@ pre {
   transition: transform 0.3s, opacity 0.5s;
 }
 
+
 .switch {
   position: relative;
-  width: calc(1.8em + 6px);
-  height: calc(1em + 6px);
+  width: calc(1.8em + 4px);
+  height: calc(1em + 4px);
   background-color: #9ac0cd;
-  border: 3px solid #9ac0cd;
+  border: 2px solid #9ac0cd;
   border-radius: 1000px;
   color: #fff;
   cursor: pointer;
@@ -215,4 +217,84 @@ pre {
 }
 .switch--on .switch__grip {
   right: 0;
+}
+
+
+.button {
+  min-width: 4em;
+  height: calc(1.5em + 4px);
+  line-height: 100%;
+  background-color: #36648b;
+  padding: 0 0.3em 0 0.3em;
+  border: 2px solid #36648b;
+  border-radius: 2px;
+  color: #fff;
+  font-family: inherit;
+  font-weight: 300;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 #9ac0cd inset;
+  overflow: hidden;
+}
+/*.button--normal {
+  background: #87cefa;
+  border-color: #87cefa;
+}*/
+.button--positive {
+  background-color: #90ee90;
+  border: 2px solid #90ee90;
+}
+.button--negative {
+  background-color: #f08080;
+  border: 2px solid #f08080;
+}
+.button--hollow {
+  background: none;
+  color: #9ac0cd;
+}
+.button--ghost {
+  background: rgba(154, 192, 205, 0.39);
+  border: 0;
+  color: #9ac0cd;
+}
+.button--active {
+  /*background-color: #27408b;*/
+  /*border-color: #9ac0cd;
+  box-shadow: 0 0 3px 1em #9ac0cd inset;
+  transition: background-color 0s 0.6s, border-color 0s, box-shadow 0.15s;*/
+  animation: anim-effect-marko 0.5s forwards;
+}
+/*.button--off {
+  transition: border-color 0.3s 0.3s, box-shadow 0.3s;
+}*/
+
+.button__start {
+}
+.button__end {
+}
+
+
+/* Marko */
+.cbutton--effect-marko::after {
+  box-shadow: inset 0 0 0 2px rgba(111,148,182,0.3);
+}
+
+.cbutton--effect-marko.cbutton--click::after {
+  -webkit-animation: anim-effect-marko 0.5s forwards;
+  animation: anim-effect-marko 0.5s forwards;
+}
+
+@keyframes anim-effect-marko {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    box-shadow: inset 0 0 0 35px rgba(111,148,182,0.1);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: inset 0 0 0 35px rgba(111,148,182,0.1);
+    /*opacity: 0;*/
+    /*-webkit-transform: scale3d(1.1, 1.1, 1);*/
+    /*transform: scale3d(1.1, 1.1, 1);*/
+  }
 }

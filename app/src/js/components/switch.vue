@@ -75,6 +75,8 @@ export default {
           ['switch--' + this.type]: true,
           'switch--on': this.isOn,
           'switch--off': this.isOff
+          // TODO: Disabled state.
+          // 'switch--disabled': this.isDisabled
         },
         inner: {
           'switch__inner': true

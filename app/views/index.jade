@@ -1,4 +1,5 @@
 html
+  meta(http-equiv="X-UA-Compatible", content="IE=edge")
   head
     link(href='css/main.css', rel="stylesheet", type="text/css")
     script(src='js/main.js')
@@ -11,6 +12,10 @@ html
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
         glyph
-        toggle(type="positive", state="on", @change="logger")
-        toggle(type="negative", state="on", @change="logger")
-        switch(type="negative")
+        tgl(type="positive", state="on", @change="logger")
+        tgl(type="negative", state="on", @change="logger")
+        swt(type="positive")
+        btn(:start="true")
+          p(slot="start")
+            |yay
+          |hello

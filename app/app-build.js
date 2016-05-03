@@ -21,6 +21,8 @@ metalsmith(__dirname)
       'postcss-if-media': {},
       'postcss-custom-media': {},
       'postcss-media-minmax': {},
+      'postcss-custom-properties': {},
+      'postcss-calc': {},
       'postcss-layout': {},
       'postcss-aspect-ratio': {},
       'autoprefixer': {}

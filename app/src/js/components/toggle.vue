@@ -68,6 +68,8 @@ export default {
           ['toggle--' + this.type]: true,
           'toggle--on': this.isOn,
           'toggle--off': this.isOff
+          // TODO: Disabled state.
+          // 'toggle--disabled': this.isDisabled
         },
         inner: {
           'toggle__inner': true
