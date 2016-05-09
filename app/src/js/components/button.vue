@@ -1,7 +1,7 @@
-// app.vue
+// button.vue
 <style>
   .button {
-    display: inline-block;
+    /*display: inline-block;*/
     vertical-align: middle;
     text-align: center;
   }
@@ -11,33 +11,30 @@
 </style>
 
 <template>
-    <button :class="classes.container" @webkitAnimationEnd="animEnd" @mouseup="pressDownUp" @mousedown="pressDownUp" @mouseenter="mouseEnterExit" @mouseleave="mouseEnterExit">
+    <button :class="classes.container">
       <span :class="classes.start" v-if="hasStart">
-        <glyph :type="glyph" :class="classes.startGlyph"></glyph>
         <slot name="start"></slot>
       </span>
       <span :class="classes.content">
         <slot></slot>
       </span>
       <span :class="classes.end" v-if="hasEnd">
-        <glyph :type="glyph" :class="classes.endGlyph"></glyph>
         <slot name="end"></slot>
       </span>
-      <input :class="classes.input" :name="name" :value="value" type="submit">
+      <input v-if="isToggle || isSubmit" :class="classes.input" @change="change" :name="name" :value="value" :type="'checkbox' ? isToggle : 'submit'">
     </button>
 </template>
 
 <script>
+import Lie from 'lie';
+
+
 export default {
   data() {
     return {
-      _state: {
-        on: false,
-        off: false,
-        disabled: false
-      },
       hover: false,
-      active: false
+      active: false,
+      disabled: false
     }
   },
   props: {
@@ -48,38 +45,78 @@ export default {
       }
     },
     value: {
-      type: null,
+      type: String,
       default() {
         return '';
       }
     },
-    type: {
-      type: String,
-      default() {
-        return 'normal';
-      }
-    },
-    state: {
+    kind: {
       type: null,
       default() {
-        return 'off';
+        return {
+          normal: true,
+          positive: false,
+          negative: false,
+          toggle: false,
+          submit: false
+        };
       },
       coerce(val) {
-        if(val === true || val == 1 || val == '1' || (val.toLowerCase && val.toLowerCase() == 'on'))
-          return 'on';
-        else if(val === false || val == 0 || val == '0' || (val.toLowerCase && val.toLowerCase() == 'off'))
-          return 'off';
+        let obj = {
+          normal: true,
+          positive: false,
+          negative: false,
+          toggle: false,
+          submit: false
+        };
+
+        if(typeof val == 'string') {
+          let arr = val.split(/[\s,]+/);
+
+          for(let i = 0, v; v = arr[i++];) {
+            obj[v] = true;
+          }
+
+          obj.negative == obj.positive ? false : obj.negative;
+          obj.normal == obj.positive || obj.negative ? false : true;
+
+          return obj;
+        }
       }
     },
-    start: String,
-    end: String
+    active: {
+      default() {
+        return false;
+      },
+      validator(val) {
+        return val === true || val === false || val == 'true' || val == 'false';
+      },
+      coerce(val) {
+        if(val == 'true')
+          return true;
+        else if(val == 'false')
+          return false;
+        else
+          return val;
+      }
+    },
+    on: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    start: Boolean,
+    end: Boolean
   },
   computed: {
     classes() {
       return {
         container: {
           'button': true,
-          ['button--' + this.type]: true,
+          'button--positive': this.kind.positive,
+          'button--negative': this.kind.negative,
+          'button--toggle': this.kind.toggle,
           'button--on': this.isOn,
           'button--off': this.isOff,
           'button--disabled': this.isDisabled,
@@ -108,8 +145,14 @@ export default {
         }
       }
     },
+    isToggle() {
+      return false;
+    },
+    isSubmit() {
+      return false;
+    },
     isOn() {
-      return this.state == 'on' ? true : false;
+      return this.on;
     },
     isOff() {
       return !this.isOn;
@@ -123,58 +166,80 @@ export default {
   },
   methods: {
     toggle() {
-      this.state = this.isOn ? 'off' : 'on';
+      this.on = !this.on;
     },
     change(ev) {
-      this.state = ev.target.checked ? 'on' : 'off';
+      this.on = ev.target.checked;
       this.$dispatch('change', {
         eventType: 'change',
-        eventValue: this.state,
+        eventValue: { on: this.isOn, off: this.isOff },
         target: this,
         name: this.name,
         value: this.value
       });
-    },
-    mouseEnterExit(ev) {
-      // console.log(ev);
-      if(ev.target == ev.toElement) {
+    }
+  },
+  events: {
+    hover(ev) {
+      if(ev.hoverIn) {
         this.hover = true;
       }
-      else if(ev.target == ev.fromElement) {
+      else if(ev.hoverOut) {
         this.hover = false;
       }
     },
-    pressDownUp(ev) {
-      // console.log(ev);
-      animEndEventNames = { 'WebkitAnimation' : 'webkitAnimationEnd', 'OAnimation' : 'oAnimationEnd', 'msAnimation' : 'MSAnimationEnd', 'animation' : 'animationend' };
-      if(ev.type == 'mousedown') {
+    press(ev) {
+      if(ev.pressDown) {
         this.active = true;
-      }
-      else if(ev.type == 'mouseup') {
-        // this.active = false;
-        // console.log(this);
-        // this.$on('click', function(ev) {
-        //   console.log(ev);
-        // });
-        let a = ev => {
-          this.$el.removeEventListener('animationend', a);
-          console.log(ev);
-          this.active = false;
-        }
 
-        this.$el.addEventListener('animationend', a);
+        let end = new Lie((res, rej) => {
+          this.$once('transition', ev => {
+            if(ev.transitionEnd)
+              res(ev);
+          });
+          this.$once('animation', ev => {
+            if(ev.animationEnd)
+              res(ev);
+          });
+        });
+        let out = new Lie((res, rej) => {
+          this.$once('hover', ev => {
+            if(ev.hoverOut)
+              res(ev);
+          });
+        });
+        let up = new Lie((res, rej) => {
+          this.$once('press', ev => {
+            if(ev.pressUp)
+              res(ev);
+          });
+        });
+
+        Lie.race([Lie.all([end, up]), out]).then(res => {
+          this.active = false;
+        });
+      }
+      else if(ev.pressUp) {
+        this.$dispatch('tap', {
+          eventType: 'tap',
+          eventValue: { on: this.isOn, off: this.isOff, isToggle: this.isToggle },
+          target: this,
+          name: this.name,
+          value: this.value
+        });
       }
     },
-    animEnd(ev) {
-      console.log(ev);
+    transition(ev) {
+      // if(ev.transitionEnd) {
+      //   this.active = false;
+      // }
+    },
+    animation(ev) {
+      // if(ev.animationEnd) {
+      //   this.active = false;
+      // }
     }
   },
-  // ready() {
-  //   this.$on('mouseenter', this.mouseEnterExit);
-  //   this.$on('mouseleave', this.mouseEnterExit);
-  // },
-  components: {
-    glyph: require('./glyph.vue')
-  }
+  mixins: require('./mixins.js')
 }
 </script>

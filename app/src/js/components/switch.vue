@@ -48,22 +48,16 @@ export default {
         return '';
       }
     },
-    type: {
+    kind: {
       type: String,
       default() {
         return 'positive';
       }
     },
-    state: {
-      type: null,
+    on: {
+      type: Boolean,
       default() {
-        return 'off';
-      },
-      coerce(val) {
-        if(val === true || val == 1 || val == '1' || (val.toLowerCase && val.toLowerCase() == 'on'))
-          return 'on';
-        else if(val === false || val == 0 || val == '0' || (val.toLowerCase && val.toLowerCase() == 'off'))
-          return 'off';
+        return false;
       }
     }
   },
@@ -72,7 +66,7 @@ export default {
       return {
         container: {
           'switch': true,
-          ['switch--' + this.type]: true,
+          ['switch--' + this.kind]: true,
           'switch--on': this.isOn,
           'switch--off': this.isOff
           // TODO: Disabled state.
@@ -90,7 +84,7 @@ export default {
       }
     },
     isOn() {
-      return this.state == 'on' ? true : false;
+      return this.on;
     },
     isOff() {
       return !this.isOn;
@@ -98,13 +92,13 @@ export default {
   },
   methods: {
     toggle() {
-      this.state = this.isOn ? 'off' : 'on';
+      this.on = !this.on;
     },
     change(ev) {
-      this.state = ev.target.checked ? 'on' : 'off';
+      this.on = ev.target.checked;
       this.$dispatch('change', {
         eventType: 'change',
-        eventValue: this.state,
+        eventValue: { on: this.isOn, off: this.isOff },
         target: this,
         name: this.name,
         value: this.value

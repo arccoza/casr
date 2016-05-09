@@ -26,7 +26,7 @@ export default {
     }
   },
   props: {
-    type: {
+    kind: {
       type: String,
       default() {
         return 'animal-cat';
@@ -37,11 +37,11 @@ export default {
     classes() {
       return {
         'glyph': true,
-        ['glyph--' + this.type]: true
+        ['glyph--' + this.kind]: true
       }
     },
     xlink() {
-      return '#glyph-' + this.type
+      return '#glyph-' + this.kind
     }
   }
 }
