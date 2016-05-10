@@ -118,12 +118,12 @@ pre {
   border-radius: 2px;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 0 0 0 #9ac0cd inset;
+  box-shadow: 0 0 0 0 #1d82da inset;
 }
 .toggle--on {
-  background-color: #9ac0cd;
-  border-color: #9ac0cd;
-  box-shadow: 0 0 0 1em #9ac0cd inset;
+  background-color: #1d82da;
+  border-color: #1d82da;
+  box-shadow: 0 0 0 1em #1d82da inset;
   transition: background-color 0s 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 .toggle--off {
@@ -131,20 +131,27 @@ pre {
 }
 
 .toggle--positive {
-  box-shadow: 0 0 0 0 #90ee90 inset;
+  box-shadow: 0 0 0 0 #30d328 inset;
 }
 .toggle--positive.toggle--on {
-  background-color: #90ee90;
-  border-color: #90ee90;
-  box-shadow: 0 0 0 1em #90ee90 inset;
+  background-color: #30d328;
+  border-color: #30d328;
+  box-shadow: 0 0 0 1em #30d328 inset;
 }
 .toggle--negative {
-  box-shadow: 0 0 0 0 #f08080 inset;
+  box-shadow: 0 0 0 0 #d81e1e inset;
 }
 .toggle--negative.toggle--on {
-  background-color: #f08080;
-  border-color: #f08080;
-  box-shadow: 0 0 0 1em #f08080 inset;
+  background-color: #d81e1e;
+  border-color: #d81e1e;
+  box-shadow: 0 0 0 1em #d81e1e inset;
+}
+.toggle--positive.toggle--disabled, .toggle--negative.toggle--disabled {
+  background: #ddd;
+  border-color: #ddd;
+  box-shadow: none;
+  color: #bbb;
+  cursor: default;
 }
 
 .toggle .glyph {
@@ -173,12 +180,18 @@ pre {
   border-radius: 1000px;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 0 0 0 #9ac0cd inset;
+  box-shadow: 0 0 0 0 #1d82da inset;
+}
+.switch--disabled {
+  background: #ddd;
+  border-color: #ddd;
+  color: #bbb;
+  cursor: default;
 }
 .switch--on {
   /*background-color: #9ac0cd;*/
-  border-color: #9ac0cd;
-  /*box-shadow: 0 0 0 1em #9ac0cd inset;*/
+  border-color: #1d82da;
+  box-shadow: 0 0 0 1em #1d82da inset;
   transition: background-color 0s 0.6s, border-color 0.3s, box-shadow 0.3s 0.15s;
 }
 .switch--off {
@@ -186,20 +199,20 @@ pre {
 }
 
 .switch--positive {
-  box-shadow: 0 0 0 0 #90ee90 inset;
+  box-shadow: 0 0 0 0 #30d328 inset;
 }
 .switch--positive.switch--on {
-  background-color: #90ee90;
-  border-color: #90ee90;
-  box-shadow: 0 0 0 1em #90ee90 inset;
+  background-color: #30d328;
+  border-color: #30d328;
+  box-shadow: 0 0 0 1em #30d328 inset;
 }
 .switch--negative {
-  box-shadow: 0 0 0 0 #f08080 inset;
+  box-shadow: 0 0 0 0 #d81e1e inset;
 }
 .switch--negative.switch--on {
-  background-color: #f08080;
-  border-color: #f08080;
-  box-shadow: 0 0 0 1em #f08080 inset;
+  background-color: #d81e1e;
+  border-color: #d81e1e;
+  box-shadow: 0 0 0 1em #d81e1e inset;
 }
 
 .switch__grip {
@@ -221,32 +234,43 @@ pre {
 
 
 .button {
+  position: relative;
   min-width: 4em;
-  height: calc(1.5em + 4px);
+  height: calc(2em + 4px);
   /*line-height: 100%;*/
-  background-color: #36648b;
+  background-color: #1d82da;
   padding: 0 0.3em 0 0.3em;
-  border: 2px solid #36648b;
+  border: 2px solid #1d82da;
   border-radius: 2px;
   color: #fff;
   font-family: inherit;
   font-weight: 300;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 0 0 0 #9ac0cd inset;
-  overflow: hidden;
+  /*box-shadow: 0 0 0 0 #9ac0cd inset;*/
+  /*overflow: hidden;*/
+}
+.button--disabled {
+  background: #ddd;
+  border-color: #ddd;
+  color: #bbb;
+  cursor: default;
+}
+.button--toggle {
+  background: #9ac0cd;
+  border-color: #9ac0cd;
 }
 /*.button--normal {
   background: #87cefa;
   border-color: #87cefa;
 }*/
-.button--positive {
-  background-color: #90ee90;
-  border: 2px solid #90ee90;
+.button--normal.button--positive {
+  background-color: #30d328;
+  border: 2px solid #30d328;
 }
-.button--negative {
-  background-color: #f08080;
-  border: 2px solid #f08080;
+.button--normal.button--negative {
+  background-color: #d81e1e;
+  border: 2px solid #d81e1e;
 }
 .button--hollow {
   background: none;
@@ -257,17 +281,79 @@ pre {
   border: 0;
   color: #9ac0cd;
 }
-.button--active {
-  background-color: #9ac0cd;
-  border-color: #9ac0cd;
-  /*box-shadow: 0 0 3px 1em #9ac0cd inset;*/
-  transform: scale(1.05);
-  transition: background-color 0.3s 0s, transform 0.3s, border-color 0.3s;
-  /*animation: anim-effect-marko 0.5s forwards;*/
+.button:before {
+  position: absolute;
+  background: #fff;
+  content: "";
+  top: -2px;
+  left: -2px;
+  bottom: -2px;
+  right: -2px;
+  opacity: 0;
 }
-/*.button--off {
-  transition: border-color 0.3s 0.3s, box-shadow 0.3s;
-}*/
+.button--hover:before {
+  opacity: 0.15;
+}
+.button--disabled.button--hover:before {
+  display: none;
+}
+@keyframes anim-button-active-in {
+  from {
+    /*background-color: #eee;*/
+    /*opacity: 0;*/
+    border: 2px #ccc solid;
+    border-radius: 2px;
+  }
+  to {
+    background: transparent;
+    top: -10px;
+    left: -10px;
+    bottom: -10px;
+    right: -10px;
+    /*background-color: #eee;*/
+    border: 2px #ccc solid;
+    opacity: 0.5;
+    border-radius: 5px;
+  }
+}
+@keyframes anim-button-active-out {
+  to {
+    opacity: 0;
+  }
+}
+.button--normal.button--active:before {
+  position: absolute;
+  content: "";
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  /*background-color: #9ac0cd;*/
+  /*border-color: #9ac0cd;*/
+  /*box-shadow: 0 0 3px 1em #9ac0cd inset;*/
+  /*transform: scale(1.05);*/
+  /*transition: background-color 0.3s 0s, transform 0.3s, border-color 0.3s;*/
+  animation: anim-button-active-in 0.3s forwards ease-out;
+}
+.button--normal:before {
+  animation: anim-button-active-out 0.3s forwards ease-out;
+}
+.button--toggle.button--on {
+  background: #36648b;
+  border-color: #36648b;
+  transition: border-color 0.3s, background 0.3s;
+}
+.button--toggle.button--positive.button--on {
+  background: #30d328;
+  border-color: #30d328;
+}
+.button--toggle.button--negative.button--on {
+  background: #d81e1e;
+  border-color: #d81e1e;
+}
+.button--off {
+  transition: border-color 0.3s, background 0.3s;
+}
 
 .button__start, .button__content, .button__end {
   display: inline-block;
@@ -284,31 +370,4 @@ pre {
 .button__content {
 }
 .button__end {
-}
-
-
-/* Marko */
-.cbutton--effect-marko::after {
-  box-shadow: inset 0 0 0 2px rgba(111,148,182,0.3);
-}
-
-.cbutton--effect-marko.cbutton--click::after {
-  -webkit-animation: anim-effect-marko 0.5s forwards;
-  animation: anim-effect-marko 0.5s forwards;
-}
-
-@keyframes anim-effect-marko {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    box-shadow: inset 0 0 0 35px rgba(111,148,182,0.1);
-    opacity: 1;
-  }
-  100% {
-    box-shadow: inset 0 0 0 35px rgba(111,148,182,0.1);
-    /*opacity: 0;*/
-    /*-webkit-transform: scale3d(1.1, 1.1, 1);*/
-    /*transform: scale3d(1.1, 1.1, 1);*/
-  }
 }

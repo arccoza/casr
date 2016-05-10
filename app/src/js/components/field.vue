@@ -127,16 +127,15 @@ export default {
     classes() {
       return {
         container: {
-          'button': true,
-          'button--normal': this.feel.normal,
-          'button--positive': this.look.positive,
-          'button--negative': this.look.negative,
-          'button--toggle': this.feel.toggle,
-          'button--on': this.isOn && this.isToggle,
-          'button--off': this.isOff && this.isToggle,
-          'button--disabled': this.isDisabled,
-          'button--hover': this.hover,
-          'button--active': this.active
+          'field': true,
+          'field--normal': this.feel.normal,
+          'field--normal': this.feel.password,
+          'field--positive': this.look.positive,
+          'field--negative': this.look.negative,
+          'field--empty': this.isEmpty,
+          'field--disabled': this.isDisabled,
+          'field--hover': this.hover,
+          'field--active': this.active
         },
         content: {
           'button__content': true
@@ -163,17 +162,11 @@ export default {
     isDisabled() {
       return this.feel.disabled;
     },
-    isToggle() {
-      return this.feel.toggle;
+    isEmpty() {
+      return this.empty;
     },
-    isSubmit() {
-      return false;
-    },
-    isOn() {
-      return this.on;
-    },
-    isOff() {
-      return !this.isOn;
+    isRequired() {
+      return this.required;
     },
     hasStart() {
       return this.start;
@@ -183,9 +176,6 @@ export default {
     }
   },
   methods: {
-    toggle() {
-      this.on = !this.on;
-    },
     change(ev) {
       this.on = ev.target.checked;
       this.$dispatch('change', {
@@ -250,10 +240,6 @@ export default {
         .then(ok => {
           this.active = false;
         });
-
-        // Lie.race([Lie.all([end, up]), out]).then(res => {
-        //   this.active = false;
-        // });
       }
       else if(ev.pressUp) {
         this.$dispatch('tap', {

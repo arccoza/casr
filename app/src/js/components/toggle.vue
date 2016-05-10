@@ -12,7 +12,7 @@
 <template>
     <label :class="classes.container">
       <glyph :kind="glyph" :class="classes.glyph"></glyph>
-      <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
+      <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn", :disabled="isDisabled">
     </label>
 </template>
 
@@ -41,10 +41,66 @@ export default {
         return '';
       }
     },
-    kind: {
-      type: String,
+    look: {
+      type: null,
       default() {
-        return 'positive';
+        console.log('def');
+        return {
+          primary: true,
+          positive: false,
+          negative: false
+        };
+      },
+      coerce(val) {
+        let obj = {
+          primary: true,
+          positive: false,
+          negative: false
+        };
+
+        if(typeof val == 'string') {
+          let arr = val.split(/[\s,]+/);
+
+          for(let i = 0, v; v = arr[i++];) {
+            obj[v] = true;
+          }
+
+          obj.negative == obj.positive ? false : obj.negative;
+          obj.primary == obj.positive || obj.negative ? false : true;
+
+          return obj;
+        }
+
+        return val;
+      }
+    },
+    feel: {
+      type: null,
+      default() {
+        return {
+          normal: true,
+          disabled: false
+        };
+      },
+      coerce(val) {
+        let obj = {
+          normal: true,
+          disabled: false
+        };
+
+        if(typeof val == 'string') {
+          let arr = val.split(/[\s,]+/);
+
+          for(let i = 0, v; v = arr[i++];) {
+            obj[v] = true;
+          }
+
+          obj.normal = !obj.disabled;
+
+          return obj;
+        }
+
+        return val;
       }
     },
     on: {
@@ -53,29 +109,17 @@ export default {
         return false;
       }
     }
-    // state: {
-    //   type: null,
-    //   default() {
-    //     return 'off';
-    //   },
-    //   coerce(val) {
-    //     if(val === true || val == 1 || val == '1' || (val.toLowerCase && val.toLowerCase() == 'on'))
-    //       return 'on';
-    //     else if(val === false || val == 0 || val == '0' || (val.toLowerCase && val.toLowerCase() == 'off'))
-    //       return 'off';
-    //   }
-    // }
   },
   computed: {
     classes() {
       return {
         container: {
           'toggle': true,
-          ['toggle--' + this.kind]: true,
+          'toggle--positive': this.look.positive,
+          'toggle--negative': this.look.negative,
           'toggle--on': this.isOn,
-          'toggle--off': this.isOff
-          // TODO: Disabled state.
-          // 'toggle--disabled': this.isDisabled
+          'toggle--off': this.isOff,
+          'toggle--disabled': this.isDisabled
         },
         inner: {
           'toggle__inner': true
@@ -88,6 +132,9 @@ export default {
         }
       }
     },
+    isDisabled() {
+      return this.feel.disabled;
+    },
     isOn() {
       return this.on;
     },
@@ -95,8 +142,7 @@ export default {
       return !this.isOn;
     },
     glyph() {
-      // return this.isOn ? this.glyphs[this.type] : this.glyphs.none;
-      return this.glyphs[this.kind];
+      return this.look.negative ? this.glyphs['negative'] : this.glyphs['positive'];
     }
   },
   methods: {

@@ -12,11 +12,15 @@ html
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
         glyph
-        tgl(kind="positive", :on="true", @change="logger")
-        tgl(kind="negative", :on="true", @change="logger")
-        swt(kind="positive")
-        btn(:start="true", :end="true", kind="toggle")
+        tgl(look="", feel="", :on="true", @change="logger")
+        tgl(look="negative", feel="", :on="true", @change="logger")
+        swt(look="positive", feel="")
+        btn(:start="true", :end="true", look="negative", feel="toggle")
           glyph(slot="start", kind="interface-bottom")
           |HELLO
           span(slot="end")
             |yay
+        btn(:start="true", :end="true", look="neutral", feel="normal")
+          |HELLO
+        btn(:start="true", :end="true", look="negative", feel="normal")
+          |HELLO

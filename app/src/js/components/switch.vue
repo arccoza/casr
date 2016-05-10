@@ -24,7 +24,7 @@
 <template>
   <label :class="classes.container">
     <i :class="classes.grip"></i>
-    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn">
+    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn", :disabled="isDisabled">
   </label>
 </template>
 
@@ -48,10 +48,66 @@ export default {
         return '';
       }
     },
-    kind: {
-      type: String,
+    look: {
+      type: null,
       default() {
-        return 'positive';
+        console.log('def');
+        return {
+          primary: true,
+          positive: false,
+          negative: false
+        };
+      },
+      coerce(val) {
+        let obj = {
+          primary: true,
+          positive: false,
+          negative: false
+        };
+
+        if(typeof val == 'string') {
+          let arr = val.split(/[\s,]+/);
+
+          for(let i = 0, v; v = arr[i++];) {
+            obj[v] = true;
+          }
+
+          obj.negative == obj.positive ? false : obj.negative;
+          obj.primary == obj.positive || obj.negative ? false : true;
+
+          return obj;
+        }
+
+        return val;
+      }
+    },
+    feel: {
+      type: null,
+      default() {
+        return {
+          normal: true,
+          disabled: false
+        };
+      },
+      coerce(val) {
+        let obj = {
+          normal: true,
+          disabled: false
+        };
+
+        if(typeof val == 'string') {
+          let arr = val.split(/[\s,]+/);
+
+          for(let i = 0, v; v = arr[i++];) {
+            obj[v] = true;
+          }
+
+          obj.normal = !obj.disabled;
+
+          return obj;
+        }
+
+        return val;
       }
     },
     on: {
@@ -66,11 +122,11 @@ export default {
       return {
         container: {
           'switch': true,
-          ['switch--' + this.kind]: true,
+          'switch--positive': this.look.positive,
+          'switch--negative': this.look.negative,
           'switch--on': this.isOn,
-          'switch--off': this.isOff
-          // TODO: Disabled state.
-          // 'switch--disabled': this.isDisabled
+          'switch--off': this.isOff,
+          'switch--disabled': this.isDisabled
         },
         inner: {
           'switch__inner': true
@@ -82,6 +138,9 @@ export default {
           'switch__input': true
         }
       }
+    },
+    isDisabled() {
+      return this.feel.disabled;
     },
     isOn() {
       return this.on;
@@ -98,7 +157,11 @@ export default {
       this.on = ev.target.checked;
       this.$dispatch('change', {
         eventType: 'change',
-        eventValue: { on: this.isOn, off: this.isOff },
+        eventValue: {
+          on: this.isOn,
+          off: this.isOff,
+          isDisabled: this.isDisabled
+        },
         target: this,
         name: this.name,
         value: this.value
