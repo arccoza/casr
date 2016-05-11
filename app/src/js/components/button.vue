@@ -56,14 +56,16 @@ export default {
         return {
           primary: true,
           positive: false,
-          negative: false
+          negative: false,
+          round: false
         };
       },
       coerce(val) {
         let obj = {
           primary: true,
           positive: false,
-          negative: false
+          negative: false,
+          round: false
         };
 
         if(typeof val == 'string') {
@@ -131,6 +133,7 @@ export default {
           'button--normal': this.feel.normal,
           'button--positive': this.look.positive,
           'button--negative': this.look.negative,
+          'button--round': this.look.round,
           'button--toggle': this.feel.toggle,
           'button--on': this.isOn && this.isToggle,
           'button--off': this.isOff && this.isToggle,
@@ -146,14 +149,6 @@ export default {
         },
         end: {
           'button__end': true
-        },
-        startGlyph: {
-          'button__glyph': true,
-          'button__start-glyph': true
-        },
-        endGlyph: {
-          'button__glyph': true,
-          'button__end-glyph': true
         },
         input: {
           'button__input': true

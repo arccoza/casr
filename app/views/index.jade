@@ -11,7 +11,7 @@ html
         input(type='text', v-model='username', v-on:change='change', placeholder='{{ usernamePlaceholder }}')
         label Password:
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
-        glyph
+        glyph(kind="interface-plus")
         tgl(look="", feel="", :on="true", @change="logger")
         tgl(look="negative", feel="", :on="true", @change="logger")
         swt(look="positive", feel="")
@@ -24,3 +24,6 @@ html
           |HELLO
         btn(:start="true", :end="true", look="negative", feel="normal")
           |HELLO
+        btn(look="round")
+          glyph(kind="interface-plus")
+        fld

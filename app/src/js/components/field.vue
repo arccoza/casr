@@ -1,28 +1,23 @@
 // button.vue
 <style>
-  .button {
+  .field {
     /*display: inline-block;*/
     vertical-align: middle;
     text-align: center;
   }
-  .button__input {
-    display: none;
+  .field__input {
   }
 </style>
 
 <template>
-    <button :class="classes.container">
-      <span :class="classes.start" v-if="hasStart">
-        <slot name="start"></slot>
-      </span>
-      <span :class="classes.content">
-        <slot></slot>
-      </span>
-      <span :class="classes.end" v-if="hasEnd">
-        <slot name="end"></slot>
-      </span>
-      <input v-if="isToggle || isSubmit" :class="classes.input" @change="change" :name="name" :value="value" :type="'checkbox' ? isToggle : 'submit'">
-    </button>
+  <label :class="classes.container">
+    <span :class="classes.inner">
+      <span :class="classes.hint">hint</span>
+      <input :class="classes.input" @change="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" type="text"></input>
+      <span :class="classes.messageStart"></span>
+      <span :class="classes.messageEnd"></span>
+    </span>
+  </label>
 </template>
 
 <script>
@@ -34,6 +29,7 @@ export default {
     return {
       hover: false,
       active: false,
+      focus: false,
       disabled: false
     }
   },
@@ -87,14 +83,12 @@ export default {
       default() {
         return {
           normal: true,
-          toggle: false,
           disabled: false
         };
       },
       coerce(val) {
         let obj = {
           normal: true,
-          toggle: false,
           disabled: false
         };
 
@@ -135,27 +129,29 @@ export default {
           'field--empty': this.isEmpty,
           'field--disabled': this.isDisabled,
           'field--hover': this.hover,
-          'field--active': this.active
+          'field--active': this.active,
+          'field--focus': this.focus
         },
-        content: {
-          'button__content': true
+        inner: {
+          'field__inner': true
+        },
+        hint: {
+          'field__hint': true
         },
         start: {
-          'button__start': true
+          'field__start': true
         },
         end: {
-          'button__end': true
-        },
-        startGlyph: {
-          'button__glyph': true,
-          'button__start-glyph': true
-        },
-        endGlyph: {
-          'button__glyph': true,
-          'button__end-glyph': true
+          'field__end': true
         },
         input: {
-          'button__input': true
+          'field__input': true
+        },
+        messageStart: {
+          'field__msg-start': true
+        },
+        messageEnd: {
+          'field__msg-end': true
         }
       }
     },
@@ -190,6 +186,12 @@ export default {
         name: this.name,
         value: this.value
       });
+    },
+    focusInOut(ev) {
+      if(ev.type == "focus")
+        this.focus = true;
+      else
+        this.focus = false;
     }
   },
   events: {
