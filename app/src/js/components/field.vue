@@ -13,7 +13,7 @@
   <label :class="classes.container">
     <span :class="classes.inner">
       <span :class="classes.hint">hint</span>
-      <input :class="classes.input" @change="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" type="text"></input>
+      <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" type="text"></input>
       <span :class="classes.messageStart"></span>
       <span :class="classes.messageEnd"></span>
     </span>
@@ -27,10 +27,7 @@ import Lie from 'lie';
 export default {
   data() {
     return {
-      hover: false,
-      active: false,
-      focus: false,
-      disabled: false
+
     }
   },
   props: {
@@ -68,14 +65,15 @@ export default {
           for(let i = 0, v; v = arr[i++];) {
             obj[v] = true;
           }
-
-          obj.negative == obj.positive ? false : obj.negative;
-          obj.primary == obj.positive || obj.negative ? false : true;
-
-          return obj;
+        }
+        else {
+          Object.assign(obj, val);
         }
 
-        return val;
+        obj.negative == obj.positive ? false : obj.negative;
+        obj.primary == obj.positive || obj.negative ? false : true;
+
+        return obj;
       }
     },
     feel: {
@@ -83,12 +81,16 @@ export default {
       default() {
         return {
           normal: true,
+          hint: false,
+          floatHint: false,
           disabled: false
         };
       },
       coerce(val) {
         let obj = {
           normal: true,
+          hint: false,
+          floatHint: false,
           disabled: false
         };
 
@@ -98,20 +100,15 @@ export default {
           for(let i = 0, v; v = arr[i++];) {
             obj[v] = true;
           }
-
-          obj.toggle = obj.toggle && !obj.disabled;
-          obj.normal = !obj.toggle && !obj.disabled;
-
-          return obj;
+        }
+        else {
+          Object.assign(obj, val);
         }
 
-        return val;
-      }
-    },
-    on: {
-      type: Boolean,
-      default() {
-        return false;
+        obj.normal = !obj.disabled;
+        obj.hint = obj.hint && !obj.floatHint;
+
+        return obj;
       }
     },
     start: Boolean,
@@ -123,10 +120,13 @@ export default {
         container: {
           'field': true,
           'field--normal': this.feel.normal,
-          'field--normal': this.feel.password,
+          'field--password': this.feel.password,
           'field--positive': this.look.positive,
           'field--negative': this.look.negative,
+          'field--filled': this.isFilled,
           'field--empty': this.isEmpty,
+          'field--hint': this.feel.hint,
+          'field--float-hint': this.feel.floatHint,
           'field--disabled': this.isDisabled,
           'field--hover': this.hover,
           'field--active': this.active,
@@ -158,8 +158,11 @@ export default {
     isDisabled() {
       return this.feel.disabled;
     },
+    isFilled() {
+      return this.value && this.value.length;
+    },
     isEmpty() {
-      return this.empty;
+      return !this.isFilled;
     },
     isRequired() {
       return this.required;
@@ -173,93 +176,24 @@ export default {
   },
   methods: {
     change(ev) {
-      this.on = ev.target.checked;
       this.$dispatch('change', {
         eventType: 'change',
         eventValue: {
-          on: this.isOn,
-          off: this.isOff,
-          isToggle: this.isToggle,
           isDisabled: this.isDisabled
         },
         target: this,
         name: this.name,
         value: this.value
       });
+
+      this.value = ev.target.value;
+      console.log(ev, this.value);
     },
     focusInOut(ev) {
       if(ev.type == "focus")
         this.focus = true;
       else
         this.focus = false;
-    }
-  },
-  events: {
-    hover(ev) {
-      if(ev.hoverIn) {
-        this.hover = true;
-      }
-      else if(ev.hoverOut) {
-        this.hover = false;
-      }
-    },
-    press(ev) {
-      if(ev.pressDown && !this.isDisabled) {
-        this.active = true;
-
-        let end = new Lie((res, rej) => {
-          this.$once('transitionEnd', ev => {
-            res(ev);
-          });
-          this.$once('animationEnd', ev => {
-            res(ev);
-          });
-        });
-        let out = new Lie((res, rej) => {
-          this.$once('hoverOut', ev => {
-            res(ev);
-          });
-        });
-        let up = new Lie((res, rej) => {
-          this.$once('pressUp', ev => {
-            res(ev);
-          });
-        });
-        let start = new Lie((res, rej) => {
-          this.$once('animationStart', ev => {
-            res(ev);
-          });
-          setTimeout(() => {
-            rej();
-          }, 0);
-        });
-
-        start.then(ok => {
-          return Lie.all([end, up]);
-        }).catch(err => {
-          return up;
-        })
-        .then(ok => {
-          this.active = false;
-        });
-      }
-      else if(ev.pressUp) {
-        this.$dispatch('tap', {
-          eventType: 'tap',
-          eventValue: {
-            on: this.isOn,
-            off: this.isOff,
-            isToggle: this.isToggle,
-            isDisabled: this.isDisabled
-          },
-          target: this,
-          name: this.name,
-          value: this.value
-        });
-
-        if(this.isToggle)
-            this.toggle();
-      }
     }
   },
   mixins: require('./mixins.js')

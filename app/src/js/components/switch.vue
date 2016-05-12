@@ -126,7 +126,9 @@ export default {
           'switch--negative': this.look.negative,
           'switch--on': this.isOn,
           'switch--off': this.isOff,
-          'switch--disabled': this.isDisabled
+          'switch--disabled': this.isDisabled,
+          'switch--hover': this.hover,
+          'switch--active': this.active
         },
         inner: {
           'switch__inner': true
@@ -167,6 +169,7 @@ export default {
         value: this.value
       });
     }
-  }
+  },
+  mixins: require('./mixins.js')
 }
 </script>

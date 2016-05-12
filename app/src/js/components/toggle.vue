@@ -119,7 +119,9 @@ export default {
           'toggle--negative': this.look.negative,
           'toggle--on': this.isOn,
           'toggle--off': this.isOff,
-          'toggle--disabled': this.isDisabled
+          'toggle--disabled': this.isDisabled,
+          'switch--hover': this.hover,
+          'switch--active': this.active
         },
         inner: {
           'toggle__inner': true
@@ -160,6 +162,7 @@ export default {
       });
     }
   },
+  mixins: require('./mixins.js'),
   components: {
     glyph: require('./glyph.vue')
   }

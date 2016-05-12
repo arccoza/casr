@@ -1,3 +1,6 @@
+import Lie from 'lie';
+
+
 module.exports = [
   {
     ready() {
@@ -33,6 +36,82 @@ module.exports = [
         this.$el.addEventListener(event, ev => (ev.animationEnd = true, this.$emit('animationEnd', ev)), false);
       }
 
-    }
+    },
+    data() {
+      return {
+        hover: false,
+        active: false,
+        focus: false,
+        disabled: false
+      }
+    },
+    events: {
+      hover(ev) {
+        if(ev.hoverIn) {
+          this.hover = true;
+        }
+        else if(ev.hoverOut) {
+          this.hover = false;
+        }
+      },
+      press(ev) {
+        if(ev.pressDown && !this.isDisabled) {
+          this.active = true;
+
+          let end = new Lie((res, rej) => {
+            this.$once('transitionEnd', ev => {
+              res(ev);
+            });
+            this.$once('animationEnd', ev => {
+              res(ev);
+            });
+          });
+          let out = new Lie((res, rej) => {
+            this.$once('hoverOut', ev => {
+              res(ev);
+            });
+          });
+          let up = new Lie((res, rej) => {
+            this.$once('pressUp', ev => {
+              res(ev);
+            });
+          });
+          let start = new Lie((res, rej) => {
+            this.$once('animationStart', ev => {
+              res(ev);
+            });
+            setTimeout(() => {
+              rej();
+            }, 0);
+          });
+
+          start.then(ok => {
+            return Lie.all([end, up]);
+          }).catch(err => {
+            return up;
+          })
+          .then(ok => {
+            this.active = false;
+          });
+        }
+        else if(ev.pressUp) {
+          this.$dispatch('tap', {
+            eventType: 'tap',
+            eventValue: {
+              on: this.isOn,
+              off: this.isOff,
+              isToggle: this.isToggle,
+              isDisabled: this.isDisabled
+            },
+            target: this,
+            name: this.name,
+            value: this.value
+          });
+
+          if(this.isToggle)
+              this.toggle();
+        }
+      }
+    },
   }
 ]
