@@ -12,8 +12,8 @@
 <template>
   <label :class="classes.container">
     <span :class="classes.inner">
-      <span :class="classes.hint">hint</span>
-      <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" type="text"></input>
+      <span :class="classes.hint" v-if="this.feel.hint || this.feel.floatHint"><slot name="hint"></slot></span>
+      <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" :type="inputType" :disabled="isDisabled"></input>
       <span :class="classes.messageStart"></span>
       <span :class="classes.messageEnd"></span>
     </span>
@@ -81,6 +81,7 @@ export default {
       default() {
         return {
           normal: true,
+          password: false,
           hint: false,
           floatHint: false,
           disabled: false
@@ -89,6 +90,7 @@ export default {
       coerce(val) {
         let obj = {
           normal: true,
+          password: false,
           hint: false,
           floatHint: false,
           disabled: false
@@ -105,7 +107,7 @@ export default {
           Object.assign(obj, val);
         }
 
-        obj.normal = !obj.disabled;
+        obj.normal = !obj.password;
         obj.hint = obj.hint && !obj.floatHint;
 
         return obj;
@@ -172,6 +174,9 @@ export default {
     },
     hasEnd() {
       return this.end;
+    },
+    inputType() {
+      return this.feel.password ? 'password' : 'text';
     }
   },
   methods: {

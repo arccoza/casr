@@ -114,7 +114,7 @@ pre {
   width: calc(1em + 4px);
   height: calc(1em + 4px);
   background-color: transparent;
-  border: 2px solid #9ac0cd;
+  border: 2px solid #cecece;
   border-radius: 2px;
   color: #fff;
   cursor: pointer;
@@ -175,8 +175,8 @@ pre {
   position: relative;
   width: calc(1.8em + 4px);
   height: calc(1em + 4px);
-  background-color: #9ac0cd;
-  border: 2px solid #9ac0cd;
+  background-color: #cecece;
+  border: 2px solid #cecece;
   border-radius: 1000px;
   color: #fff;
   cursor: pointer;
@@ -187,6 +187,9 @@ pre {
   border-color: #ddd;
   color: #bbb;
   cursor: default;
+}
+.switch--disabled .switch__grip {
+  background-color: #efefef;
 }
 .switch--on {
   /*background-color: #9ac0cd;*/
@@ -355,6 +358,18 @@ pre {
   background: #d81e1e;
   border-color: #d81e1e;
 }
+.button--toggle.button--off {
+  background: #36648b;
+  border-color: #36648b;
+}
+.button--toggle.button--positive.button--off {
+  background: #30d328;
+  border-color: #30d328;
+}
+.button--toggle.button--negative.button--off {
+  background: #d81e1e;
+  border-color: #d81e1e;
+}
 .button--off {
   transition: border-color 0.3s, background 0.3s;
 }
@@ -379,7 +394,16 @@ pre {
 
 .field {
   padding: 1em 0;
+  color: #000;
   cursor: text;
+}
+.field--disabled {
+  color: #bbb;
+  cursor: default;
+}
+
+.field__input {
+  color: inherit;
 }
 
 .field__inner {
@@ -387,6 +411,9 @@ pre {
   display: block;
   padding: 0.25em 0.1em;
   border-bottom: 1px solid #ddd;
+}
+.field--disabled .field__inner {
+  border-style: dashed;
 }
 .field__inner:after {
   position: absolute;
@@ -408,6 +435,9 @@ pre {
   transform: scaleX(1);
   transition: transform 0.3s;
 }
+.field--disabled .field__inner:after {
+  display: none;
+}
 
 .field__hint {
   position: absolute;
@@ -419,17 +449,20 @@ pre {
 }
 .field--hint .field__hint, .field--float-hint .field__hint {
   display: block;
+  transition: top 0.2s ease-out, color 0.2s ease-out, transform 0.2s ease-out;
 }
 .field--hint.field--filled .field__hint {
-  opacity: 0;
   transform: scale(0);
-  transform-origin: 0 100%;
-  transition: opacity 0.3s,transform 0.3s;
+  /*transform-origin: 0 100%;*/
+  transition: transform 0.2s ease-out;
 }
 .field--float-hint.field--filled .field__hint, .field--float-hint.field--focus .field__hint {
   top: -0.9em;
   color: #1d82da;
   transform: scale(0.8);
   transform-origin: 0 0;
-  transition: top 0.3s, color 0.3s, transform 0.3s;
+  transition: top 0.2s ease-out, color 0.2s ease-out, transform 0.2s ease-out;
+}
+.field--disabled.field--float-hint.field--filled .field__hint, .field--disabled.field--float-hint.field--focus .field__hint {
+  color: rgba(0,0,0,0.4);
 }

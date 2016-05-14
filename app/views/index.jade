@@ -13,8 +13,9 @@ html
         input(type='text', v-model='password', v-on:change='change', placeholder='{{ passwordPlaceholder }}')
         glyph(kind="interface-plus")
         tgl(look="", feel="", :on="true", @change="logger")
-        tgl(look="negative", feel="", :on="true", @change="logger")
+        tgl(look="negative", feel="disabled", :on="false", @change="logger")
         swt(look="positive", feel="")
+        swt(look="", feel="disabled")
         btn(:start="true", :end="true", look="negative", feel="toggle")
           glyph(slot="start", kind="interface-bottom")
           |HELLO
@@ -26,4 +27,6 @@ html
           |HELLO
         btn(look="round")
           glyph(kind="interface-plus")
-        fld(value="bob", feel="floatHint")
+        fld(value="bob", feel="floatHint, password")
+          span(slot="hint")
+            |Firstname

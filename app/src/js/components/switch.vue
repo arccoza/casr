@@ -24,7 +24,7 @@
 <template>
   <label :class="classes.container">
     <i :class="classes.grip"></i>
-    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn", :disabled="isDisabled">
+    <input :class="classes.input" @change="change" :name="name" :value="value" type="checkbox" :checked="isOn" :disabled="isDisabled">
   </label>
 </template>
 

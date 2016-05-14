@@ -4,6 +4,7 @@ import Vue from 'vue';
 import PouchDb from 'pouchdb';
 
 
+PouchDb.plugin(require('pouchdb-authentication'));
 // var remote = 'https://arccoza.cloudant.com/test';
 // var opts = {
 //     auth: {
@@ -16,6 +17,44 @@ import PouchDb from 'pouchdb';
 
 // db.replicate.to(remote, opts);
 // db.replicate.from(remote, opts);
+
+var db = new PouchDb('https://arccoza.cloudant.com/test', { skipSetup: true });
+// db.login('arccoza', 'carbonscape')
+//   .then(function(res) {
+//     console.log("I'm Batman.", res);
+
+//     return db.signup('deanv', 'team_venture');
+//   })
+//   .then(res => {
+//     console.log(res);
+
+//     return res;
+//   })
+//   .then(res => {
+//     return db.logout();
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+var ajaxOpts = {
+  ajax: {
+    headers: {
+      Authorization: 'Basic ' + window.btoa('deanv' + ':' + 'team_venture')
+    }
+  }
+};
+db.login('deanv', 'team_venture', ajaxOpts)
+  .then(function(res) {
+    console.log("I'm Batman.", res);
+
+    return res;
+  })
+  .then(res => {
+    return db.logout();
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 
 document.addEventListener('DOMContentLoaded', function() {
