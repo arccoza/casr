@@ -1,11 +1,23 @@
 var PouchDB = require('pouchdb');
 var express = require('express');
-var Users = require('./lib/users');
+var User = require('./lib/users').User;
+var Users = require('./lib/users').Users;
 
 
-var users = new Users('https://arccoza.cloudant.com/_users');
+var users = new Users('https://arccoza.cloudant.com/_users', {
+  auth: {
+    username: 'arccoza',
+    password: 'carbonscape'
+  }
+});
 
-
+// users.register(new User({
+//   name: 'bob',
+//   password: 'bob'
+// }))
+users.login('bob', 'bob')
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
 
 // PouchDB.plugin(require('pouchdb-authentication'));
 // PouchDB.plugin(require('pouchdb-auth'));
