@@ -39,11 +39,11 @@ var db = new PouchDb('https://arccoza.cloudant.com/test', { skipSetup: true });
 var ajaxOpts = {
   ajax: {
     headers: {
-      Authorization: 'Basic ' + window.btoa('deanv' + ':' + 'team_venture')
+      Authorization: 'Basic ' + window.btoa('deanv' + ':' + 'think_tank')
     }
   }
 };
-db.login('deanv', 'team_venture', ajaxOpts)
+db.login('deanv', 'think_tank', ajaxOpts)
   .then(function(res) {
     console.log("I'm Batman.", res);
 
