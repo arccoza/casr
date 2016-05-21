@@ -1,9 +1,10 @@
 'use strict'
 var PouchDB = require('pouchdb');
-var PouchAuth = require('pouchdb-auth');
+var PouchAuth = require('pouchdb-authentication-cloudant');
 var PouchFind = require('pouchdb-find');
 var crypto = require('crypto');
 var Ajv = require('ajv');
+var Promise = PouchDB.utils.Promise;
 
 
 PouchDB.plugin(PouchAuth);
@@ -95,12 +96,23 @@ class Users {
   constructor(dbUrl, options) {
     options = options || {};
     options.skipSetup = true;
-    this._db = new PouchDB(dbUrl, options);
-    this._db.useAsAuthenticationDB();
+
+    if(dbUrl instanceof PouchDB) {
+      this._db = dbUrl;
+      dbUrl = this._db.getUrl();
+      console.log(dbUrl);
+    }
+    else
+      this._db = new PouchDB(dbUrl, options);
+
 
     this._ = {};
     this._.isRemote = dbUrl.indexOf('http://') > -1 || dbUrl.indexOf('https://') > -1;
     this._.isCloudant = this.isRemote && dbUrl.indexOf('cloudant') > -1;
+  }
+
+  get db() {
+    return this._db;
   }
 
   get isRemote() {
@@ -126,8 +138,12 @@ class Users {
   }
 
   register(user) {
-    if(!(user instanceof User && user.isValid && user.name && user.password))
-      throw new Error('[Users.register] Invalid user.');
+    if(!(user instanceof User && user.isValid && user.name && user.password)) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.register] Invalid user.');
+        });
+    }
 
     var db = this._db;
 
@@ -139,13 +155,26 @@ class Users {
       user.salt = hashAndSalt[1];
       user.password_scheme = 'simple';
       delete user.password;
-      console.log(user)
+      // return db.put(user);
+    }
+    // else {
+    //   return db.signUp(user.name, user.password, { metadata: { roles: user.roles || [] } });
+    // }
+    // console.log(db)
 
-      return db.put(user);
+    console.log(db.getUrl());
+
+    let opts = {
+      method: 'PUT',
+      url: 'https://arccoza.cloudant.com/_users/' + user._id,
+      headers : {'Content-Type': 'application/json',
+        Authorization: 'Basic ' + new Buffer('arccoza' + ':' + 'carbonscape').toString('base64')},
+      body: user
     }
-    else {
-      return db.signUp(user.name, user.password, { roles: user.roles || [] });
-    }
+
+    PouchDB.ajax(opts, (err, res) => {console.log(err, res)});
+
+    // return db.request(opts, () => {console.log(opts)});
   }
 
   login(username, password) {
@@ -167,9 +196,9 @@ class Users {
     // utils.ajax(ajaxOpts, wrapError(callback));
 
     return db.request({
-      method: 'PUT',
-      url: 'https://arccoza.cloudant.com/_session',
-      headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+      method: 'POST',
+      url: '_session',
+      headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
       body: 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
     });
   }
@@ -183,7 +212,12 @@ class Users {
   session() {
     var db = this._db;
 
-    return db.session();
+    // return db.session();
+    return db.request({
+      method: 'GET',
+      url: '_session',
+      headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+    });
   }
 }
 

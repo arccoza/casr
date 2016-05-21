@@ -4,35 +4,49 @@ var User = require('./lib/users').User;
 var Users = require('./lib/users').Users;
 
 
-var users = new Users('https://arccoza.cloudant.com/_users', {
+PouchDB.debug.enable('*');
+
+
+
+// PouchDB.plugin(require('pouchdb-authentication'));
+// PouchDB.plugin(require('pouchdb-auth'));
+PouchDB.plugin(require('pouchdb-security'));
+var remote = 'https://arccoza.cloudant.com/_users';
+var opts = {
+    skipSetup: true,
+    auth: {
+      // username: 'dautherhybertilsevandeve',
+      // password: '2268b00792833903a4e6a76fb567e7fa04cdc683'
+      username: 'arccoza',
+      password: 'carbonscape'
+      // username: 'bob',
+      // password: 'bob'
+    }
+  };
+var db = new PouchDB(remote, opts);
+
+var users = new Users(db, {
   auth: {
     username: 'arccoza',
     password: 'carbonscape'
   }
 });
 
-// users.register(new User({
-//   name: 'bob',
-//   password: 'bob'
-// }))
-users.login('bob', 'bob')
-  .then(console.log.bind(console))
-  .catch(console.log.bind(console))
+users.register(new User({
+  name: 'jim',
+  password: 'jim'
+}))
+  // .then(console.log.bind(console))
+  // .catch(console.log.bind(console))
+// users.login('bob', 'bob')
+  // .then(console.log.bind(console))
+  // .catch(console.log.bind(console))
+// users.session()
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
-// PouchDB.plugin(require('pouchdb-authentication'));
-// PouchDB.plugin(require('pouchdb-auth'));
-// PouchDB.plugin(require('pouchdb-security'));
-// var remote = 'https://arccoza.cloudant.com/_users';
-// var opts = {
-//     skipSetup: true,
-//     auth: {
-//       // username: 'dautherhybertilsevandeve',
-//       // password: '2268b00792833903a4e6a76fb567e7fa04cdc683'
-//       username: 'arccoza',
-//       password: 'carbonscape'
-//     }
-//   };
-// var db = new PouchDB(remote, opts);
+
+// console.log(PouchDB.utils)
 
 
 // 'org.couchdb.user:deanv'
