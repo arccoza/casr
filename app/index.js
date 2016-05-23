@@ -35,9 +35,9 @@ var users = new Users(db, {
 users.register(new User({
   name: 'jim',
   password: 'jim'
-}))
-  // .then(console.log.bind(console))
-  // .catch(console.log.bind(console))
+}), {dbPerUser: false})
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
 // users.login('bob', 'bob')
   // .then(console.log.bind(console))
   // .catch(console.log.bind(console))

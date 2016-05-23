@@ -1,10 +1,12 @@
 'use strict'
+var nurl = require('url');
 var PouchDB = require('pouchdb');
 var PouchAuth = require('pouchdb-authentication-cloudant');
 var PouchFind = require('pouchdb-find');
 var crypto = require('crypto');
 var Ajv = require('ajv');
 var Promise = PouchDB.utils.Promise;
+var ajax = PouchDB.ajax;
 
 
 PouchDB.plugin(PouchAuth);
@@ -100,7 +102,6 @@ class Users {
     if(dbUrl instanceof PouchDB) {
       this._db = dbUrl;
       dbUrl = this._db.getUrl();
-      console.log(dbUrl);
     }
     else
       this._db = new PouchDB(dbUrl, options);
@@ -137,7 +138,22 @@ class Users {
     return [hash.digest('hex'), salt];
   }
 
-  register(user) {
+  register(user, options) {
+    // options can be:
+    // {
+    //   isServerAdmin: true / false,
+    //   dbPerUser: true / false
+    // }
+
+    // Can only create users on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.register] You can only register users on a CouchDB.');
+        });
+    }
+
+    // Make sure the new user is valid.
     if(!(user instanceof User && user.isValid && user.name && user.password)) {
       return Promise.resolve()
         .then(() => {
@@ -145,36 +161,47 @@ class Users {
         });
     }
 
+    options = options || {};
+    user._id = 'org.couchdb.user:' + user.name;
     var db = this._db;
+    var userDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
+    var url = nurl.resolve(db.getUrl(), userDb);
+    var headers = db.getHeaders();
+    headers['Content-Type'] = options.isServerAdmin ? 'application/x-www-form-urlencoded' : 'application/json';
+    var body = options.isServerAdmin ? user.password : user;
 
+    // Generate the password hash for Cloudant, because it won't do it automatically.
     if(this.isCloudant) {
       let hashAndSalt = this.generatePasswordHash(user.password);
 
-      user._id = 'org.couchdb.user:' + user.name;
       user.password_sha = hashAndSalt[0];
       user.salt = hashAndSalt[1];
       user.password_scheme = 'simple';
       delete user.password;
-      // return db.put(user);
     }
-    // else {
-    //   return db.signUp(user.name, user.password, { metadata: { roles: user.roles || [] } });
-    // }
-    // console.log(db)
 
-    console.log(db.getUrl());
+    // headers['Content-Type'] = 'application/json';
+    // Authorization: 'Basic ' + new Buffer('bob' + ':' + 'bob').toString('base64')},
 
     let opts = {
       method: 'PUT',
-      url: 'https://arccoza.cloudant.com/_users/' + user._id,
-      headers : {'Content-Type': 'application/json',
-        Authorization: 'Basic ' + new Buffer('arccoza' + ':' + 'carbonscape').toString('base64')},
-      body: user
+      url: url,
+      headers : headers,
+      body: body
     }
 
-    PouchDB.ajax(opts, (err, res) => {console.log(err, res)});
+    return new Promise((resolve, reject) => {
+      ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
+    });
 
-    // return db.request(opts, () => {console.log(opts)});
+    // console.log(ajax(opts, (err, res) => {console.log(err, res)}));
+
+    // return db.request(opts, (err, res) => {console.log(err, res, opts)});
   }
 
   login(username, password) {
