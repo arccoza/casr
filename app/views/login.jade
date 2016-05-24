@@ -1,0 +1,17 @@
+html
+  meta(http-equiv="X-UA-Compatible", content="IE=edge")
+  head
+    link(href='css/main.css', rel="stylesheet", type="text/css")
+    script(src='js/main.js')
+    body#app
+      glyphs
+      .login(style="text-align:center;")
+        h1
+          |Login
+        fld(value="", feel="floatHint")
+          span(slot="hint")
+            |email
+        br
+        fld(value="", feel="floatHint, password")
+          span(slot="hint")
+            |password
