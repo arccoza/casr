@@ -32,7 +32,7 @@ var users = new Users(db, {
   }
 });
 
-users.register(new User({
+users.add(new User({
   name: 'bob',
   password: 'bob'
 }), {dbPerUser: true})

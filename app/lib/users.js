@@ -138,7 +138,7 @@ class Users {
     return [hash.digest('hex'), salt];
   }
 
-  register(user, options) {
+  add(user, options) {
     // options can be:
     // {
     //   isServerAdmin: true / false,
@@ -149,7 +149,7 @@ class Users {
     if(!this.isRemote) {
       return Promise.resolve()
         .then(() => {
-          throw new Error('[Users.register] You can only register users on a CouchDB.');
+          throw new Error('[Users.add] You can only add users on a CouchDB.');
         });
     }
 
@@ -157,7 +157,7 @@ class Users {
     if(!(user instanceof User && user.isValid && user.name && user.password)) {
       return Promise.resolve()
         .then(() => {
-          throw new Error('[Users.register] Invalid user.');
+          throw new Error('[Users.add] Invalid user.');
         });
     }
 
@@ -202,13 +202,13 @@ class Users {
     if(options.dbPerUser) {
       promise = promise
         .then(res => {
-          return this.createUserDb(user);
+          return this.addUserDb(user);
         })
         .catch(err => {
           if(err.status == 412 && err.name == 'file_exists') {
-            return this.deleteUserDb(user)
+            return this.remUserDb(user)
               .then(res => {
-                return this.createUserDb(user);
+                return this.addUserDb(user);
               })
               .catch(err => {
                 return err;
@@ -220,9 +220,6 @@ class Users {
     }
 
     return promise;
-    // console.log(ajax(opts, (err, res) => {console.log(err, res)}));
-
-    // return db.request(opts, (err, res) => {console.log(err, res, opts)});
   }
 
   toHex(str) {
@@ -235,7 +232,7 @@ class Users {
     return hex;
   }
 
-  _createDeleteDb(dbName, isDelete) {
+  _addRemDb(dbName, isDelete) {
     var db = this._db;
     var method = isDelete ? 'DELETE' : 'PUT';
     var url = nurl.resolve(db.getUrl(), '/' + encodeURIComponent(dbName));
@@ -260,32 +257,32 @@ class Users {
     return promise;
   }
 
-  createUserDb(user) {
+  addUserDb(user) {
     // Can only create userDb on a proper CouchDB server, not PouchDB.
     if(!this.isRemote) {
       return Promise.resolve()
         .then(() => {
-          throw new Error('[Users.createUserDb] You can only create a users DB on a CouchDB.');
+          throw new Error('[Users.addUserDb] You can only create a users DB on a CouchDB.');
         });
     }
 
     var userDb = 'userdb/' + this.toHex(user.name);
 
-    return this._createDeleteDb(userDb, false);
+    return this._addRemDb(userDb, false);
   }
 
-  deleteUserDb(user) {
+  remUserDb(user) {
     // Can only delete userDb on a proper CouchDB server, not PouchDB.
     if(!this.isRemote) {
       return Promise.resolve()
         .then(() => {
-          throw new Error('[Users.createUserDb] You can only delete a users DB on a CouchDB.');
+          throw new Error('[Users.remUserDb] You can only delete a users DB on a CouchDB.');
         });
     }
 
     var userDb = 'userdb/' + this.toHex(user.name);
 
-    return this._createDeleteDb(userDb, true);
+    return this._addRemDb(userDb, true);
   }
 
   login(username, password) {
