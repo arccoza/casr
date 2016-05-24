@@ -33,11 +33,11 @@ var users = new Users(db, {
 });
 
 users.register(new User({
-  name: 'jim',
-  password: 'jim'
-}), {dbPerUser: false})
-  .then(console.log.bind(console))
-  .catch(console.log.bind(console))
+  name: 'bob',
+  password: 'bob'
+}), {dbPerUser: true})
+  .then(console.log.bind(console, 'a'))
+  .catch(console.log.bind(console, 'b'))
 // users.login('bob', 'bob')
   // .then(console.log.bind(console))
   // .catch(console.log.bind(console))

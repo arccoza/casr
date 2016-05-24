@@ -164,8 +164,8 @@ class Users {
     options = options || {};
     user._id = 'org.couchdb.user:' + user.name;
     var db = this._db;
-    var userDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
-    var url = nurl.resolve(db.getUrl(), userDb);
+    var usersDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
+    var url = nurl.resolve(db.getUrl(), usersDb);
     var headers = db.getHeaders();
     headers['Content-Type'] = options.isServerAdmin ? 'application/x-www-form-urlencoded' : 'application/json';
     var body = options.isServerAdmin ? user.password : user;
@@ -186,11 +186,11 @@ class Users {
     let opts = {
       method: 'PUT',
       url: url,
-      headers : headers,
+      headers: headers,
       body: body
     }
 
-    return new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       ajax(opts, (err, res) => {
         if(err)
           reject(err);
@@ -199,9 +199,93 @@ class Users {
       });
     });
 
+    if(options.dbPerUser) {
+      promise = promise
+        .then(res => {
+          return this.createUserDb(user);
+        })
+        .catch(err => {
+          if(err.status == 412 && err.name == 'file_exists') {
+            return this.deleteUserDb(user)
+              .then(res => {
+                return this.createUserDb(user);
+              })
+              .catch(err => {
+                return err;
+              })
+          }
+          else
+            return err;
+        });
+    }
+
+    return promise;
     // console.log(ajax(opts, (err, res) => {console.log(err, res)}));
 
     // return db.request(opts, (err, res) => {console.log(err, res, opts)});
+  }
+
+  toHex(str) {
+    var hex = '';
+
+    for(let i = 0; i < str.length; i++) {
+      hex += str.codePointAt(i).toString(16);
+    }
+
+    return hex;
+  }
+
+  _createDeleteDb(dbName, isDelete) {
+    var db = this._db;
+    var method = isDelete ? 'DELETE' : 'PUT';
+    var url = nurl.resolve(db.getUrl(), '/' + encodeURIComponent(dbName));
+    var headers = db.getHeaders();
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+    let opts = {
+      method: method,
+      url: url,
+      headers: headers
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
+    });
+
+    return promise;
+  }
+
+  createUserDb(user) {
+    // Can only create userDb on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.createUserDb] You can only create a users DB on a CouchDB.');
+        });
+    }
+
+    var userDb = 'userdb/' + this.toHex(user.name);
+
+    return this._createDeleteDb(userDb, false);
+  }
+
+  deleteUserDb(user) {
+    // Can only delete userDb on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.createUserDb] You can only delete a users DB on a CouchDB.');
+        });
+    }
+
+    var userDb = 'userdb/' + this.toHex(user.name);
+
+    return this._createDeleteDb(userDb, true);
   }
 
   login(username, password) {
