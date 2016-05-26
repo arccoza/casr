@@ -4,95 +4,21 @@ var PouchDB = require('pouchdb');
 var PouchAuth = require('pouchdb-authentication-cloudant');
 var PouchFind = require('pouchdb-find');
 var crypto = require('crypto');
-var Ajv = require('ajv');
+var User = require('./models').User;
 var Promise = PouchDB.utils.Promise;
 var ajax = PouchDB.ajax;
 
 
 PouchDB.plugin(PouchAuth);
 PouchDB.plugin(PouchFind);
-var ajv = Ajv({ useDefaults: true, removeAdditional: false, verbose: true, allErrors: true });
+PouchDB.plugin({
+  use: function(dbName) {
+    var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
+    var dbName = nurl.resolve(this._db_name, '/' + dbName);
 
-let privMap = new WeakMap();
-
-let priv = function (object) {
-    if (!privMap.has(object))
-        privMap.set(object, {});
-    return privMap.get(object);
-}
-
-class Base {
-  constructor(obj, schema) {
-    Object.assign(this, obj);
-
-    let validate = ajv.compile(schema);
-    priv(this).validate = () => {
-      let ret = validate(this);
-      priv(this).errors = validate.errors;
-      return ret;
-    }
+    return new PouchDB(dbName, this.__opts);
   }
-
-  get isValid() {
-    return priv(this).validate();
-  }
-
-  get errors() {
-    return priv(this).errors;
-  }
-}
-
-class User extends Base {
-  constructor(obj) {
-    super(obj, User.schema);
-  }
-
-  static get schema() {
-    return {
-      type: 'object',
-      additionalProperties: true,
-      properties: {
-        _id: {
-          type: "string"
-        },
-        _rev: {
-          type: "string"
-        },
-        type: {
-          type: "string",
-          default: "user"
-        },
-        name: {
-          type: "string"
-        },
-        password_sha: {
-          type: "string"
-        },
-        salt: {
-          type: "string"
-        },
-        password_scheme: {
-          type: "string"
-        },
-        roles: {
-          type: "array",
-          items: {
-            "type": "string"
-          },
-          default: []
-        }
-      }
-      // required: ['name', 'password']
-    }
-  }
-}
-
-var user = new User({
-  name: 'bob',
-  password: 'bob'
-});
-
-// console.log(user.isValid, user.errors);
+})
 
 class Users {
   constructor(dbUrl, options) {
@@ -105,7 +31,6 @@ class Users {
     }
     else
       this._db = new PouchDB(dbUrl, options);
-
 
     this._ = {};
     this._.isRemote = dbUrl.indexOf('http://') > -1 || dbUrl.indexOf('https://') > -1;
@@ -138,13 +63,68 @@ class Users {
     return [hash.digest('hex'), salt];
   }
 
-  add(user, options) {
-    // options can be:
-    // {
-    //   isServerAdmin: true / false,
-    //   dbPerUser: true / false
+  _addRemUser(user, options) {
+    user._id = user._id || 'org.couchdb.user:' + user.name;
+    options = Object.assign({ isRemove: false }, options);
+
+    // var db = this._db;
+    // var method = options.isRemove ? 'DELETE' : 'PUT';
+    // var query = options.isRemove ? '?rev=' + user._rev : '';
+    // var usersDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
+    // var url = nurl.resolve(db.getUrl(), usersDb) + query;
+    // var headers = db.getHeaders();
+    // headers['Content-Type'] = options.isServerAdmin ? 'application/x-www-form-urlencoded' : 'application/json';
+    // var body = options.isServerAdmin ? user.password : user;
+
+    // Generate the password hash for Cloudant, because it won't do it automatically.
+    if(!options.isRemove && this.isCloudant) {
+      let hashAndSalt = this.generatePasswordHash(user.password);
+
+      user.password_sha = hashAndSalt[0];
+      user.salt = hashAndSalt[1];
+      user.password_scheme = 'simple';
+      delete user.password;
+    }
+
+    // let opts = {
+    //   method: method,
+    //   url: url,
+    //   headers: headers,
+    //   body: body
     // }
 
+    // let promise = new Promise((resolve, reject) => {
+    //   ajax(opts, (err, res) => {
+    //     if(err)
+    //       reject(err);
+    //     else
+    //       resolve(res);
+    //   });
+    // });
+    var db = this._db.use('_users');
+    var promise;
+    console.log(db.getUrl())
+    if(options.isRemove)
+      promise = db.remove(user)
+    else
+      promise = db.put(user);
+
+    return promise;
+  }
+
+  /**
+   * Add a new user.
+   *
+   * @param      {User}     user                           - The user model.
+   * @param      {Object}   [options]                      - The options.
+   * @param      {Boolean}  [options.isServerAdmin=false]  - If true then the user
+   *                                                       will be created as a
+   *                                                       server admin.
+   * @param      {Boolean}  [options.dbPerUser=true]       - Create a DB for the new
+   *                                                       user.
+   * @return     {Promise}                                 - A Promise.
+   */
+  add(user, options) {
     // Can only create users on a proper CouchDB server, not PouchDB.
     if(!this.isRemote) {
       return Promise.resolve()
@@ -161,43 +141,9 @@ class Users {
         });
     }
 
-    options = options || {};
-    user._id = 'org.couchdb.user:' + user.name;
-    var db = this._db;
-    var usersDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
-    var url = nurl.resolve(db.getUrl(), usersDb);
-    var headers = db.getHeaders();
-    headers['Content-Type'] = options.isServerAdmin ? 'application/x-www-form-urlencoded' : 'application/json';
-    var body = options.isServerAdmin ? user.password : user;
+    options = Object.assign({ dbPerUser: true }, options);
 
-    // Generate the password hash for Cloudant, because it won't do it automatically.
-    if(this.isCloudant) {
-      let hashAndSalt = this.generatePasswordHash(user.password);
-
-      user.password_sha = hashAndSalt[0];
-      user.salt = hashAndSalt[1];
-      user.password_scheme = 'simple';
-      delete user.password;
-    }
-
-    // headers['Content-Type'] = 'application/json';
-    // Authorization: 'Basic ' + new Buffer('bob' + ':' + 'bob').toString('base64')},
-
-    let opts = {
-      method: 'PUT',
-      url: url,
-      headers: headers,
-      body: body
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-      });
-    });
+    let promise = this._addRemUser(user, options);
 
     if(options.dbPerUser) {
       promise = promise
@@ -222,6 +168,46 @@ class Users {
     return promise;
   }
 
+  rem(user, options) {
+    // Can only create users on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.rem] You can only remove users on a CouchDB.');
+        });
+    }
+
+    // Make sure the new user is valid.
+    if(!(user instanceof User && user.isValid && user._id && user._rev)) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.rem] Invalid user.');
+        });
+    }
+
+    options = Object.assign({ dbPerUser: true }, options);
+
+    let promise = this._addRemUser(user, { isRemove: true });
+
+    if(options.dbPerUser) {
+      promise = promise
+        .then(res => {
+          return this.remUserDb(user);
+        })
+        .catch(err => {
+          return err;
+        })
+    }
+
+    return promise;
+  }
+
+  /**
+   * Convert a String to it's hex representation.
+   *
+   * @param      {String}  str     - The string.
+   * @return     {String}  - The hex string.
+   */
   toHex(str) {
     var hex = '';
 
@@ -232,9 +218,32 @@ class Users {
     return hex;
   }
 
-  _addRemDb(dbName, isDelete) {
+  /**
+   * Private method to add or remove DBs.
+   *
+   * @param      {String}   dbName   - Name of the DB to add or remove.
+   * @param      {Object}   options  - Options for DB add / remove.
+   * @param      {Boolean}   [options.isRemove=false]        - Set to `true` to
+   *                                                         remove the DB.
+   * @param      {Object}    options.security                - The security
+   *                                                         properties for the new
+   *                                                         DB.
+   * @param      {Object}    options.security.admins         - The DB admins.
+   * @param      {String[]}  options.security.admins.names   - List of users who will
+   *                                                         be admins on this DB.
+   * @param      {String[]}  options.security.admins.roles   - List of roles who will
+   *                                                         be admins on this DB.
+   * @param      {Object}    options.security.members        - The DB members.
+   * @param      {String[]}  options.security.members.names  - List of users who will
+   *                                                         be members on this DB.
+   * @param      {String[]}  options.security.members.roles  - List of roles who will
+   *                                                         be members on this DB.
+   * @return     {Promise}  - A Promise.
+   */
+  _addRemDb(dbName, options) {
+    options = Object.assign({ isRemove: false }, options);
     var db = this._db;
-    var method = isDelete ? 'DELETE' : 'PUT';
+    var method = options.isRemove ? 'DELETE' : 'PUT';
     var url = nurl.resolve(db.getUrl(), '/' + encodeURIComponent(dbName));
     var headers = db.getHeaders();
     headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -257,6 +266,12 @@ class Users {
     return promise;
   }
 
+  /**
+   * Private method to add a user DB.
+   *
+   * @param      {User}     user    - The User object.
+   * @return     {Promise}  - A Promise.
+   */
   addUserDb(user) {
     // Can only create userDb on a proper CouchDB server, not PouchDB.
     if(!this.isRemote) {
@@ -268,9 +283,14 @@ class Users {
 
     var userDb = 'userdb/' + this.toHex(user.name);
 
-    return this._addRemDb(userDb, false);
+    return this._addRemDb(userDb, { isRemove: false });
   }
 
+  /**
+   * Private method to remove a user DB.
+   * @param      {User}     user    - The User object.
+   * @return     {Promise}  - A Promise.
+   */
   remUserDb(user) {
     // Can only delete userDb on a proper CouchDB server, not PouchDB.
     if(!this.isRemote) {
@@ -282,7 +302,7 @@ class Users {
 
     var userDb = 'userdb/' + this.toHex(user.name);
 
-    return this._addRemDb(userDb, true);
+    return this._addRemDb(userDb, { isRemove: true });
   }
 
   login(username, password) {

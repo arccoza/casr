@@ -32,12 +32,19 @@ var users = new Users(db, {
   }
 });
 
+
 users.add(new User({
   name: 'bob',
   password: 'bob'
 }), {dbPerUser: true})
   .then(console.log.bind(console, 'a'))
   .catch(console.log.bind(console, 'b'))
+// db.get('org.couchdb.user:bob')
+//   .then(res => {
+//     return users.rem(new User(res));
+//   })
+//   .then(console.log.bind(console, 'a'))
+//   .catch(console.log.bind(console, 'b'))
 // users.login('bob', 'bob')
   // .then(console.log.bind(console))
   // .catch(console.log.bind(console))
