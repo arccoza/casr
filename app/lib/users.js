@@ -3,6 +3,7 @@ var nurl = require('url');
 var PouchDB = require('pouchdb');
 var PouchAuth = require('pouchdb-authentication-cloudant');
 var PouchFind = require('pouchdb-find');
+var PouchSecurity = require('pouchdb-security');
 var crypto = require('crypto');
 var User = require('./models').User;
 var Promise = PouchDB.utils.Promise;
@@ -11,11 +12,14 @@ var ajax = PouchDB.ajax;
 
 PouchDB.plugin(PouchAuth);
 PouchDB.plugin(PouchFind);
+PouchDB.plugin(PouchSecurity);
 PouchDB.plugin({
   use: function(dbName) {
     var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
     var dbName = nurl.resolve(this._db_name, '/' + dbName);
+    var opts = Object.assign({}, this.__opts);
 
+    opts.skip_setup = true;
     return new PouchDB(dbName, this.__opts);
   }
 })
@@ -23,7 +27,7 @@ PouchDB.plugin({
 class Users {
   constructor(dbUrl, options) {
     options = options || {};
-    options.skipSetup = true;
+    options.skip_setup = true;
 
     if(dbUrl instanceof PouchDB) {
       this._db = dbUrl;
@@ -86,24 +90,9 @@ class Users {
       delete user.password;
     }
 
-    // let opts = {
-    //   method: method,
-    //   url: url,
-    //   headers: headers,
-    //   body: body
-    // }
-
-    // let promise = new Promise((resolve, reject) => {
-    //   ajax(opts, (err, res) => {
-    //     if(err)
-    //       reject(err);
-    //     else
-    //       resolve(res);
-    //   });
-    // });
     var db = this._db.use('_users');
     var promise;
-    console.log(db.getUrl())
+
     if(options.isRemove)
       promise = db.remove(user)
     else
@@ -218,11 +207,24 @@ class Users {
     return hex;
   }
 
+  get _securityObjTmpl() {
+    return {
+      admins: {
+        names: [],
+        roles: []
+      },
+      members: {
+        names: [],
+        roles: []
+      }
+    }
+  }
+
   /**
    * Private method to add or remove DBs.
    *
    * @param      {String}   dbName   - Name of the DB to add or remove.
-   * @param      {Object}   options  - Options for DB add / remove.
+   * @param      {Object}   [options]  - Options for DB add / remove.
    * @param      {Boolean}   [options.isRemove=false]        - Set to `true` to
    *                                                         remove the DB.
    * @param      {Object}    options.security                - The security
@@ -246,7 +248,7 @@ class Users {
     var method = options.isRemove ? 'DELETE' : 'PUT';
     var url = nurl.resolve(db.getUrl(), '/' + encodeURIComponent(dbName));
     var headers = db.getHeaders();
-    headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    headers['Content-Type'] = 'application/json';
 
     let opts = {
       method: method,
@@ -282,8 +284,15 @@ class Users {
     }
 
     var userDb = 'userdb/' + this.toHex(user.name);
+    var promise = this._addRemDb(userDb, { isRemove: false })
+      .then(res => {
+        let secObj = this._db.use(encodeURIComponent(userDb));
+        return secObj.putSecurity(this._securityObjTmpl);
+      })
 
-    return this._addRemDb(userDb, { isRemove: false });
+
+    // return this._addRemDb(userDb, { isRemove: false });
+    return promise;
   }
 
   /**
@@ -308,44 +317,79 @@ class Users {
   login(username, password) {
     var db = this._db;
 
-    // if (!username) {
-    //   return callback(new AuthError('you must provide a username'));
-    // } else if (!password) {
-    //   return callback(new AuthError('you must provide a password'));
-    // }
+    if (!username) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.login] you must provide a username.');
+        });
+    } else if (!password) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.login] you must provide a password.');
+        });
+    }
 
-    // return db.logIn(username, password);
-    // var ajaxOpts = utils.extend(true, {
-    //   method : 'POST',
-    //   url : utils.getSessionUrl(db),
-    //   headers : {'Content-Type': 'application/x-www-form-urlencoded'},
-    //   body : 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
-    // }, opts.ajax || {});
-    // utils.ajax(ajaxOpts, wrapError(callback));
-
-    return db.request({
+    let opts = {
       method: 'POST',
-      url: '_session',
-      headers : {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
+      url: nurl.resolve(db.getUrl(), '/' + '_session'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
       body: 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      var r = ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+
+        // console.log(r.response.headers['set-cookie'])
+      });
     });
+
+    return promise;
   }
 
   logout() {
     var db = this._db;
 
-    return db.logOut();
+    let opts = {
+      method: 'DELETE',
+      url: nurl.resolve(db.getUrl(), '/' + '_session')
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      var r = ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
+    });
+
+    return promise;
   }
 
   session() {
     var db = this._db;
 
-    // return db.session();
-    return db.request({
+    let opts = {
       method: 'GET',
-      url: '_session',
-      headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+      url: nurl.resolve(db.getUrl(), '/' + '_session'),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': '*/*' }
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
     });
+
+    return promise;
   }
 }
 
