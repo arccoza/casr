@@ -1,28 +1,20 @@
 'use strict'
 var nurl = require('url');
 var PouchDB = require('pouchdb');
-var PouchAuth = require('pouchdb-authentication-cloudant');
-var PouchFind = require('pouchdb-find');
-var PouchSecurity = require('pouchdb-security');
+var pouchAuth = require('pouchdb-authentication-cloudant');
+var pouchFind = require('pouchdb-find');
+var pouchSecurity = require('pouchdb-security');
+var pouchPlugs = require('./pouch-plugins');
 var crypto = require('crypto');
 var User = require('./models').User;
 var Promise = PouchDB.utils.Promise;
 var ajax = PouchDB.ajax;
 
 
-PouchDB.plugin(PouchAuth);
-PouchDB.plugin(PouchFind);
-PouchDB.plugin(PouchSecurity);
-PouchDB.plugin({
-  use: function(dbName) {
-    var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
-    var dbName = nurl.resolve(this._db_name, '/' + dbName);
-    var opts = Object.assign({}, this.__opts);
-
-    opts.skip_setup = true;
-    return new PouchDB(dbName, this.__opts);
-  }
-})
+PouchDB.plugin(pouchAuth);
+PouchDB.plugin(pouchFind);
+PouchDB.plugin(pouchSecurity);
+PouchDB.plugin(pouchPlugs);
 
 class Users {
   constructor(dbUrl, options) {
@@ -36,9 +28,11 @@ class Users {
     else
       this._db = new PouchDB(dbUrl, options);
 
-    this._ = {};
-    this._.isRemote = dbUrl.indexOf('http://') > -1 || dbUrl.indexOf('https://') > -1;
-    this._.isCloudant = this.isRemote && dbUrl.indexOf('cloudant') > -1;
+    this._isRemote = dbUrl.indexOf('http://') > -1 || dbUrl.indexOf('https://') > -1;
+    this._isCloudant = this.isRemote && dbUrl.indexOf('cloudant') > -1;
+
+    if(this.isRemote)
+      this._db = this._db.use('_users');
   }
 
   get db() {
@@ -46,57 +40,115 @@ class Users {
   }
 
   get isRemote() {
-    return this._.isRemote;
+    return this._isRemote;
   }
 
   get isCloudant() {
-    return this._.isCloudant;
+    return this._isCloudant;
   }
 
-  get(username) {
+  get _securityObjTmpl() {
+    return {
+      admins: {
+        names: [],
+        roles: []
+      },
+      members: {
+        names: [],
+        roles: []
+      }
+    }
+  }
+
+  get(user) {
+    var db = this.db;
+
+    if(typeof user == 'string')
+      return db.get('org.couchdb.user:' + user);
+    else
+      return db.get('org.couchdb.user:' + user.name);
+  }
+
+  put(user) {
+    var db = this.db;
+
+    return db.put(user);
+  }
+
+  login(username, password) {
     var db = this._db;
 
-    return db.get('org.couchdb.user:' + username);
-  }
-
-  generatePasswordHash(password) {
-    var salt = crypto.randomBytes(16).toString('hex');
-    var hash = crypto.createHash('sha1');
-
-    hash.update(password + salt);
-    return [hash.digest('hex'), salt];
-  }
-
-  _addRemUser(user, options) {
-    user._id = user._id || 'org.couchdb.user:' + user.name;
-    options = Object.assign({ isRemove: false }, options);
-
-    // var db = this._db;
-    // var method = options.isRemove ? 'DELETE' : 'PUT';
-    // var query = options.isRemove ? '?rev=' + user._rev : '';
-    // var usersDb = options.isServerAdmin ? '/_config/admins/' + encodeURIComponent(user.name) : '/_users/' + encodeURIComponent(user._id);
-    // var url = nurl.resolve(db.getUrl(), usersDb) + query;
-    // var headers = db.getHeaders();
-    // headers['Content-Type'] = options.isServerAdmin ? 'application/x-www-form-urlencoded' : 'application/json';
-    // var body = options.isServerAdmin ? user.password : user;
-
-    // Generate the password hash for Cloudant, because it won't do it automatically.
-    if(!options.isRemove && this.isCloudant) {
-      let hashAndSalt = this.generatePasswordHash(user.password);
-
-      user.password_sha = hashAndSalt[0];
-      user.salt = hashAndSalt[1];
-      user.password_scheme = 'simple';
-      delete user.password;
+    if (!username) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.login] you must provide a username.');
+        });
+    } else if (!password) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.login] you must provide a password.');
+        });
     }
 
-    var db = this._db.use('_users');
-    var promise;
+    let opts = {
+      method: 'POST',
+      url: nurl.resolve(db.getUrl(), '/' + '_session'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
+      body: 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
+    }
 
-    if(options.isRemove)
-      promise = db.remove(user)
-    else
-      promise = db.put(user);
+    let promise = new Promise((resolve, reject) => {
+      var r = ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+
+        // console.log(r.response.headers['set-cookie'])
+      });
+    });
+
+    return promise;
+  }
+
+  logout() {
+    var db = this._db;
+
+    let opts = {
+      method: 'DELETE',
+      url: nurl.resolve(db.getUrl(), '/' + '_session')
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      var r = ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
+    });
+
+    return promise;
+  }
+
+  session() {
+    var db = this._db;
+
+    let opts = {
+      method: 'GET',
+      url: nurl.resolve(db.getUrl(), '/' + '_session'),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': '*/*' }
+    }
+
+    let promise = new Promise((resolve, reject) => {
+      ajax(opts, (err, res) => {
+        if(err)
+          reject(err);
+        else
+          resolve(res);
+      });
+    });
 
     return promise;
   }
@@ -191,33 +243,84 @@ class Users {
     return promise;
   }
 
-  /**
-   * Convert a String to it's hex representation.
-   *
-   * @param      {String}  str     - The string.
-   * @return     {String}  - The hex string.
-   */
-  toHex(str) {
-    var hex = '';
+  _addRemUser(user, options) {
+    user._id = user._id || 'org.couchdb.user:' + user.name;
+    options = Object.assign({ isRemove: false }, options);
 
-    for(let i = 0; i < str.length; i++) {
-      hex += str.codePointAt(i).toString(16);
+    // Generate the password hash for Cloudant, because it won't do it automatically.
+    if(!options.isRemove && this.isCloudant) {
+      let hashAndSalt = this.generatePasswordHash(user.password);
+
+      user.password_sha = hashAndSalt[0];
+      user.salt = hashAndSalt[1];
+      user.password_scheme = 'simple';
+      delete user.password;
     }
 
-    return hex;
+    var db = this._db.use('_users');
+    var promise;
+
+    if(options.isRemove)
+      promise = db.remove(user)
+    else
+      promise = db.put(user);
+
+    return promise;
   }
 
-  get _securityObjTmpl() {
-    return {
-      admins: {
-        names: [],
-        roles: []
-      },
-      members: {
-        names: [],
-        roles: []
-      }
+  /**
+   * Method to add a user DB.
+   *
+   * @param      {User}     user    - The User object.
+   * @return     {Promise}  - A Promise.
+   */
+  addUserDb(user) {
+    // Can only create userDb on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.addUserDb] You can only create a users DB on a CouchDB.');
+        });
     }
+
+    var userDb = 'userdb/' + this.toHex(user.name);
+    var promise = this._addRemDb(userDb, { isRemove: false })
+      .then(res => {
+        var db = this._db.use(userDb);
+        var sec = this._securityObjTmpl;
+        var headers = Object.assign({'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'}, db.getHeaders());
+
+        sec.members.names.push(user.name);
+        sec.admins.roles.push('admins');
+
+        return db.request({
+          method: 'PUT',
+          url: '_security',
+          headers : headers,
+          body: JSON.stringify(sec)
+        })
+      });
+
+    return promise;
+  }
+
+  /**
+   * Method to remove a user DB.
+   * @param      {User}     user    - The User object.
+   * @return     {Promise}  - A Promise.
+   */
+  remUserDb(user) {
+    // Can only delete userDb on a proper CouchDB server, not PouchDB.
+    if(!this.isRemote) {
+      return Promise.resolve()
+        .then(() => {
+          throw new Error('[Users.remUserDb] You can only delete a users DB on a CouchDB.');
+        });
+    }
+
+    var userDb = 'userdb/' + this.toHex(user.name);
+
+    return this._addRemDb(userDb, { isRemove: true });
   }
 
   /**
@@ -269,127 +372,33 @@ class Users {
   }
 
   /**
-   * Private method to add a user DB.
+   * Convert a String to it's hex representation.
    *
-   * @param      {User}     user    - The User object.
-   * @return     {Promise}  - A Promise.
+   * @param      {String}  str     - The string.
+   * @return     {String}  - The hex string.
    */
-  addUserDb(user) {
-    // Can only create userDb on a proper CouchDB server, not PouchDB.
-    if(!this.isRemote) {
-      return Promise.resolve()
-        .then(() => {
-          throw new Error('[Users.addUserDb] You can only create a users DB on a CouchDB.');
-        });
+  toHex(str) {
+    var hex = '';
+
+    for(let i = 0; i < str.length; i++) {
+      hex += str.codePointAt(i).toString(16);
     }
 
-    var userDb = 'userdb/' + this.toHex(user.name);
-    var promise = this._addRemDb(userDb, { isRemove: false })
-      .then(res => {
-        let secObj = this._db.use(encodeURIComponent(userDb));
-        return secObj.putSecurity(this._securityObjTmpl);
-      })
-
-
-    // return this._addRemDb(userDb, { isRemove: false });
-    return promise;
+    return hex;
   }
 
   /**
-   * Private method to remove a user DB.
-   * @param      {User}     user    - The User object.
-   * @return     {Promise}  - A Promise.
+   * Generate a SHA1 hashed password, to support Cloudant user creation.
+   *
+   * @param      {String}  password  - The password
+   * @return     {Array}   - SHA1 hashed password and its salt.
    */
-  remUserDb(user) {
-    // Can only delete userDb on a proper CouchDB server, not PouchDB.
-    if(!this.isRemote) {
-      return Promise.resolve()
-        .then(() => {
-          throw new Error('[Users.remUserDb] You can only delete a users DB on a CouchDB.');
-        });
-    }
+  generatePasswordHash(password) {
+    var salt = crypto.randomBytes(16).toString('hex');
+    var hash = crypto.createHash('sha1');
 
-    var userDb = 'userdb/' + this.toHex(user.name);
-
-    return this._addRemDb(userDb, { isRemove: true });
-  }
-
-  login(username, password) {
-    var db = this._db;
-
-    if (!username) {
-      return Promise.resolve()
-        .then(() => {
-          throw new Error('[Users.login] you must provide a username.');
-        });
-    } else if (!password) {
-      return Promise.resolve()
-        .then(() => {
-          throw new Error('[Users.login] you must provide a password.');
-        });
-    }
-
-    let opts = {
-      method: 'POST',
-      url: nurl.resolve(db.getUrl(), '/' + '_session'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
-      body: 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      var r = ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-
-        // console.log(r.response.headers['set-cookie'])
-      });
-    });
-
-    return promise;
-  }
-
-  logout() {
-    var db = this._db;
-
-    let opts = {
-      method: 'DELETE',
-      url: nurl.resolve(db.getUrl(), '/' + '_session')
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      var r = ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-      });
-    });
-
-    return promise;
-  }
-
-  session() {
-    var db = this._db;
-
-    let opts = {
-      method: 'GET',
-      url: nurl.resolve(db.getUrl(), '/' + '_session'),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': '*/*' }
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-      });
-    });
-
-    return promise;
+    hash.update(password + salt);
+    return [hash.digest('hex'), salt];
   }
 }
 

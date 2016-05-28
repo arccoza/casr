@@ -11,7 +11,7 @@ PouchDB.debug.enable('*');
 // PouchDB.plugin(require('pouchdb-authentication'));
 // PouchDB.plugin(require('pouchdb-auth'));
 PouchDB.plugin(require('pouchdb-security'));
-var remote = 'https://arccoza.cloudant.com/_users';
+var remote = 'https://arccoza.cloudant.com/userdb%2F626f62';
 var opts = {
     skipSetup: true,
     auth: {
@@ -32,116 +32,48 @@ var users = new Users(db, {
   }
 });
 
-
-// users.login('bob', 'bob')
-//   .then(console.log.bind(console, 'a'))
-//   .catch(console.log.bind(console, 'b'))
-
-// users.logout()
-//   .then(console.log.bind(console, 'a'))
-//   .catch(console.log.bind(console, 'b'))
-
-users.addUserDb({name: 'rob'})
-  .then(console.log.bind(console, 'a'))
-  .catch(console.log.bind(console, 'b'))
-
-// users.add(new User({
-//   name: 'bob',
-//   password: 'bob'
-// }), {dbPerUser: true})
-//   .then(console.log.bind(console, 'a'))
-//   .catch(console.log.bind(console, 'b'))
-// db.get('org.couchdb.user:bob')
-//   .then(res => {
-//     return users.rem(new User(res));
-//   })
-//   .then(console.log.bind(console, 'a'))
-//   .catch(console.log.bind(console, 'b'))
-// users.login('bob', 'bob')
-  // .then(console.log.bind(console))
-  // .catch(console.log.bind(console))
-// users.session()
+// console.log(db.type())
+// db.info()
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-
-// console.log(PouchDB.utils)
-
-
-// 'org.couchdb.user:deanv'
-// db.useAsAuthenticationDB({ isOnlineAuthDB: false })
-//   .then(res => {
-//     return db2.get('d647546531f85a7d57ba714c033c122e');
-//   })
-//   // .then(res => {
-//   //   return db.session();
-//   // })
-//   .then(res => {
-//     console.log(res);
-//   })
+// db.putSecurity(users._securityObjTmpl)
+//   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// db.allDocs().then(res => {
-//   console.log('[response] \n', res);
-// }).catch(err => {
-//   console.log('[error] \n', err);
-// });
+// db.put({_id: 'sdfasdf', foo: 'bar'})
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
-// var _sec = {
-//   "_id": "_security",
-//   "couchdb_auth_only": true,
-//   "admins": {
-//     "names": [""],
-//     "roles": ["admins"]
-//   },
-//   "members": {
-//     "names": [""],
-//     "roles": ["clients"]
-//   }
-// }
+// users.addUserDb({name: 'bob'})
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
-// db.request({
-//   method: 'PUT',
-//   url: '_session',
-//   body: {...}
-// }).then(...);
+// users.get('bob')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
-// db.get('_security')
-//   .then(res => {
-//     console.log(res);
-//     _sec = Object.assign(_sec, res);
-//     console.log(_sec);
+users.add(new User({
+  name: 'bob',
+  password: 'bob'
+}))
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
 
-//     return db.putSecurity(_sec);
-//   })
-//   .then(res => {
-//     console.log(res);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   })
-
-// db.changes({
-//     since: 'now',
-//     live: true,
-//     include_docs: true
-//   }).on('change', function(change) {
-//     console.log(change);
-//   }).on('complete', function(info) {
-//     console.log(info);
-//   }).on('error', function (err) {
-//     console.log(err);
-//   });
 
 var app = express();
 app.set('view engine', 'jade')
   .use(express.static('pub'));
 
-app.get('/', function (req, res) {
-  res.render('index.jade')
-})
+app
+  .get('/', function (req, res) {
+    res.render('index.jade')
+  })
   .get('/login', function (req, res) {
-  res.render('login.jade')
-});
+    res.render('login.jade')
+  })
+  .post('/register', function (req, res) {
+    res.render('login.jade')
+  });
 
 app.listen(8080);
