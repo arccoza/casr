@@ -2,15 +2,17 @@ var PouchDB = require('pouchdb');
 var express = require('express');
 var User = require('./lib/users').User;
 var Users = require('./lib/users').Users;
+var pouchPlugs = require('./lib/pouch-plugins');
 
 
 PouchDB.debug.enable('*');
+PouchDB.plugin(pouchPlugs);
 
 
 
 // PouchDB.plugin(require('pouchdb-authentication'));
 // PouchDB.plugin(require('pouchdb-auth'));
-PouchDB.plugin(require('pouchdb-security'));
+// PouchDB.plugin(require('pouchdb-security'));
 var remote = 'https://arccoza.cloudant.com/userdb%2F626f62';
 var opts = {
     skipSetup: true,
@@ -53,13 +55,37 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-users.add(new User({
-  name: 'bob',
-  password: 'bob'
-}))
-  .then(console.log.bind(console))
-  .catch(console.log.bind(console))
+// users.add(new User({
+//   name: 'bob',
+//   password: 'bob'
+// }))
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
+// db.enablePermissions().permissions.get()
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+
+
+var a = {
+  admins: {
+    names: ['sam', 'jim'],
+    roles: ['users', 'friends']
+  }
+}
+
+var b = {
+  admins: {
+    names: ['bob'],
+    roles: ['clients']
+  },
+  members: {
+    names: [],
+    roles: []
+  }
+}
+
+console.log(db.constructor.utils.extend(a,b))
 
 var app = express();
 app.set('view engine', 'jade')

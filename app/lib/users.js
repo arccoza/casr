@@ -283,14 +283,14 @@ class Users {
         });
     }
 
-    var userDb = 'userdb/' + this.toHex(user.name);
-    var promise = this._addRemDb(userDb, { isRemove: false })
+    var userDbName = 'userdb/' + this.toHex(user.name);
+    var promise = this._addRemDb(userDbName, { isRemove: false })
       .then(res => {
-        var db = this._db.use(userDb);
+        var db = this._db.use(userDbName);
         var sec = this._securityObjTmpl;
         var headers = Object.assign({'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'}, db.getHeaders());
 
-        sec.members.names.push(user.name);
+        sec.admins.names.push(user.name);
         sec.admins.roles.push('admins');
 
         return db.request({
@@ -298,10 +298,26 @@ class Users {
           url: '_security',
           headers : headers,
           body: JSON.stringify(sec)
-        })
+        });
       });
 
     return promise;
+  }
+
+  putUserDbSecurity(user, securityObj) {
+    var userDbName = 'userdb/' + this.toHex(user.name);
+    var db = this.db.use('userDbName');
+    var sec = securityObj || this._securityObjTmpl;
+
+    sec.admins.names.push(user.name);
+    sec.admins.roles.push('admins');
+
+    return db.request({
+      method: 'PUT',
+      url: '_security',
+      // headers : headers,
+      body: JSON.stringify(sec)
+    });
   }
 
   /**

@@ -30,6 +30,54 @@ var plugs = {
   }),
   findValidator: function(query, selector) {
     return sift(query, selector);
+  },
+  enablePermissions() {
+    this.permissions = {
+      get: utils.toPromise((callback) => {
+        this.request({
+          method: 'GET',
+          url: '_security'
+        }, callback);
+      }),
+      add: utils.toPromise((obj, callback) => {
+        this.permissions.get()
+        this.request({
+          method: 'PUT',
+          url: '_security',
+          // headers : headers,
+          body: JSON.stringify(obj)
+        }, callback);
+      }),
+      rem: utils.toPromise((obj, callback) => {
+
+      }),
+      addAdminUser: utils.toPromise((user, callback) => {
+
+      }),
+      remAdminUser: utils.toPromise((user, callback) => {
+
+      }),
+      addAdminRole: utils.toPromise((role, callback) => {
+
+      }),
+      remAdminRole: utils.toPromise((role, callback) => {
+
+      }),
+      addMemberUser: utils.toPromise((user, callback) => {
+
+      }),
+      remMemberUser: utils.toPromise((user, callback) => {
+
+      }),
+      addMemberRole: utils.toPromise((role, callback) => {
+
+      }),
+      remMemberRole: utils.toPromise((role, callback) => {
+
+      }),
+    }
+
+    return this;
   }
 }
 
