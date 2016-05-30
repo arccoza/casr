@@ -78,14 +78,94 @@ class User extends Base {
   }
 }
 
-var user = new User({
-  name: 'bob',
-  password: 'bob'
-});
+// var user = new User({
+//   name: 'bob',
+//   password: 'bob'
+// });
 
 // console.log(user.isValid, user.errors);
 
+class CouchDbSecurity {
+  constructor(obj) {
+    this.admins = {
+      names: [],
+      roles: []
+    };
+    this.members = {
+      names: [],
+      roles: []
+    };
+
+    this.merge(obj);
+  }
+
+  static uniConcat(a, b) {
+    var tmp = a.concat();
+
+      for (var i = 0, elm; elm = b[i++];) {
+        if(tmp.indexOf(elm) == -1)
+          tmp.push(elm);
+      }
+
+    return tmp;
+  }
+
+  merge(b) {
+    var a = this;
+    var uniConcat = CouchDbSecurity.uniConcat;
+
+    if(b.admins) {
+      a.admins.names = b.admins.names ? uniConcat(a.admins.names, b.admins.names) : a.admins.names;
+      a.admins.roles = b.admins.roles ? uniConcat(a.admins.roles, b.admins.roles) : a.admins.roles;
+    }
+    if(b.members) {
+      a.members.names = b.members.names ? uniConcat(a.members.names, b.members.names) : a.members.names;
+      a.members.roles = b.members.roles ? uniConcat(a.members.roles, b.members.roles) : a.members.roles;
+    }
+
+    return this;
+  }
+
+  has(group, target, value) {
+    if(group && target && value)
+      return this[group][target].indexOf(value) != -1;
+    else if(group && target && !value)
+      return this[group][target].length;
+    else if(group && !target && !value)
+      return !!(this[group] && this[group].names && this[group].roles);
+  }
+
+  add(group, target, value) {
+    if(!group || !target)
+      throw '[CouchDbSecurity.add] You must provide 3 arguments.'
+
+    this[group][target] = this[group][target].concat(value);
+
+    // if(group && target && value)
+    //   this[group][target] = this[group][target].concat(value);
+    // else if(group && target && !value && (target.names || target.roles))
+    //   this[group][target] = this[group][target];
+    // else if(group && !target && !value && (group.admins || group.members))
+    //   this[group] = this[group];
+
+    return this;
+  }
+
+  rem(group, target, value) {
+    if(!group || !target)
+      throw '[CouchDbSecurity.rem] You must provide 3 arguments.'
+
+    this[group][target] = this[group][target].filter(elm => {
+      return elm != value;
+    });
+
+    return this;
+  }
+}
+
+
 module.exports = {
   Base,
-  User
+  User,
+  CouchDbSecurity
 }

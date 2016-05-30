@@ -62,10 +62,18 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// db.enablePermissions().permissions.get()
-//   .then(console.log.bind(console))
-//   .catch(console.log.bind(console))
-
+db.enablePermissions().get()
+  // .then(res => {
+  //   res.add('admins', 'roles', 'supers');
+  //   return db.permissions.put(res);
+  // })
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
+  .then(res => {
+    return db.permissions.add('admins', 'names', 'adrien')
+  })
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
 
 var a = {
   admins: {
@@ -85,7 +93,8 @@ var b = {
   }
 }
 
-console.log(db.constructor.utils.extend(a,b))
+
+
 
 var app = express();
 app.set('view engine', 'jade')

@@ -2,6 +2,7 @@ var nurl = require('url');
 var sift = require('sift');
 var PouchDB = require('pouchdb');
 var utils = require('./pouch-utils');
+var CouchDbSecurity = require('./models').CouchDbSecurity;
 
 
 var plugs = {
@@ -37,47 +38,69 @@ var plugs = {
         this.request({
           method: 'GET',
           url: '_security'
-        }, callback);
+        }, (err, res) => {
+          callback(err, new CouchDbSecurity(res));
+        });
       }),
-      add: utils.toPromise((obj, callback) => {
-        this.permissions.get()
+      put: utils.toPromise((obj, callback) => {
         this.request({
           method: 'PUT',
           url: '_security',
-          // headers : headers,
-          body: JSON.stringify(obj)
+          body: obj
         }, callback);
       }),
-      rem: utils.toPromise((obj, callback) => {
+      op: utils.toPromise((op, group, target, value, callback) => {
+        // if(arguments.length < 4 && )
+        console.log(arguments[0])
 
+        this.permissions.get()
+          .then(res => {
+            if(op == 'merge')
+              return new CouchDbSecurity(res)[op](value);
+            else
+              return new CouchDbSecurity(res)[op](group, target, value);
+          })
+          .then(res => {
+            this.permissions.put(res, callback);
+          })
+          .catch(callback);
+      }),
+      merge: utils.toPromise((obj, callback) => {
+        this.permissions.op('merge', obj, callback);
+      }),
+      add: utils.toPromise((group, target, value, callback) => {
+        this.permissions.op('add', group, target, value, callback);
+      }),
+      rem: utils.toPromise((group, target, value, callback) => {
+        this.permissions.op('rem', group, target, value, callback);
       }),
       addAdminUser: utils.toPromise((user, callback) => {
-
+        this.permissions.op('add', 'admins', 'names', user, callback);
       }),
       remAdminUser: utils.toPromise((user, callback) => {
-
+        this.permissions.op('rem', 'admins', 'names', user, callback);
       }),
       addAdminRole: utils.toPromise((role, callback) => {
-
+        this.permissions.op('add', 'admins', 'roles', role, callback);
       }),
       remAdminRole: utils.toPromise((role, callback) => {
-
+        this.permissions.op('rem', 'admins', 'roles', role, callback);
       }),
       addMemberUser: utils.toPromise((user, callback) => {
-
+        this.permissions.op('add', 'members', 'names', user, callback);
       }),
       remMemberUser: utils.toPromise((user, callback) => {
-
+        this.permissions.op('rem', 'members', 'names', user, callback);
       }),
       addMemberRole: utils.toPromise((role, callback) => {
-
+        this.permissions.op('add', 'members', 'roles', role, callback);
       }),
       remMemberRole: utils.toPromise((role, callback) => {
-
+        this.permissions.op('rem', 'members', 'roles', role, callback);
       }),
     }
 
-    return this;
+    return this.permissions;
   }
 }
 
