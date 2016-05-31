@@ -50,26 +50,25 @@ var plugs = {
         }, callback);
       }),
       op: utils.toPromise((function(op, group, target, value, callback) {
-        if(arguments.length == 3 && typeof target == 'function' && op == 'merge') {
+        if(typeof value == 'function') {
+          callback = value;
+          value = null;
+        }
+        else if(typeof target == 'function') {
           callback = target;
-          value = group;
+          target = null;
+          value = null;
         }
 
         this.permissions.get()
           .then(res => {
-            if(op == 'merge')
-              return new CouchDbSecurity(res)[op](value);
-            else
-              return new CouchDbSecurity(res)[op](group, target, value);
+            return new CouchDbSecurity(res)[op](group, target, value);
           })
           .then(res => {
             this.permissions.put(res, callback);
           })
           .catch(callback);
       }).bind(this)),
-      merge: utils.toPromise((obj, callback) => {
-        this.permissions.op('merge', obj, callback);
-      }),
       add: utils.toPromise((group, target, value, callback) => {
         this.permissions.op('add', group, target, value, callback);
       }),

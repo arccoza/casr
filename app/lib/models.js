@@ -167,10 +167,6 @@ class CouchDbSecurity {
     _debug('casr:CouchDbSecurity')('add()');
 
     var uniConcat = CouchDbSecurity.uniConcat;
-    // if(!group || !target)
-    //   throw '[CouchDbSecurity.add] You must provide 3 arguments.'
-
-    // this[group][target] = this[group][target].concat(value);
 
     if(group && target && value)
       this[group][target] = this[group][target].concat(value);
@@ -191,15 +187,11 @@ class CouchDbSecurity {
   rem(group, target, value) {
     _debug('casr:CouchDbSecurity')('rem()');
 
-    // if(!group || !target)
-    //   throw '[CouchDbSecurity.rem] You must provide 3 arguments.'
-
-    // this[group][target] = this[group][target].filter(elm => {
-    //   return elm != value;
-    // });
-
     if(group && target && value)
-      this[group][target] = this[group][target].filter(elm => elm != value);
+      if(Array.isArray(value))
+        this[group][target] = this[group][target].filter(elm => value.indexOf(elm) == -1);
+      else
+        this[group][target] = this[group][target].filter(elm => elm != value);
     else if(group && target && !value && (target.names || target.roles)) {
       if(target.names)
         this[group].names = this[group].names.filter(elm => target.names.indexOf(elm) == -1);
@@ -214,24 +206,6 @@ class CouchDbSecurity {
     return this;
   }
 }
-
-var a = new CouchDbSecurity();
-
-console.log(a);
-a.add({
-  admins: {
-    names: ['sam', 'git'],
-    roles: ['bob'],
-    grit: ['gumption']
-  }
-});
-console.log(a);
-a.rem({
-  admins: {
-    names: ['sam', 'git', 'bob']
-  }
-})
-console.log(a);
 
 
 module.exports = {
