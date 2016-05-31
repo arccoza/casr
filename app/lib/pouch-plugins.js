@@ -16,9 +16,10 @@ var plugs = {
     if(isRemote)
       dbName = nurl.resolve(this._db_name, '/' + encodeURIComponent(dbName));
 
-    console.log(dbName)
-
-    return new PouchDB(dbName, this.__opts);
+    if(this._db_name == dbName)
+      return this;
+    else
+      return new PouchDB(dbName, this.__opts);
   },
   findValidate: utils.toPromise(function(query, subject, callback) {
     try {
@@ -32,7 +33,40 @@ var plugs = {
   findValidator: function(query, selector) {
     return sift(query, selector);
   },
+  enableSessions() {
+    if(this.sessions)
+      return this.sessions;
+
+    var ajax = this.constructor.ajax;
+    var op = utils.toPromise((op, username, password, callback) => {
+      var opts = {
+        method: op == 'add' ? 'POST' : op == 'rem' ? 'DELETE' : 'GET',
+        url: nurl.resolve(this.getUrl(), '/' + '_session'),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' }
+      }
+
+      if(op == 'add')
+        opts.body = 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+
+      var r = ajax(opts, (err, res) => {
+        callback(err, res);
+        // console.log(r.response.headers['set-cookie'])
+      });
+    });
+
+    this.sessions = {
+      get: op.bind(null, 'get', null, null),
+      add: op.bind(null, 'add'),
+      rem: op.bind(null, 'rem', null, null)
+    }
+
+    return this.sessions;
+  },
   enablePermissions() {
+    // TODO: Refactor this to use op func and bind like sessions plugin.
+    if(this.permissions)
+      return this.permissions;
+
     this.permissions = {
       get: utils.toPromise((callback) => {
         this.request({

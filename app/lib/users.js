@@ -3,7 +3,6 @@ var nurl = require('url');
 var PouchDB = require('pouchdb');
 var pouchAuth = require('pouchdb-authentication-cloudant');
 var pouchFind = require('pouchdb-find');
-var pouchSecurity = require('pouchdb-security');
 var pouchPlugs = require('./pouch-plugins');
 var crypto = require('crypto');
 var User = require('./models').User;
@@ -13,7 +12,6 @@ var ajax = PouchDB.ajax;
 
 PouchDB.plugin(pouchAuth);
 PouchDB.plugin(pouchFind);
-PouchDB.plugin(pouchSecurity);
 PouchDB.plugin(pouchPlugs);
 
 class Users {
@@ -62,11 +60,12 @@ class Users {
 
   get(user) {
     var db = this.db;
+    var username = typeof user == 'string' ? user : user.name;
 
-    if(typeof user == 'string')
-      return db.get('org.couchdb.user:' + user);
-    else
-      return db.get('org.couchdb.user:' + user.name);
+    return db.get('org.couchdb.user:' + username)
+      .then(res => {
+        return new User(res);
+      });
   }
 
   put(user) {
@@ -286,19 +285,8 @@ class Users {
     var userDbName = 'userdb/' + this.toHex(user.name);
     var promise = this._addRemDb(userDbName, { isRemove: false })
       .then(res => {
-        var db = this._db.use(userDbName);
-        var sec = this._securityObjTmpl;
-        var headers = Object.assign({'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'}, db.getHeaders());
-
-        sec.admins.names.push(user.name);
-        sec.admins.roles.push('admins');
-
-        return db.request({
-          method: 'PUT',
-          url: '_security',
-          headers : headers,
-          body: JSON.stringify(sec)
-        });
+        var db = this.db.use(userDbName);
+        return db.enablePermissions().add('admins', {names: [user.name], roles: ['admins']});
       });
 
     return promise;

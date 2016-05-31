@@ -47,17 +47,26 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// users.addUserDb({name: 'bob'})
+// users.addUserDb({name: 'jin'})
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// users.get('bob')
+// db.enableSessions().get()
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+//   .then(res => db.enableSessions())
+//   .then(res => res.rem())
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+
+// users.get('jin')
+//   .then(res => users.rem(res))
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
 // users.add(new User({
-//   name: 'bob',
-//   password: 'bob'
+//   name: 'jin',
+//   password: 'jin'
 // }))
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
@@ -75,23 +84,6 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-var a = {
-  admins: {
-    names: ['sam', 'jim'],
-    roles: ['users', 'friends']
-  }
-}
-
-var b = {
-  admins: {
-    names: ['bob'],
-    roles: ['clients']
-  },
-  members: {
-    names: [],
-    roles: []
-  }
-}
 
 
 
