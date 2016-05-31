@@ -1,5 +1,6 @@
 'use strict'
 var Ajv = require('ajv');
+var _debug = require('debug');
 
 
 var ajv = Ajv({ useDefaults: true, removeAdditional: false, verbose: true, allErrors: true });
@@ -87,6 +88,7 @@ class User extends Base {
 
 class CouchDbSecurity {
   constructor(obj) {
+    _debug('casr:CouchDbSecurity')('ctor()');
     this.admins = {
       names: [],
       roles: []
@@ -96,7 +98,8 @@ class CouchDbSecurity {
       roles: []
     };
 
-    this.merge(obj);
+    if(obj)
+      this.merge(obj);
   }
 
   static uniConcat(a, b) {
@@ -111,6 +114,8 @@ class CouchDbSecurity {
   }
 
   merge(b) {
+    _debug('casr:CouchDbSecurity')('merge()');
+
     var a = this;
     var uniConcat = CouchDbSecurity.uniConcat;
 
@@ -126,7 +131,30 @@ class CouchDbSecurity {
     return this;
   }
 
+  separate(b) {
+    _debug('casr:CouchDbSecurity')('separate()');
+
+    var a = this;
+
+    if(b.admins) {
+      if(b.admins.names)
+        a.admins.names = a.admins.names.filter(elm => b.admins.names.indexOf(elm) == -1);
+      if(b.admins.roles)
+        a.admins.roles = a.admins.roles.filter(elm => b.admins.roles.indexOf(elm) == -1);
+    }
+    if(b.members) {
+      if(b.members.names)
+        a.members.names = a.members.names.filter(elm => b.members.names.indexOf(elm) == -1);
+      if(b.members.roles)
+        a.members.roles = a.members.roles.filter(elm => b.members.roles.indexOf(elm) == -1);
+    }
+
+    return this;
+  }
+
   has(group, target, value) {
+    _debug('casr:CouchDbSecurity')('has()');
+
     if(group && target && value)
       return this[group][target].indexOf(value) != -1;
     else if(group && target && !value)
@@ -136,32 +164,74 @@ class CouchDbSecurity {
   }
 
   add(group, target, value) {
-    if(!group || !target)
-      throw '[CouchDbSecurity.add] You must provide 3 arguments.'
+    _debug('casr:CouchDbSecurity')('add()');
 
-    this[group][target] = this[group][target].concat(value);
+    var uniConcat = CouchDbSecurity.uniConcat;
+    // if(!group || !target)
+    //   throw '[CouchDbSecurity.add] You must provide 3 arguments.'
 
-    // if(group && target && value)
-    //   this[group][target] = this[group][target].concat(value);
-    // else if(group && target && !value && (target.names || target.roles))
-    //   this[group][target] = this[group][target];
-    // else if(group && !target && !value && (group.admins || group.members))
-    //   this[group] = this[group];
+    // this[group][target] = this[group][target].concat(value);
+
+    if(group && target && value)
+      this[group][target] = this[group][target].concat(value);
+    else if(group && target && !value && (target.names || target.roles)) {
+      if(target.names)
+        this[group].names = uniConcat(this[group].names, target.names);
+      if(target.roles)
+        this[group].roles = uniConcat(this[group].roles, target.roles);
+    }
+    else if(group && !target && !value && (group.admins || group.members))
+      this.merge(group);
+    else
+      _debug('casr:CouchDbSecurity')('add() no valid arguments.');
 
     return this;
   }
 
   rem(group, target, value) {
-    if(!group || !target)
-      throw '[CouchDbSecurity.rem] You must provide 3 arguments.'
+    _debug('casr:CouchDbSecurity')('rem()');
 
-    this[group][target] = this[group][target].filter(elm => {
-      return elm != value;
-    });
+    // if(!group || !target)
+    //   throw '[CouchDbSecurity.rem] You must provide 3 arguments.'
+
+    // this[group][target] = this[group][target].filter(elm => {
+    //   return elm != value;
+    // });
+
+    if(group && target && value)
+      this[group][target] = this[group][target].filter(elm => elm != value);
+    else if(group && target && !value && (target.names || target.roles)) {
+      if(target.names)
+        this[group].names = this[group].names.filter(elm => target.names.indexOf(elm) == -1);
+      if(target.roles)
+        this[group].roles = this[group].roles.filter(elm => target.roles.indexOf(elm) == -1);
+    }
+    else if(group && !target && !value && (group.admins || group.members))
+      this.separate(group);
+    else
+      _debug('casr:CouchDbSecurity')('rem() no valid arguments.');
 
     return this;
   }
 }
+
+var a = new CouchDbSecurity();
+
+console.log(a);
+a.add({
+  admins: {
+    names: ['sam', 'git'],
+    roles: ['bob'],
+    grit: ['gumption']
+  }
+});
+console.log(a);
+a.rem({
+  admins: {
+    names: ['sam', 'git', 'bob']
+  }
+})
+console.log(a);
 
 
 module.exports = {

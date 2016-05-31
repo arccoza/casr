@@ -49,9 +49,11 @@ var plugs = {
           body: obj
         }, callback);
       }),
-      op: utils.toPromise((op, group, target, value, callback) => {
-        // if(arguments.length < 4 && )
-        console.log(arguments[0])
+      op: utils.toPromise((function(op, group, target, value, callback) {
+        if(arguments.length == 3 && typeof target == 'function' && op == 'merge') {
+          callback = target;
+          value = group;
+        }
 
         this.permissions.get()
           .then(res => {
@@ -64,7 +66,7 @@ var plugs = {
             this.permissions.put(res, callback);
           })
           .catch(callback);
-      }),
+      }).bind(this)),
       merge: utils.toPromise((obj, callback) => {
         this.permissions.op('merge', obj, callback);
       }),
