@@ -5,12 +5,13 @@ var pouchAuth = require('pouchdb-authentication-cloudant');
 var pouchFind = require('pouchdb-find');
 var pouchPlugs = require('./pouch-plugins');
 var crypto = require('crypto');
+var randomstring = require('randomstring');
 var User = require('./models').User;
 var Promise = PouchDB.utils.Promise;
 var ajax = PouchDB.ajax;
 
 
-PouchDB.plugin(pouchAuth);
+// PouchDB.plugin(pouchAuth);
 PouchDB.plugin(pouchFind);
 PouchDB.plugin(pouchPlugs);
 
@@ -75,7 +76,7 @@ class Users {
   }
 
   login(username, password) {
-    var db = this._db;
+    var db = this.db;
 
     if (!username) {
       return Promise.resolve()
@@ -89,67 +90,17 @@ class Users {
         });
     }
 
-    let opts = {
-      method: 'POST',
-      url: nurl.resolve(db.getUrl(), '/' + '_session'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*'},
-      body: 'name=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      var r = ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-
-        // console.log(r.response.headers['set-cookie'])
-      });
-    });
-
-    return promise;
+    return db.enableSessions().add(username, password);
   }
 
   logout() {
-    var db = this._db;
-
-    let opts = {
-      method: 'DELETE',
-      url: nurl.resolve(db.getUrl(), '/' + '_session')
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      var r = ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-      });
-    });
-
-    return promise;
+    var db = this.db;
+    return db.enableSessions().rem();
   }
 
   session() {
-    var db = this._db;
-
-    let opts = {
-      method: 'GET',
-      url: nurl.resolve(db.getUrl(), '/' + '_session'),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': '*/*' }
-    }
-
-    let promise = new Promise((resolve, reject) => {
-      ajax(opts, (err, res) => {
-        if(err)
-          reject(err);
-        else
-          resolve(res);
-      });
-    });
-
-    return promise;
+    var db = this.db;
+    return db.enableSessions().get();
   }
 
   /**
@@ -182,6 +133,18 @@ class Users {
     }
 
     options = Object.assign({ dbPerUser: true }, options);
+
+    // Add a unique id to the roles array for each user.
+    // In case you want to change username.
+    var roleId = 'uid:' + randomstring.generate({
+      length: 12,
+      charset: 'hex'
+    });
+
+    if(user.roles)
+      user.roles.unshift(roleId);
+    else
+      user.roles = [roleId];
 
     let promise = this._addRemUser(user, options);
 

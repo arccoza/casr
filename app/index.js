@@ -59,6 +59,7 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
+
 // users.get('jin')
 //   .then(res => users.rem(res))
 //   .then(console.log.bind(console))
@@ -79,11 +80,24 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 //   .then(res => {
-//     return db.permissions.add('admins', 'names', 'adrien')
+//     return db.permissions.add('admins', 'names', 'jingo')
 //   })
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
+db.enableUsers().get('bob')
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
+
+
+
+
+// var _users = db.use('_users');
+// var get = _users.get.bind(_users);
+
+// get('org.couchdb.user:bob')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
 
 

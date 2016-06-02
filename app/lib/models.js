@@ -98,6 +98,10 @@ class CouchDbSecurity {
       roles: []
     };
 
+    // For Cloudant compatibility, see:
+    // https://cloudant.com/for-developers/faq/auth/
+    this.couchdb_auth_only = true;
+
     if(obj)
       this.merge(obj);
   }

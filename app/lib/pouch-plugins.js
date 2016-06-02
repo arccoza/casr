@@ -1,6 +1,9 @@
 var nurl = require('url');
 var sift = require('sift');
+var randomstring = require('randomstring');
+var crypto = require('crypto');
 var PouchDB = require('pouchdb');
+var wrappers = require('pouchdb-wrappers');
 var utils = require('./pouch-utils');
 var CouchDbSecurity = require('./models').CouchDbSecurity;
 
@@ -57,15 +60,36 @@ var plugs = {
     this.sessions = {
       get: op.bind(null, 'get', null, null),
       add: op.bind(null, 'add'),
-      rem: op.bind(null, 'rem', null, null)
+      rem: op.bind(null, 'rem', null, null),
+      remove: op.bind(null, 'rem', null, null)
     }
 
     return this.sessions;
   },
   enablePermissions() {
-    // TODO: Refactor this to use op func and bind like sessions plugin.
     if(this.permissions)
       return this.permissions;
+
+    var op = utils.toPromise((function(op, group, target, value, callback) {
+      if(typeof value == 'function') {
+        callback = value;
+        value = null;
+      }
+      else if(typeof target == 'function') {
+        callback = target;
+        target = null;
+        value = null;
+      }
+
+      this.permissions.get()
+        .then(res => {
+          return new CouchDbSecurity(res)[op](group, target, value);
+        })
+        .then(res => {
+          this.permissions.put(res, callback);
+        })
+        .catch(callback);
+    }).bind(this));
 
     this.permissions = {
       get: utils.toPromise((callback) => {
@@ -83,60 +107,136 @@ var plugs = {
           body: obj
         }, callback);
       }),
-      op: utils.toPromise((function(op, group, target, value, callback) {
-        if(typeof value == 'function') {
-          callback = value;
-          value = null;
-        }
-        else if(typeof target == 'function') {
-          callback = target;
-          target = null;
-          value = null;
-        }
-
-        this.permissions.get()
-          .then(res => {
-            return new CouchDbSecurity(res)[op](group, target, value);
-          })
-          .then(res => {
-            this.permissions.put(res, callback);
-          })
-          .catch(callback);
-      }).bind(this)),
-      add: utils.toPromise((group, target, value, callback) => {
-        this.permissions.op('add', group, target, value, callback);
-      }),
-      rem: utils.toPromise((group, target, value, callback) => {
-        this.permissions.op('rem', group, target, value, callback);
-      }),
-      addAdminUser: utils.toPromise((user, callback) => {
-        this.permissions.op('add', 'admins', 'names', user, callback);
-      }),
-      remAdminUser: utils.toPromise((user, callback) => {
-        this.permissions.op('rem', 'admins', 'names', user, callback);
-      }),
-      addAdminRole: utils.toPromise((role, callback) => {
-        this.permissions.op('add', 'admins', 'roles', role, callback);
-      }),
-      remAdminRole: utils.toPromise((role, callback) => {
-        this.permissions.op('rem', 'admins', 'roles', role, callback);
-      }),
-      addMemberUser: utils.toPromise((user, callback) => {
-        this.permissions.op('add', 'members', 'names', user, callback);
-      }),
-      remMemberUser: utils.toPromise((user, callback) => {
-        this.permissions.op('rem', 'members', 'names', user, callback);
-      }),
-      addMemberRole: utils.toPromise((role, callback) => {
-        this.permissions.op('add', 'members', 'roles', role, callback);
-      }),
-      remMemberRole: utils.toPromise((role, callback) => {
-        this.permissions.op('rem', 'members', 'roles', role, callback);
-      }),
+      add: op.bind(null, 'add'),
+      rem: op.bind(null, 'rem'),
+      remove: op.bind(null, 'rem'),
+      addAdminUser: op.bind(null, 'add', 'admins', 'names'),
+      remAdminUser: op.bind(null, 'rem', 'admins', 'names'),
+      addAdminRole: op.bind(null, 'add', 'admins', 'roles'),
+      remAdminRole: op.bind(null, 'rem', 'admins', 'roles'),
+      addMemberUser: op.bind(null, 'add', 'members', 'names'),
+      remMemberUser: op.bind(null, 'rem', 'members', 'names'),
+      addMemberRole: op.bind(null, 'add', 'members', 'roles'),
+      remMemberRole: op.bind(null, 'rem', 'members', 'roles')
     }
 
     return this.permissions;
+  },
+  enableUsers() {
+    if(this.users)
+      return this.users;
+
+    var Promise = this.constructor.utils.Promise;
+    var db = plugs.use.bind(this)('_users');
+    var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
+    var isCloudant = isRemote && this._db_name.indexOf('cloudant') > -1;
+
+    db.genUid = () => {
+      return randomstring.generate({
+        length: 12,
+        charset: 'hex'
+      });
+    }
+    db.generateUid = this.genUid;
+
+    db.genPasswordHash = (password, scheme) => {
+      // TODO: Add support for pbkdf2 scheme.
+      scheme = 'simple';
+      var salt = crypto.randomBytes(16).toString('hex');
+      var hash = crypto.createHash('sha1');
+
+      hash.update(password + salt);
+      return [hash.digest('hex'), salt];
+    }
+    db.generatePasswordHash = this.genPasswordHash;
+
+    var get = null;
+    var put = db.put.bind(db);
+    var rem = db.remove.bind(db);
+
+    var op = utils.toPromise((function(op, user, callback) {
+      console.log('op', op, user)
+      if(op == 'get' && user && (user._id || typeof user == 'string')) {
+        if(typeof user == 'string') {
+          user = user.indexOf('org.couchdb.user:') != -1 ? user : 'org.couchdb.user:' + user;
+          user = { _id: user }
+        }
+        console.log('get before')
+        console.log(get)
+        get(user._id, callback);
+        console.log('get after')
+      }
+      else if(op == 'get') {
+        return callback(new Error('[users] get() invalid arguments.'));
+      }
+
+      if(op == 'put' && user && user._id && user._rev) {
+        return put(user, callback);
+      }
+      else if(op == 'put') {
+        return callback(new Error('[users] put() invalid arguments.'));
+      }
+
+      if(op == 'add' && user && user.name && user.password) {
+        var uid = this.genUid();
+        user._id = user._id || 'org.couchdb.user:' + user.name;
+        user.type = 'user';
+
+        if(user.roles)
+          user.roles.unshift('uid:' + uid);
+        else
+          user.roles = ['uid:' + uid];
+
+        if(isCloudant) {
+          var hashAndSalt = this.genPasswordHash(user.password);
+
+          user.password_sha = hashAndSalt[0];
+          user.salt = hashAndSalt[1];
+          user.password_scheme = 'simple';
+          delete user.password;
+        }
+
+        return put(user, callback);
+      }
+      else if(op == 'add') {
+        return callback(new Error('[users] add() invalid arguments.'));
+      }
+
+      if(op == 'rem' && user && user._id && user._rev) {
+        console.log('rem')
+        return rem(user, callback);
+      }
+      else if(op == 'rem') {
+        return callback(new Error('[users] rem() or remove() invalid arguments.'));
+      }
+
+      console.log('whoops')
+
+    }).bind(db));
+
+    this.users = db;
+    // this.users.op = op.bind(null);
+
+    var count = 0;
+    wrappers.installWrapperMethods(db, {
+      get(orig, args) {
+        count++;
+        console.log(count);
+        if(args.docId.indexOf('org.couchdb.user:') == -1)
+          args.docId = 'org.couchdb.user:' + args.docId;
+        return orig();
+
+      }
+    })
+    // this.users.get = op.bind(null, 'get');
+    // this.users.put = op.bind(null, 'put');
+    // this.users.add = op.bind(null, 'add');
+    // this.users.rem = op.bind(null, 'rem');
+    // this.users.remove = op.bind(null, 'rem');
+
+    return this.users;
   }
 }
+
 
 module.exports = plugs;
