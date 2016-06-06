@@ -108,7 +108,12 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
+// db.stores().rem('userdb', '726f62')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
+var nurl = require('url');
+console.log(nurl.resolve('bob', '/' + 'sam'));
 
 
 var app = express();

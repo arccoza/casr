@@ -293,6 +293,7 @@ var plugs = {
         var opts = this.__opts;
         opts.skip_setup = true;
         opts.skipSetup = true;
+        store = nurl.resolve(this._db_name, '/' + encodeURIComponent(store));
         return (new PouchDB(store, opts)).destroy(opts, callback);
       }
     });
@@ -312,6 +313,8 @@ var plugs = {
         return hex;
       }
     }
+
+    return this._stores;
   }
 }
 
