@@ -35,7 +35,7 @@ var plugs = {
   findValidator: function(query, selector) {
     return sift(query, selector);
   },
-  enableSessions() {
+  sessions() {
     if(this._sessions)
       return this._sessions;
 
@@ -56,7 +56,7 @@ var plugs = {
       });
     });
 
-    this._sessions = {
+    this.constructor.prototype._sessions = {
       get: op.bind(null, 'get', null, null),
       add: op.bind(null, 'add'),
       rem: op.bind(null, 'rem', null, null),
@@ -90,7 +90,7 @@ var plugs = {
         .catch(callback);
     }).bind(this));
 
-    this._permissions = {
+    this.constructor.prototype._permissions = {
       get: utils.toPromise((callback) => {
         this.request({
           method: 'GET',
@@ -252,8 +252,66 @@ var plugs = {
     db.rem = op.bind(null, 'rem');
     db.remove = op.bind(null, 'rem');
 
-    this._users = db;
+    this.constructor.prototype._users = db;
     return this._users;
+  },
+  stores() {
+    if(this._stores)
+      return this._stores;
+
+    var op = utils.toPromise((op, prefix, store, callback) => {
+      if(typeof store == 'function') {
+        callback = store;
+        store = prefix;
+      }
+
+      if(typeof store != 'string') {
+        try {
+          store = store.uid;
+        }
+        catch(ex) {
+          return callback(ex);
+        }
+      }
+
+      if(prefix) {
+        store = prefix[prefix.length - 1] == '/' ? prefix + store : prefix + '/' + store;
+      }
+
+      if(op == 'get' && store) {
+        return callback(null, plugs.use.bind(this)(store));
+      }
+
+      if(op == 'add') {
+        var opts = this.__opts;
+        opts.skip_setup = false;
+        opts.skipSetup = false;
+        return callback(null, new PouchDB(store, opts));
+      }
+
+      if(op == 'rem') {
+        var opts = this.__opts;
+        opts.skip_setup = true;
+        opts.skipSetup = true;
+        return (new PouchDB(store, opts)).destroy(opts, callback);
+      }
+    });
+
+    this.constructor.prototype._stores = {
+      get: op.bind(null, 'get'),
+      add: op.bind(null, 'add'),
+      rem: op.bind(null, 'rem'),
+      remove: op.bind(null, 'rem'),
+      toHex(str) {
+        var hex = '';
+
+        for(var i = 0; i < str.length; i++) {
+          hex += str.codePointAt(i).toString(16);
+        }
+
+        return hex;
+      }
+    }
   }
 }
 

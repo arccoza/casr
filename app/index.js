@@ -86,9 +86,9 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-db.users().get('jin')
-  .then(console.log.bind(console))
-  .catch(console.log.bind(console))
+// db.users().get('jin')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
 // db.users().add({
 //   name: 'gin',
