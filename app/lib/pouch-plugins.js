@@ -3,7 +3,6 @@ var sift = require('sift');
 var randomstring = require('randomstring');
 var crypto = require('crypto');
 var PouchDB = require('pouchdb');
-var wrappers = require('pouchdb-wrappers');
 var utils = require('./pouch-utils');
 var CouchDbSecurity = require('./models').CouchDbSecurity;
 
@@ -37,8 +36,8 @@ var plugs = {
     return sift(query, selector);
   },
   enableSessions() {
-    if(this.sessions)
-      return this.sessions;
+    if(this._sessions)
+      return this._sessions;
 
     var ajax = this.constructor.ajax;
     var op = utils.toPromise((op, username, password, callback) => {
@@ -57,18 +56,18 @@ var plugs = {
       });
     });
 
-    this.sessions = {
+    this._sessions = {
       get: op.bind(null, 'get', null, null),
       add: op.bind(null, 'add'),
       rem: op.bind(null, 'rem', null, null),
       remove: op.bind(null, 'rem', null, null)
     }
 
-    return this.sessions;
+    return this._sessions;
   },
-  enablePermissions() {
-    if(this.permissions)
-      return this.permissions;
+  permissions() {
+    if(this._permissions)
+      return this._permissions;
 
     var op = utils.toPromise((function(op, group, target, value, callback) {
       if(typeof value == 'function') {
@@ -81,17 +80,17 @@ var plugs = {
         value = null;
       }
 
-      this.permissions.get()
+      this._permissions.get()
         .then(res => {
           return new CouchDbSecurity(res)[op](group, target, value);
         })
         .then(res => {
-          this.permissions.put(res, callback);
+          this._permissions.put(res, callback);
         })
         .catch(callback);
     }).bind(this));
 
-    this.permissions = {
+    this._permissions = {
       get: utils.toPromise((callback) => {
         this.request({
           method: 'GET',
@@ -120,11 +119,11 @@ var plugs = {
       remMemberRole: op.bind(null, 'rem', 'members', 'roles')
     }
 
-    return this.permissions;
+    return this._permissions;
   },
-  enableUsers() {
-    if(this.users)
-      return this.users;
+  users() {
+    if(this._users)
+      return this._users;
 
     var Promise = this.constructor.utils.Promise;
     var db = plugs.use.bind(this)('_users');
@@ -150,27 +149,41 @@ var plugs = {
     }
     db.generatePasswordHash = this.genPasswordHash;
 
-    var get = null;
+    var get = db.get.bind(db);
     var put = db.put.bind(db);
     var rem = db.remove.bind(db);
 
+    // TODO: Figure out why the weird func replacement behaviour.
     var op = utils.toPromise((function(op, user, callback) {
-      console.log('op', op, user)
+      // console.log('op', op, user)
       if(op == 'get' && user && (user._id || typeof user == 'string')) {
+        // console.log('get before', user)
         if(typeof user == 'string') {
           user = user.indexOf('org.couchdb.user:') != -1 ? user : 'org.couchdb.user:' + user;
           user = { _id: user }
         }
-        console.log('get before')
-        console.log(get)
-        get(user._id, callback);
-        console.log('get after')
+        // console.log('get before', user)
+        // console.log(get == db.get)
+        return get(user._id, (err, res) => {
+            if(err)
+              callback(err, res);
+            else {
+              user = Object.assign(res, user);
+              addUidProp(user);
+              callback(err, res);
+            }
+          });
+        // db.request({
+        //   method: 'GET',
+        //   url: user._id
+        // }, callback)
+        // console.log('get after')
       }
       else if(op == 'get') {
         return callback(new Error('[users] get() invalid arguments.'));
       }
 
-      if(op == 'put' && user && user._id && user._rev) {
+      if(op == 'put' && user) {
         return put(user, callback);
       }
       else if(op == 'put') {
@@ -196,45 +209,51 @@ var plugs = {
           delete user.password;
         }
 
-        return put(user, callback);
+        return put(user, (err, res) => {
+            if(err)
+              callback(err, res);
+            else {
+              user = Object.assign(res, user);
+              addUidProp(user);
+              delete user.ok;
+              callback(err, res);
+            }
+          });
       }
       else if(op == 'add') {
         return callback(new Error('[users] add() invalid arguments.'));
       }
 
-      if(op == 'rem' && user && user._id && user._rev) {
-        console.log('rem')
+      if(op == 'rem' && user) {
         return rem(user, callback);
       }
       else if(op == 'rem') {
         return callback(new Error('[users] rem() or remove() invalid arguments.'));
       }
 
-      console.log('whoops')
+      // console.log('whoops')
 
     }).bind(db));
 
-    this.users = db;
+    var addUidProp = obj => {
+      if(!obj.hasOwnProperty('uid')) {
+        Object.defineProperty(obj, 'uid', {
+          get: function() { return obj.roles ? obj.roles.find(el => el.indexOf('uid:') == 0) : null; },
+        });
+      }
+    }
+
+
     // this.users.op = op.bind(null);
 
-    var count = 0;
-    wrappers.installWrapperMethods(db, {
-      get(orig, args) {
-        count++;
-        console.log(count);
-        if(args.docId.indexOf('org.couchdb.user:') == -1)
-          args.docId = 'org.couchdb.user:' + args.docId;
-        return orig();
+    db.get = op.bind(null, 'get');
+    db.put = op.bind(null, 'put');
+    db.add = op.bind(null, 'add');
+    db.rem = op.bind(null, 'rem');
+    db.remove = op.bind(null, 'rem');
 
-      }
-    })
-    // this.users.get = op.bind(null, 'get');
-    // this.users.put = op.bind(null, 'put');
-    // this.users.add = op.bind(null, 'add');
-    // this.users.rem = op.bind(null, 'rem');
-    // this.users.remove = op.bind(null, 'rem');
-
-    return this.users;
+    this._users = db;
+    return this._users;
   }
 }
 

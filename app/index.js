@@ -1,3 +1,4 @@
+'use strict'
 var PouchDB = require('pouchdb');
 var express = require('express');
 var User = require('./lib/users').User;
@@ -85,11 +86,19 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-db.enableUsers().get('bob')
+db.users().get('jin')
   .then(console.log.bind(console))
   .catch(console.log.bind(console))
 
-
+// db.users().add({
+//   name: 'gin',
+//   password: 'gin'
+// })
+//   .then(res => {
+//     console.log(res);
+//     console.log(res.uid);
+//   })
+//   .catch(console.log.bind(console))
 
 
 // var _users = db.use('_users');
