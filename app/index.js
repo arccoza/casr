@@ -110,9 +110,9 @@ var users = new Users(db, {
 
 var toHex = db.stores().toHex;
 
-db.stores().get('userdb', '626f62')
-  .then(console.log.bind(console))
-  .catch(console.log.bind(console))
+// db.stores().rem('userdb', toHex('sam'))
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
 
 

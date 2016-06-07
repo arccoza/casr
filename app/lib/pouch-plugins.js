@@ -283,9 +283,6 @@ var plugs = {
       if(prefix)
         store = prefix[prefix.length - 1] == '/' ? prefix + store : prefix + '/' + store;
 
-      // if(isRemote)
-      //   store = nurl.resolve(this._db_name, '/' + encodeURIComponent(store));
-
       if(op == 'add') {
         opts.skip_setup = false;
         opts.skipSetup = false;
@@ -296,18 +293,6 @@ var plugs = {
       }
 
       var pdb = use(store, opts);
-
-      // if(op == 'get') {
-      //   return pdb.get('', (err, res) => {
-      //     if(err)
-      //       callback(err, res);
-      //     else {
-      //       res.db = pdb;
-      //       res.store = pdb;
-      //       callback(err, res);
-      //     }
-      //   });
-      // }
 
       if(op == 'get' || op == 'add') {
         return pdb.get('', (err, res) => {
