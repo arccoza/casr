@@ -8,10 +8,10 @@ var CouchDbSecurity = require('./models').CouchDbSecurity;
 
 
 var plugs = {
-  use: function(dbName) {
+  use: function(dbName, options) {
     var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
-    var opts = Object.assign({}, this.__opts);
-    opts.skip_setup = true;
+    var opts = options || Object.assign({}, this.__opts);
+    opts.skip_setup = !options ? true : opts.skip_setup;
 
     // dbName = encodeURIComponent(dbName);
 
@@ -21,7 +21,7 @@ var plugs = {
     if(this._db_name == dbName)
       return this;
     else
-      return new PouchDB(dbName, this.__opts);
+      return new PouchDB(dbName, opts);
   },
   findValidate: utils.toPromise(function(query, subject, callback) {
     try {
