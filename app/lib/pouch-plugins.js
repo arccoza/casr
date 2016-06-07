@@ -18,8 +18,9 @@ var plugs = {
     if(isRemote)
       dbName = nurl.resolve(this._db_name, '/' + encodeURIComponent(dbName));
 
-    if(this._db_name == dbName)
+    if(!options && this._db_name == dbName) {
       return this;
+    }
     else
       return new PouchDB(dbName, opts);
   },
