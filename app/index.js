@@ -110,7 +110,7 @@ var users = new Users(db, {
 
 var toHex = db.stores().toHex;
 
-db.stores().rem('userdb', '626f62')
+db.stores().get('userdb', '626f62')
   .then(console.log.bind(console))
   .catch(console.log.bind(console))
 

@@ -260,7 +260,12 @@ var plugs = {
     if(this._stores)
       return this._stores;
 
+    var use = plugs.use.bind(this);
+    var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
+
     var op = utils.toPromise((op, prefix, store, callback) => {
+      var opts = Object.assign({}, this.__opts);
+
       if(typeof store == 'function') {
         callback = store;
         store = prefix;
@@ -275,27 +280,55 @@ var plugs = {
         }
       }
 
-      if(prefix) {
+      if(prefix)
         store = prefix[prefix.length - 1] == '/' ? prefix + store : prefix + '/' + store;
-      }
 
-      if(op == 'get' && store) {
-        return callback(null, plugs.use.bind(this)(store));
-      }
+      // if(isRemote)
+      //   store = nurl.resolve(this._db_name, '/' + encodeURIComponent(store));
 
       if(op == 'add') {
-        var opts = this.__opts;
         opts.skip_setup = false;
         opts.skipSetup = false;
-        return callback(null, new PouchDB(store, opts));
+      }
+      else {
+        opts.skip_setup = true;
+        opts.skipSetup = true;
+      }
+
+      var pdb = use(store, opts);
+
+      // if(op == 'get') {
+      //   return pdb.get('', (err, res) => {
+      //     if(err)
+      //       callback(err, res);
+      //     else {
+      //       res.db = pdb;
+      //       res.store = pdb;
+      //       callback(err, res);
+      //     }
+      //   });
+      // }
+
+      if(op == 'get' || op == 'add') {
+        return pdb.get('', (err, res) => {
+          if(err)
+            callback(err, res);
+          else {
+            res.db = pdb;
+            res.store = pdb;
+            callback(err, res);
+          }
+        });
       }
 
       if(op == 'rem') {
-        var opts = this.__opts;
-        opts.skip_setup = true;
-        opts.skipSetup = true;
-        store = nurl.resolve(this._db_name, '/' + encodeURIComponent(store));
-        return (new PouchDB(store, opts)).destroy(opts, callback);
+        return pdb.get('', (err, res) => {
+          if(err)
+            callback(err, res);
+          else {
+            pdb.destroy(opts, callback);
+          }
+        });
       }
     });
 
