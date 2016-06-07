@@ -1,6 +1,7 @@
 'use strict'
 var PouchDB = require('pouchdb');
 var express = require('express');
+var bodyParser = require('body-parser');
 var User = require('./lib/users').User;
 var Users = require('./lib/users').Users;
 var pouchPlugs = require('./lib/pouch-plugins');
@@ -108,11 +109,12 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// var toHex = db.stores().toHex;
+var toHex = db.stores().toHex;
 
 // db.stores().rem('userdb', toHex('sam'))
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
+
 
 
 
@@ -127,8 +129,29 @@ app
   .get('/login', function (req, res) {
     res.render('login.jade')
   })
-  .post('/register', function (req, res) {
-    res.render('login.jade')
+  .get('/users/:id', function (req, res) {
+    // console.log(req.params, req.body);
+    res.json({ ok: true });
+  })
+  .put('/users/:id', bodyParser.json(), function (req, res) {
+    // console.log(req.params, req.body);
+    res.json([{ ok: true }]);
+  })
+  .post('/users/_bulk_docs', bodyParser.json(), function (req, res) {
+    console.log(req.params, req.body);
+    res.json([{ ok: true }]);
+  })
+  .delete('/users/:id', function (req, res) {
+    console.log(req.params, req.query, req.body);
+    res.json({ ok: true });
   });
 
-app.listen(8080);
+app.listen(8080, () => {
+  // console.log('here')
+  // var db2 = new PouchDB('http://localhost:8080/users', { skip_setup: true });
+  // db2.users('users').add({name: 'sam', password: 'sam'})
+  //   .then(console.log.bind(console))
+  //   .catch(console.log.bind(console))
+
+  // console.log(db2.getUrl())
+});

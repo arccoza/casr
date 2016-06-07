@@ -122,11 +122,13 @@ var plugs = {
 
     return this._permissions;
   },
-  users() {
-    if(this._users)
+  users(_users) {
+    if(this._users && !_users)
       return this._users;
+    else if(!_users)
+      _users = '_users';
 
-    var db = plugs.use.bind(this)('_users');
+    var db = plugs.use.bind(this)(_users);
     var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
     var isCloudant = isRemote && this._db_name.indexOf('cloudant') > -1;
 
@@ -165,8 +167,9 @@ var plugs = {
         // console.log('get before', user)
         // console.log(get == db.get)
         return get(user._id, (err, res) => {
-            if(err)
+            if(err) {
               callback(err, res);
+            }
             else {
               user = Object.assign(res, user);
               addUidProp(user);

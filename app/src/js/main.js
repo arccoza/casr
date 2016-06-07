@@ -1,24 +1,20 @@
 // var Vue = require('vue');
 // var PouchDB = require('pouchdb');
 import Vue from 'vue';
-import PouchDb from 'pouchdb';
+import PouchDB from 'pouchdb';
+import plugs from '../../lib/pouch-plugins';
 
 
-PouchDb.plugin(require('pouchdb-authentication'));
-// var remote = 'https://arccoza.cloudant.com/test';
-// var opts = {
-//     auth: {
-//       username: 'dautherhybertilsevandeve',
-//       password: '2268b00792833903a4e6a76fb567e7fa04cdc683'
-//     },
-//     continuous: true
-//   };
-// var db = new PouchDB('test');
+PouchDB.plugin(plugs);
 
-// db.replicate.to(remote, opts);
-// db.replicate.from(remote, opts);
 
-var db = new PouchDb('https://arccoza.cloudant.com/test', { skipSetup: true });
+var db = new PouchDB('http://localhost:8080/users', { skip_setup: true });
+
+db.users('users').add({name: 'sam', password: 'sam'})
+    .then(console.log.bind(console))
+    .catch(console.log.bind(console))
+
+
 // db.login('arccoza', 'carbonscape')
 //   .then(function(res) {
 //     console.log("I'm Batman.", res);
@@ -36,25 +32,25 @@ var db = new PouchDb('https://arccoza.cloudant.com/test', { skipSetup: true });
 //   .catch(err => {
 //     console.log(err);
 //   });
-var ajaxOpts = {
-  ajax: {
-    headers: {
-      Authorization: 'Basic ' + window.btoa('deanv' + ':' + 'think_tank')
-    }
-  }
-};
-db.login('deanv', 'think_tank', ajaxOpts)
-  .then(function(res) {
-    console.log("I'm Batman.", res);
+// var ajaxOpts = {
+//   ajax: {
+//     headers: {
+//       Authorization: 'Basic ' + window.btoa('deanv' + ':' + 'think_tank')
+//     }
+//   }
+// };
+// db.login('deanv', 'think_tank', ajaxOpts)
+//   .then(function(res) {
+//     console.log("I'm Batman.", res);
 
-    return res;
-  })
-  .then(res => {
-    return db.logout();
-  })
-  .catch(err => {
-    console.log(err);
-  });
+//     return res;
+//   })
+//   .then(res => {
+//     return db.logout();
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
 
 
 document.addEventListener('DOMContentLoaded', function() {
