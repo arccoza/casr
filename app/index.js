@@ -108,7 +108,7 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-var toHex = db.stores().toHex;
+// var toHex = db.stores().toHex;
 
 // db.stores().rem('userdb', toHex('sam'))
 //   .then(console.log.bind(console))

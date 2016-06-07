@@ -126,7 +126,6 @@ var plugs = {
     if(this._users)
       return this._users;
 
-    var Promise = this.constructor.utils.Promise;
     var db = plugs.use.bind(this)('_users');
     var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
     var isCloudant = isRemote && this._db_name.indexOf('cloudant') > -1;
@@ -261,7 +260,6 @@ var plugs = {
       return this._stores;
 
     var use = plugs.use.bind(this);
-    var isRemote = this._db_name.indexOf('http://') > -1 || this._db_name.indexOf('https://') > -1;
 
     var op = utils.toPromise((op, prefix, store, callback) => {
       var opts = Object.assign({}, this.__opts);
