@@ -250,8 +250,16 @@ var plugs = {
       if(!obj.hasOwnProperty('uid')) {
         Object.defineProperty(obj, 'uid', {
           get: function() {
-            var ret = obj.roles ? obj.roles.find(el => el.indexOf('uid:') == 0) : null;
-            return ret ? ret.slice(4) : null;
+            return obj.roles ? obj.roles.find(el => el.indexOf('uid:') == 0) : null;
+          }
+        });
+      }
+
+      if(!obj.hasOwnProperty('uidHash')) {
+        Object.defineProperty(obj, 'uidHash', {
+          get: function() {
+            var uid = obj.uid;
+            return uid ? uid.slice(4) : null;
           }
         });
       }
@@ -286,7 +294,7 @@ var plugs = {
 
       if(typeof store != 'string') {
         try {
-          store = (prefix ? '' : 'uid_') + store.uid;
+          store = (prefix ? '' : 'uid_') + store.uidHash;
         }
         catch(ex) {
           return callback(ex);
