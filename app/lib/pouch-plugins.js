@@ -182,26 +182,29 @@ var plugs = {
         // }, callback)
         // console.log('get after')
       }
-      else if(op == 'get') {
-        return callback(new Error('[users] get() invalid arguments.'));
-      }
+      // else if(op == 'get') {
+      //   return callback(new Error('[users] get() invalid arguments.'));
+      // }
 
       if(op == 'put' && user) {
         return put(user, callback);
       }
-      else if(op == 'put') {
-        return callback(new Error('[users] put() invalid arguments.'));
-      }
+      // else if(op == 'put') {
+      //   return callback(new Error('[users] put() invalid arguments.'));
+      // }
 
       if(op == 'add' && user && user.name && user.password) {
         var uid = this.genUid();
         user._id = user._id || 'org.couchdb.user:' + user.name;
         user.type = 'user';
+        addUidProp(user);
 
-        if(user.roles)
-          user.roles.unshift('uid:' + uid);
-        else
-          user.roles = ['uid:' + uid];
+        if(!user.uid) {
+          if(user.roles)
+            user.roles.unshift('uid:' + uid);
+          else
+            user.roles = ['uid:' + uid];
+        }
 
         if(isCloudant) {
           var hashAndSalt = this.genPasswordHash(user.password);
@@ -217,31 +220,39 @@ var plugs = {
               callback(err, res);
             else {
               user = Object.assign(res, user);
+              user._id = user.id || user._id;
+              user._rev = user.rev || user._rev;
               addUidProp(user);
+              delete user.id;
+              delete user.rev;
               delete user.ok;
               callback(err, res);
             }
           });
       }
-      else if(op == 'add') {
-        return callback(new Error('[users] add() invalid arguments.'));
-      }
+      // else if(op == 'add') {
+      //   return callback(new Error('[users] add() invalid arguments.'));
+      // }
 
       if(op == 'rem' && user) {
         return rem(user, callback);
       }
-      else if(op == 'rem') {
-        return callback(new Error('[users] rem() or remove() invalid arguments.'));
-      }
+      // else if(op == 'rem') {
+      //   return callback(new Error('[users] rem() or remove() invalid arguments.'));
+      // }
 
       // console.log('whoops')
+      return callback(new Error('[users] ' + op + '() invalid arguments.'));
 
     }).bind(db));
 
     var addUidProp = obj => {
       if(!obj.hasOwnProperty('uid')) {
         Object.defineProperty(obj, 'uid', {
-          get: function() { return obj.roles ? obj.roles.find(el => el.indexOf('uid:') == 0) : null; },
+          get: function() {
+            var ret = obj.roles ? obj.roles.find(el => el.indexOf('uid:') == 0) : null;
+            return ret ? ret.slice(4) : null;
+          }
         });
       }
     }

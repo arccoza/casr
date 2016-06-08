@@ -10,9 +10,28 @@ PouchDB.plugin(plugs);
 
 var db = new PouchDB('http://localhost:8080/users', { skip_setup: true });
 
-db.users('users').add({name: 'sam', password: 'sam'})
-    .then(console.log.bind(console))
-    .catch(console.log.bind(console))
+// db.users('users').get('sam')
+//   .then(rep => db.users().rem(rep))
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+db.users('users').add({ name: 'jin', password: 'jin' })
+  .then(console.log.bind(console))
+  .catch(console.log.bind(console))
+
+// var opts = {
+//     skipSetup: true,
+//     auth: {
+//       username: 'arccoza',
+//       password: 'carbonscape'
+//     }
+//   };
+// var db = new PouchDB('https://arccoza.cloudant.com/_users', opts);
+
+// db.bulkDocs([
+//   {name : 'sam', _id: 'org.couchdb.user:sam'}
+// ])
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
 
 // db.login('arccoza', 'carbonscape')

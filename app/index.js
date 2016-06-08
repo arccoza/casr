@@ -15,7 +15,7 @@ PouchDB.plugin(pouchPlugs);
 // PouchDB.plugin(require('pouchdb-authentication'));
 // PouchDB.plugin(require('pouchdb-auth'));
 // PouchDB.plugin(require('pouchdb-security'));
-var remote = 'https://arccoza.cloudant.com/userdb%2F626f62';
+var remote = 'https://arccoza.cloudant.com/_users';
 var opts = {
     skipSetup: true,
     auth: {
@@ -29,12 +29,12 @@ var opts = {
   };
 var db = new PouchDB(remote, opts);
 
-var users = new Users(db, {
-  auth: {
-    username: 'arccoza',
-    password: 'carbonscape'
-  }
-});
+// var users = new Users(db, {
+//   auth: {
+//     username: 'arccoza',
+//     password: 'carbonscape'
+//   }
+// });
 
 // console.log(db.type())
 // db.info()
@@ -109,13 +109,19 @@ var users = new Users(db, {
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-var toHex = db.stores().toHex;
 
 // db.stores().rem('userdb', toHex('sam'))
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
+// db.stores().add('sam')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
+
+var users = db.users();
+var stores = db.stores();
+var toHex = db.stores().toHex;
 
 
 var app = express();
