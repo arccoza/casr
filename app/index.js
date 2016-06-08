@@ -167,7 +167,19 @@ app
       });
   })
   .delete('/users/:id', function (req, res) {
-    users.rem({ _id: req.params.id, _rev: req.query.rev })
+    // users.rem({ _id: req.params.id, _rev: req.query.rev })
+    //   .then(rep => res.json(rep))
+    //   .catch(err => res.status(err.status).json(err));
+    var user = {};
+
+    users.get(req.params.id)
+      .then(rep => {
+        user = rep;
+        return stores.rem(user);
+      })
+      .then(rep => {
+        return users.rem(user);
+      })
       .then(rep => res.json(rep))
       .catch(err => res.status(err.status).json(err));
   });
