@@ -189,9 +189,6 @@ var plugs = {
       if(op == 'put' && user) {
         return put(user, callback);
       }
-      // else if(op == 'put') {
-      //   return callback(new Error('[users] put() invalid arguments.'));
-      // }
 
       if(op == 'add' && user && user.name && user.password) {
         var uid = this.genUid();
@@ -230,16 +227,10 @@ var plugs = {
             }
           });
       }
-      // else if(op == 'add') {
-      //   return callback(new Error('[users] add() invalid arguments.'));
-      // }
 
       if(op == 'rem' && user) {
         return rem(user, callback);
       }
-      // else if(op == 'rem') {
-      //   return callback(new Error('[users] rem() or remove() invalid arguments.'));
-      // }
 
       // console.log('whoops')
       return callback(new Error('[users] ' + op + '() invalid arguments.'));
