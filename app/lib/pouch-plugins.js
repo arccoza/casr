@@ -281,11 +281,12 @@ var plugs = {
       if(typeof store == 'function') {
         callback = store;
         store = prefix;
+        prefix = null;
       }
 
       if(typeof store != 'string') {
         try {
-          store = store.uid;
+          store = (prefix ? '' : 'uid_') + store.uid;
         }
         catch(ex) {
           return callback(ex);
@@ -311,8 +312,8 @@ var plugs = {
           if(err)
             callback(err, res);
           else {
-            res.db = pdb;
-            res.store = pdb;
+            // res.db = pdb;
+            // res.store = pdb;
             callback(err, res);
           }
         });
