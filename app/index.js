@@ -136,20 +136,40 @@ app
     res.render('login.jade')
   })
   .get('/users/:id', function (req, res) {
-    // console.log(req.params, req.body);
-    res.json({ ok: true });
+    users.get(req.params.id)
+      .then(rep => res.json(rep))
+      .catch(err => res.status(err.status).json(err));
   })
-  .put('/users/:id', bodyParser.json(), function (req, res) {
-    // console.log(req.params, req.body);
-    res.json([{ ok: true }]);
-  })
+  // .put('/users/:id', bodyParser.json(), function (req, res) {
+  //   // console.log(req.params, req.body);
+  //   res.json([{ ok: true }]);
+  // })
   .post('/users/_bulk_docs', bodyParser.json(), function (req, res) {
-    console.log(req.params, req.body);
-    res.json([{ ok: true }]);
+    var user = {};
+
+    users.add(req.body.docs[0])
+      .then(rep => {
+        user = rep;
+        console.log('add user: \n', rep)
+        return stores.add(rep);
+      })
+      .then(rep => {
+        console.log('add store: \n', rep);
+        return db.use(rep.db_name).permissions().add('admins', { roles: [user.uid, 'admins'] });
+      })
+      .then(rep => {
+        console.log('set permissions: \n', rep);
+        return res.json([user]);
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json([err])
+      });
   })
   .delete('/users/:id', function (req, res) {
-    console.log(req.params, req.query, req.body);
-    res.json({ ok: true });
+    users.rem({ _id: req.params.id, _rev: req.query.rev })
+      .then(rep => res.json(rep))
+      .catch(err => res.status(err.status).json(err));
   });
 
 app.listen(8080, () => {
