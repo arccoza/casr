@@ -10,11 +10,12 @@ PouchDB.plugin(plugs);
 
 var db = new PouchDB('http://localhost:8080/users', { skip_setup: true });
 
-// db.users('users').get('sam')
-//   .then(rep => db.users().rem(rep))
+// db.users('users').add({name: 'jin', password: 'jin'})
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
-db.users('users').add({ name: 'jin', password: 'jin' })
+
+db.users('users').get('jin')
+  .then(rep => db.users().rem(rep))
   .then(console.log.bind(console))
   .catch(console.log.bind(console))
 
