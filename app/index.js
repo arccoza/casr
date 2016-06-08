@@ -155,7 +155,7 @@ app
       })
       .then(rep => {
         console.log('add store: \n', rep);
-        return db.use(rep.db_name).permissions().add('admins', { roles: [user.uid, 'admins'] });
+        return rep.store.permissions().add('admins', { roles: [user.uid, 'admins'] });
       })
       .then(rep => {
         console.log('set permissions: \n', rep);

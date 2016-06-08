@@ -322,6 +322,7 @@ var plugs = {
           else {
             // res.db = pdb;
             // res.store = pdb;
+            addStoreProp(res, pdb);
             callback(err, res);
           }
         });
@@ -337,6 +338,16 @@ var plugs = {
         });
       }
     });
+
+    var addStoreProp = (obj, store) => {
+      if(!obj.hasOwnProperty('store')) {
+        Object.defineProperty(obj, 'store', {
+          get: function() {
+            return store;
+          }
+        });
+      }
+    }
 
     this.constructor.prototype._stores = {
       get: op.bind(null, 'get'),
