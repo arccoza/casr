@@ -294,7 +294,7 @@ var plugs = {
       }
 
       if(prefix)
-        store = prefix[prefix.length - 1] == '/' ? prefix + store : prefix + '/' + store;
+        store = prefix + store;
 
       if(op == 'add') {
         opts.skip_setup = false;
