@@ -116,15 +116,15 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log(glyph);
 
   var app = new Vue({
-    el: '#app',
+    el: '#test-app',
     data: {},
     components: {
       glyphs,
       glyph,
-      'ui-tgl': toggle,
-      'ui-swt': _switch,
-      'ui-btn': button,
-      'ui-fld': field
+      tgl: toggle,
+      swt: _switch,
+      btn: button,
+      fld: field
     },
     methods: {
       logger(ev) {

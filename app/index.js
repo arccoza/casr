@@ -132,8 +132,8 @@ app
   .get('/', function (req, res) {
     res.render('index.jade')
   })
-  .get('/login', function (req, res) {
-    res.render('login.jade')
+  .get('/app', function (req, res) {
+    res.render('app.jade');
   })
   .get('/users/:id', function (req, res) {
     users.get(req.params.id)
