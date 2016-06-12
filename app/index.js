@@ -132,7 +132,7 @@ app
   .get('/', function (req, res) {
     res.render('index.jade')
   })
-  .get('/app', function (req, res) {
+  .get('/app*', function (req, res) {
     res.render('app.jade');
   })
   .get('/users/:id', function (req, res) {

@@ -1,8 +1,8 @@
 // var Vue = require('vue');
 // var PouchDB = require('pouchdb');
 import Vue from 'vue';
-import PouchDB from 'pouchdb';
-import plugs from '../../lib/pouch-plugins';
+// import PouchDB from 'pouchdb';
+// import plugs from '../../lib/pouch-plugins';
 
 
 // PouchDB.plugin(plugs);
@@ -74,64 +74,36 @@ import plugs from '../../lib/pouch-plugins';
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  // var login = new Vue({
-  //   el: '.login',
-  //   data: {
-  //     username: null,
-  //     usernamePlaceholder: 'username pls.',
-  //     password: null,
-  //     passwordPlaceholder: 'password pls.',
+
+  var app = require('./app')();
+  app.start();
+
+
+  // var glyphs = require('./components/glyphs.vue');
+  // var glyph = require('./components/glyph.vue');
+  // var toggle = require('./components/toggle.vue');
+  // var _switch = require('./components/switch.vue');
+  // var button = require('./components/button.vue');
+  // var field = require('./components/field.vue');
+  // console.log(glyph);
+
+  // var app = new Vue({
+  //   el: '#app',
+  //   data: {},
+  //   components: {
+  //     glyphs,
+  //     glyph,
+  //     'ui-tgl': toggle,
+  //     'ui-swt': _switch,
+  //     'ui-btn': button,
+  //     'ui-fld': field
   //   },
   //   methods: {
-  //     change: function() {
-  //       console.log(this.username, this.password);
-  //       db.get('d647546531f85a7d57ba714c033c122e').then(res => {
-  //         if(this.password)
-  //           res.password = this.password;
-
-  //         if(this.username)
-  //           res.username = this.username;
-
-  //         console.log(res);
-  //         return db.put(res);
-  //       }).catch(err => {
-  //         console.log(err);
-  //       });
+  //     logger(ev) {
+  //       console.log(ev);
   //     }
   //   }
   // });
-
-
-  // db.get('d647546531f85a7d57ba714c033c122e').then(function(res) {
-  //   // console.log(login);
-  //   login.username = res.username;
-  // });
-
-  var glyphs = require('./components/glyphs.vue');
-  var glyph = require('./components/glyph.vue');
-  var toggle = require('./components/toggle.vue');
-  var _switch = require('./components/switch.vue');
-  var button = require('./components/button.vue');
-  var field = require('./components/field.vue');
-  console.log(glyph);
-
-  var app = new Vue({
-    el: '#app',
-    data: {},
-    components: {
-      glyphs,
-      glyph,
-      'ui-tgl': toggle,
-      'ui-swt': _switch,
-      'ui-btn': button,
-      'ui-fld': field
-    },
-    methods: {
-      logger(ev) {
-        console.log(ev);
-      }
-    }
-  });
 
   // console.log(app);
 
