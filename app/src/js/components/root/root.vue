@@ -10,7 +10,15 @@
     a(v-link="{name: 'auth'}") login
     a(v-link="{name: 'auth'}") login
     hr
+
   v-view
+    svg.busy.ribbon
+      defs
+        circle(id="ribbon-circle", cx="50%", cy="50%", r="50%", fill="none", clip-path="url(#ribbon-circle-clip)")
+        clipPath(id="ribbon-circle-clip")
+          use(xlink:href="#ribbon-circle")
+
+      use(class="ribbon__circle", xlink:href="#ribbon-circle", x="0", y="0")
 
 </template>
 
@@ -72,6 +80,7 @@ export default {
   methods: {
 
   },
-  mixins: require('../mixins.js')
+  mixins: require('../mixins.js'),
+  components: require('../ui')
 }
 </script>

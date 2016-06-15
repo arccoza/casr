@@ -5,8 +5,8 @@
 /*@import "_partials/budicon.css";*/
 
 ::selection {
-  color: #000;
-  background: #d59527;
+  color: #fff;
+  background: #1d82da;
 }
 
 html, body {
@@ -32,11 +32,11 @@ a {
   text-decoration: none;
 }
 a, a:link, a:visited {
-  color: #d59527;
+  color: #1d82da;
 }
 a:active, a:hover {
   /*color: #95b2b2;*/
-  color: #d59527;
+  color: #1d82da;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -45,7 +45,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 1.25em;
   margin-bottom: 0.75em;
   padding-bottom: 0.25em;
-  border-bottom: 1px solid #f0f0f0;
+  /*border-bottom: 1px solid #f0f0f0;*/
   /*border-bottom: 1px solid rgba(0,0,0,0.1);*/
   color: #222;
   font-family: 'Catamaran', sans-serif;
@@ -465,4 +465,44 @@ pre {
 }
 .field--disabled.field--float-hint.field--filled .field__hint, .field--disabled.field--float-hint.field--focus .field__hint {
   color: rgba(0,0,0,0.4);
+}
+
+
+.ribbon {
+}
+
+.ribbon__circle {
+  stroke: #1d82da;
+  stroke-width: 2px;
+  stroke-opacity: 0.5;
+  stroke-dasharray: 39.25%;
+  stroke-dashoffset: 235.25%;
+
+  /*transform: rotate(-90deg) translate(-100%, 0);*/
+  animation: ribbon 1s linear infinite;
+}
+
+/* clip-path="url(#ribbon)" */
+/* clipPathUnits="objectBoundingBox" */
+
+@keyframes ribbon {
+  to {
+    stroke-dasharray: 314%;
+    stroke-dashoffset: 314%;
+  }
+}
+
+
+
+
+
+/*-------------------------------------------------*/
+.busy.ribbon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -150px;
+  width: 300px;
+  height: 300px;
 }

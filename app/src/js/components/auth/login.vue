@@ -77,6 +77,7 @@ export default {
   methods: {
 
   },
-  mixins: require('../mixins.js')
+  mixins: require('../mixins.js'),
+  components: require('../ui')
 }
 </script>
