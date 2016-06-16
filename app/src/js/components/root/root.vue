@@ -3,13 +3,26 @@
 </style>
 
 <template lang="jade">
+  glyphs
   .main
-    h1
-      |Main page
-    a(v-link="{name: 'auth'}") login
-    a(v-link="{name: 'auth'}") login
-    a(v-link="{name: 'auth'}") login
-    hr
+    h1 Main page
+    ul.main-menu
+      li
+        a(v-link="{name: 'accommodation'}") Accommodation
+      li
+        a(v-link="{name: 'reservations'}") Reservations
+      li
+        a(v-link="{name: 'users'}") Users
+      li
+        a(v-link="{name: 'auth.register'}") Register
+      li
+        a(v-link="{name: 'auth.login'}") Login
+      li.rem
+        ui-btn(look="round, negative")
+          glyph(kind="interface-minus")
+      li.add
+        ui-btn(look="round")
+          glyph(kind="interface-plus")
 
   v-view
     svg.busy.ribbon

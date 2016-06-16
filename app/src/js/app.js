@@ -24,12 +24,12 @@ module.exports = function() {
       //   return { redirect: 'not_allowed' };
       // }
       console.log(ctx);
-      if(ctx.state.parentState &&
-        ctx.state.parentState.name == 'auth' &&
-        ctx.state.name != 'auth.login' &&
-        ctx.state.name != 'auth.register' ) {
-        return { redirect: 'auth.login' }
-      }
+      // if(ctx.state.parentState &&
+      //   ctx.state.parentState.name == 'auth' &&
+      //   ctx.state.name != 'auth.login' &&
+      //   ctx.state.name != 'auth.register' ) {
+      //   return { redirect: 'auth.login' }
+      // }
 
       // sessions.get()
       //     .then(rep => {
@@ -56,7 +56,7 @@ module.exports = function() {
   app.add('auth', {
     parent: 'root',
     path: '/auth',
-    // redirect: 'auth.login'
+    redirect: 'auth.login'
     // component: require('./components/auth/login.vue')
   });
 

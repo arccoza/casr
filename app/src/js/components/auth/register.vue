@@ -3,8 +3,8 @@
 </style>
 
 <template lang="jade">
-  .register
-    h1
+  .register(style="text-align:center;")
+    h2
       |Register
     ui-fld(value="", feel="floatHint")
       span(slot="hint")
