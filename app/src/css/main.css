@@ -527,11 +527,15 @@ pre {
   position: relative;
   display: inline-block;
   padding: 0.5em 0;
+  border-bottom: 2px solid transparent;
   margin: 0 1em;
+  transform: translateY(2px);
 }
 .main-menu > li > a:hover, .main-menu > li > a.here {
-  top: 2px;
-  border-bottom: 2px solid #1d82da;
+  /*top: 2px;*/
+  /*transform: translateY(2px);*/
+  /*border-bottom: 2px solid #1d82da;*/
+  border-color: #1d82da;
 }
 /*.main-menu > li:nth-child(1) {
   top: 0;

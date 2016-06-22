@@ -3,41 +3,27 @@
 </style>
 
 <template lang="jade">
-  glyphs
+  //- glyphs
   .main
-    h1 Main page
-    ul.main-menu
-      li
-        a(v-link="{name: 'accommodation'}") Accommodation
-      li
-        a(v-link="{name: 'reservations'}") Reservations
-      li
-        a(v-link="{name: 'users'}") Users
-      li
-        a(v-link="{name: 'auth.register'}") Register
-      li
-        a(v-link="{name: 'auth.login'}") Login
-      li.rem
-        ui-btn(look="round, negative")
-          glyph(kind="interface-minus")
-      li.add
-        ui-btn(look="round")
-          glyph(kind="interface-plus")
+    app-menu
 
-  v-view
-    svg.busy.ribbon
-      defs
-        circle(id="ribbon-circle", cx="50%", cy="50%", r="50%", fill="none", clip-path="url(#ribbon-circle-clip)")
-        clipPath(id="ribbon-circle-clip")
-          use(xlink:href="#ribbon-circle")
-
-      use(class="ribbon__circle", xlink:href="#ribbon-circle", x="0", y="0")
+    v-view
+      svg.busy.ribbon
+        defs
+          circle(id="ribbon-circle", cx="50%", cy="50%", r="50%", fill="none", clip-path="url(#ribbon-circle-clip)")
+          clipPath(id="ribbon-circle-clip")
+            use(xlink:href="#ribbon-circle")
+        use(class="ribbon__circle", xlink:href="#ribbon-circle", x="0", y="0")
 
 </template>
 
 <script>
 import Lie from 'lie';
 
+
+// var comps = Object.assign(require('../ui'), {
+//   'app-menu': require('../app-menu.vue')
+// });
 
 export default {
   data() {
@@ -94,6 +80,8 @@ export default {
 
   },
   mixins: require('../mixins.js'),
-  components: require('../ui')
+  components: {
+    'app-menu': require('../app-menu.vue')
+  }
 }
 </script>

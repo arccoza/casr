@@ -6,15 +6,15 @@
   .login(style="text-align:center;")
     h2
       |Login
-    ui-fld(value="", feel="floatHint")
+    ui-fld(name="username", value="", feel="floatHint")
       span(slot="hint")
         |email
     br
-    ui-fld(value="", feel="floatHint, password")
+    ui-fld(name="password", value="", feel="floatHint, password")
       span(slot="hint")
         |password
     br
-    ui-btn
+    ui-btn(@press-up="tap")
       |LOGIN
 
 </template>
@@ -29,7 +29,15 @@ export default {
 
     }
   },
-  mixins: require('../mixins.js'),
+  computed: {
+
+  },
+  methods: {
+    tap(ev) {
+      console.log(ev);
+    }
+  },
+  mixins: require('../mixins'),
   components: require('../ui')
 }
 </script>
