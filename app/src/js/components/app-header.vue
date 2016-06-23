@@ -7,11 +7,11 @@
     h1 Main page
     ul.main-menu
       li
-        //- a(v-link="{name: 'accommodation'}", v-if="show.accommodation") Accommodation
+        a(v-link="{name: 'accommodation'}", v-if="show.accommodation") Accommodation
       li
-        //- a(v-link="{name: 'reservations'}", v-if="show.reservations") Reservations
+        a(v-link="{name: 'reservations'}", v-if="show.reservations") Reservations
       li
-        //- a(v-link="{name: 'users'}", v-if="show.users") Users
+        a(v-link="{name: 'users'}", v-if="show.users") Users
       li
         a(v-link="{name: 'auth.register'}", v-if="show.register") Register
       li
@@ -28,9 +28,6 @@
 </template>
 
 <script>
-import Lie from 'lie';
-
-
 export default {
   data() {
     return {
@@ -54,8 +51,7 @@ export default {
         }
       }
     }
-  },
-  // mixins: require('./mixins'),
-  components: require('./ui')
+  }
+  // mixins: require('./mixins')
 }
 </script>

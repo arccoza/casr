@@ -36,8 +36,7 @@ export default {
     tap(ev) {
       console.log(ev);
     }
-  },
-  mixins: require('../mixins'),
-  components: require('../ui')
+  }
+  // mixins: require('../mixins')
 }
 </script>

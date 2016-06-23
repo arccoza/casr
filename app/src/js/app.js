@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import comps from './components/comps';
 import { StateManager } from 'voie';
 import PouchDB from 'pouchdb';
 import plugs from '../../lib/pouch-plugins';
@@ -11,6 +12,8 @@ var remoteDb = new PouchDB('https://arccoza.cloudant.com/_users', { skip_setup: 
 var sessions = remoteDb.sessions();
 var localDb = new PouchDB('users', { skip_setup: true });
 var stores = localDb.stores();
+
+comps(Vue);
 
 
 module.exports = function() {

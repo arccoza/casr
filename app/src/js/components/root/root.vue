@@ -5,7 +5,8 @@
 <template lang="jade">
   //- glyphs
   .main
-    app-menu
+    glyphs
+    app-header
 
     v-view
       svg.busy.ribbon
@@ -18,13 +19,6 @@
 </template>
 
 <script>
-import Lie from 'lie';
-
-
-// var comps = Object.assign(require('../ui'), {
-//   'app-menu': require('../app-menu.vue')
-// });
-
 export default {
   data() {
     return {
@@ -78,10 +72,7 @@ export default {
   },
   methods: {
 
-  },
-  mixins: require('../mixins.js'),
-  components: {
-    'app-menu': require('../app-menu.vue')
   }
+  // mixins: require('../mixins.js')
 }
 </script>

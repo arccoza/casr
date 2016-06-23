@@ -28,8 +28,7 @@ export default {
     return {
 
     }
-  },
-  mixins: require('../mixins.js'),
-  components: require('../ui')
+  }
+  // mixins: require('../mixins.js')
 }
 </script>
