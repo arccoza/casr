@@ -13,7 +13,7 @@
   <label :class="classes.container">
     <span :class="classes.inner">
       <span :class="classes.hint" v-if="this.feel.hint || this.feel.floatHint"><slot name="hint"></slot></span>
-      <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" :value="value" :type="inputType" :disabled="isDisabled"></input>
+      <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" v-model="value" :type="inputType" :disabled="isDisabled"></input>
       <span :class="classes.messageStart"></span>
       <span :class="classes.messageEnd"></span>
     </span>
@@ -192,7 +192,7 @@ export default {
       });
 
       this.value = ev.target.value;
-      console.log(ev, this.value);
+      // console.log(ev, this.value);
     },
     focusInOut(ev) {
       if(ev.type == "focus")

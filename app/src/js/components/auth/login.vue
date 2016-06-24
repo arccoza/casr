@@ -4,17 +4,21 @@
 
 <template lang="jade">
   .login(style="text-align:center;")
-    h2
+    h2(v-if="isRegister")
+      |Register
+    h2(v-else)
       |Login
-    ui-fld(name="username", value="", feel="floatHint")
+    ui-fld(name="username", :value.sync="username", feel="floatHint")
       span(slot="hint")
         |email
     br
-    ui-fld(name="password", value="", feel="floatHint, password")
+    ui-fld(name="password", :value.sync="password", feel="floatHint, password")
       span(slot="hint")
         |password
     br
-    ui-btn(@press-up="tap")
+    ui-btn(@tap="register", v-if="isRegister")
+      |REGISTER
+    ui-btn(@tap="login", v-else)
       |LOGIN
 
 </template>
@@ -26,15 +30,19 @@ import Lie from 'lie';
 export default {
   data() {
     return {
-
+      username: null,
+      password: null
     }
   },
   computed: {
 
   },
   methods: {
-    tap(ev) {
-      console.log(ev);
+    register(ev) {
+      this.goto({ name: 'do.auth.register' });
+    },
+    login(ev) {
+      this.goto({ name: 'do.auth.login', params: { username: this.username, password: this.password } });
     }
   }
   // mixins: require('../mixins')

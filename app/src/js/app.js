@@ -12,7 +12,7 @@ var remoteDb = new PouchDB('https://arccoza.cloudant.com/_users', { skip_setup: 
 var sessions = remoteDb.sessions();
 var localDb = new PouchDB('users', { skip_setup: true });
 var stores = localDb.stores();
-
+var Promise = PouchDB.utils.Promise;
 comps(Vue);
 
 
@@ -26,7 +26,7 @@ module.exports = function() {
       // if (ctx.state.name === 'private') {
       //   return { redirect: 'not_allowed' };
       // }
-      console.log(ctx);
+      // console.log(ctx);
       // if(ctx.state.parentState &&
       //   ctx.state.parentState.name == 'auth' &&
       //   ctx.state.name != 'auth.login' &&
@@ -45,34 +45,124 @@ module.exports = function() {
       //     .catch(err => { redirect: 'auth.login' })
     }
   });
+  var goto = app.go.bind(app);
+  var root = null;
+
+  function userCheck(ctx) {
+    if(!user) {
+      return sessions.get()
+        .then(rep => {
+          if(rep.userCtx.name)
+            return rep.userCtx;
+          else
+            throw rep.userCtx;
+        })
+        .then(rep => {
+          user = rep;
+          ctx.data.user = user;
+          return user;
+        })
+        .catch(err => {
+          return { redirect: 'auth.login' }
+        })
+    }
+  }
+
+  function userLogin(ctx, username, password) {
+    if(!user) {
+      return sessions.add(username, password)
+        .then(rep => {
+          user = rep.userCtx;
+          ctx.data.user = user;
+          return user;
+        })
+        .catch(err => {
+          return { redirect: 'auth.login' }
+        })
+    }
+  }
 
   app.add('root', {
     path: '/',
+    redirect: 'do.auth',
+    enter(ctx) {
+      root = ctx;
+      ctx.data = {
+        goto: goto,
+        pageTitle: '...',
+        menuItems: { register: true, login: true },
+        isBusy: false,
+        busyMsg: 'Working...'
+      }
+    },
     component: require('./components/root/root.vue')
   });
 
-  // app.add('busy', {
-  //   parent: 'root',
-  //   component: require('./components/root/busy.vue')
-  // });
+  app.add('do', {
+    parent: 'root',
+    enter(ctx) {
+      root.vm.isBusy = true;
+      root.vm.busyMsg = 'Working...';
+    }
+  });
 
   app.add('auth', {
     parent: 'root',
     path: '/auth',
-    redirect: 'auth.login'
-    // component: require('./components/auth/login.vue')
+    redirect: 'auth.login',
+    enter(ctx) {
+      root.vm.isBusy = false;
+      root.vm.busyMsg = 'Working...';
+      console.log('--auth--');
+    }
   });
 
   app.add('auth.login', {
-    // parent: 'auth',
+    parent: 'auth',
     path: '/auth/login',
+    enter(ctx) {
+      root.vm.$set('pageTitle', 'Authenticate');
+    },
     component: require('./components/auth/login.vue')
   });
 
   app.add('auth.register', {
-    // parent: 'auth',
+    parent: 'auth',
     path: '/auth/register',
-    component: require('./components/auth/register.vue')
+    enter(ctx) {
+      root.vm.$set('pageTitle', 'Authenticate');
+      ctx.data.isRegister = true;
+    },
+    component: require('./components/auth/login.vue')
+  });
+
+  app.add('do.auth', {
+    parent: 'do',
+    enter(ctx) {
+      var userPrm = userCheck(ctx);
+      // userPrm.catch(rep => ctx.data.menuItems = { register: true, login: true })
+
+      return userPrm;
+    }
+  });
+
+  app.add('do.auth.register', {
+    parent: 'do',
+    enter(ctx) {
+      root.vm.busyMsg = 'Registering...';
+    }
+  });
+
+  app.add('do.auth.login', {
+    parent: 'do',
+    params: {
+      username: null,
+      password: null
+    },
+    enter(ctx) {
+      root.vm.busyMsg = 'Logging in...';
+      console.log(ctx)
+    }
   });
 
   return app;

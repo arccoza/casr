@@ -473,8 +473,8 @@ pre {
 
 .ribbon__circle {
   stroke: #1d82da;
-  stroke-width: 2px;
-  stroke-opacity: 0.5;
+  stroke-width: 4px;
+  stroke-opacity: 0.25;
   stroke-dasharray: 39.25%;
   stroke-dashoffset: 235.25%;
 
@@ -487,6 +487,7 @@ pre {
 
 @keyframes ribbon {
   to {
+    /*stroke-width: 2px;*/
     stroke-dasharray: 314%;
     stroke-dashoffset: 314%;
   }
@@ -497,7 +498,7 @@ pre {
 
 
 /*-------------------------------------------------*/
-.busy.ribbon {
+.busy {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -505,6 +506,18 @@ pre {
   margin-left: -150px;
   width: 300px;
   height: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+}
+.busy .ribbon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .main-menu {

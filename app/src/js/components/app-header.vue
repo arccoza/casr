@@ -4,7 +4,7 @@
 
 <template lang="jade">
   .header
-    h1 Main page
+    h1 {{title}}
     ul.main-menu
       li
         a(v-link="{name: 'accommodation'}", v-if="show.accommodation") Accommodation
@@ -50,7 +50,8 @@ export default {
           rem: true
         }
       }
-    }
+    },
+    title: String
   }
   // mixins: require('./mixins')
 }
