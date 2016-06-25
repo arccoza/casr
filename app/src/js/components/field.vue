@@ -14,8 +14,10 @@
     <span :class="classes.inner">
       <span :class="classes.hint" v-if="this.feel.hint || this.feel.floatHint"><slot name="hint"></slot></span>
       <input :class="classes.input" @change="change" @keyup="change" @focus="focusInOut" @blur="focusInOut" :name="name" v-model="value" :type="inputType" :disabled="isDisabled"></input>
-      <span :class="classes.messageStart"></span>
-      <span :class="classes.messageEnd"></span>
+      <span :class="classes.messages">
+        <span :class="classes.messageStart"><slot name="messageStart"></slot></span>
+        <span :class="classes.messageEnd"><slot name="messageEnd"></slot></span>
+      </span>
     </span>
   </label>
 </template>
@@ -148,6 +150,9 @@ export default {
         },
         input: {
           'field__input': true
+        },
+        messages: {
+          'field__msgs': true
         },
         messageStart: {
           'field__msg-start': true

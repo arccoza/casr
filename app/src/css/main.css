@@ -467,6 +467,24 @@ pre {
   color: rgba(0,0,0,0.4);
 }
 
+.field__msgs {
+  position: absolute;
+  bottom: -1.25em;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: #d81e1e;
+}
+.field__msg-start, .field__msg-end {
+  font-size: 0.8em;
+}
+.field__msg-start {
+  margin-right: 0.2em;
+}
+
 
 .ribbon {
 }
@@ -571,4 +589,9 @@ pre {
 .main-menu > li.add .button {
   top: calc(1.2rem + 2px);
   font-size: 1.2rem;
+}
+
+
+.login__error, .logout__error {
+  color: #d81e1e;
 }

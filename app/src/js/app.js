@@ -82,6 +82,8 @@ module.exports = function() {
           return { redirect: 'auth.login' }
         })
     }
+    else
+      return ds.data.user;
   }
 
   function userLogin(ctx, username, password) {
@@ -90,10 +92,28 @@ module.exports = function() {
         .then(rep => {
           ds.data.user = rep.userCtx;
           ctx.data.user = ds.data.user;
-          return ds.data.user;
+          // ds.data.menuItems = { logout: true };
+          return { redirect: 'root' };
         })
         .catch(err => {
+          ds.data.auth.error = err.reason;
           return { redirect: 'auth.login' }
+        })
+    }
+  }
+
+  function userLogout(ctx) {
+    if(!ds.data.user) {
+      return sessions.rem()
+        .then(rep => {
+          ds.data.user = null;
+          ctx.data.user = ds.data.user;
+          // ds.data.menuItems = { register: true, login: true };
+          return { redirect: 'auth.login' };
+        })
+        .catch(err => {
+          ds.data.auth.error = err.reason;
+          return { redirect: 'auth.logout' }
         })
     }
   }
@@ -107,6 +127,7 @@ module.exports = function() {
         data: ds.data,
         goto: goto
       }
+      console.log('--root--')
     },
     component: require('./components/root/root.vue')
   });
@@ -119,41 +140,91 @@ module.exports = function() {
     }
   });
 
-  app.add('auth', {
+  app.add('authenticated', {
     parent: 'root',
     path: '/auth',
-    redirect: 'auth.login',
+    redirect: 'do.auth',
     enter(ctx) {
       ds.data.isBusy = false;
       ds.data.busyMsg = 'Working...';
-      console.log('--auth--');
+      ds.data.menuItems = { accommodation: true, reservations: true, users: true, logout: true };
+      console.log('--authenticated--');
+
+      if(!ds.data.user)
+        return { redirect: 'do.auth' }
     }
   });
 
-  app.add('auth.login', {
-    parent: 'auth',
-    path: '/auth/login',
+  app.add('accommodation', {
+    parent: 'authenticated',
+    path: '/accommodation',
+    enter(ctx) {
+      ds.data.pageTitle = 'Accommodation';
+    }
+  });
+
+  app.add('reservations', {
+    parent: 'authenticated',
+    path: '/reservations',
+    enter(ctx) {
+      ds.data.pageTitle = 'Reservations';
+    }
+  });
+
+  app.add('users', {
+    parent: 'authenticated',
+    path: '/users',
+    enter(ctx) {
+      ds.data.pageTitle = 'Users';
+    }
+  });
+
+
+  app.add('authenticate', {
+    parent: 'root',
     enter(ctx) {
       ds.data.pageTitle = 'Authenticate';
-    },
-    component: require('./components/auth/login.vue')
+      ds.data.isBusy = false;
+      ds.data.busyMsg = 'Working...';
+      ds.data.menuItems = { register: true, login: true };
+      console.log('--authenticate--');
+    }
   });
 
   app.add('auth.register', {
-    parent: 'auth',
+    parent: 'authenticate',
     path: '/auth/register',
     enter(ctx) {
-      ds.data.pageTitle = 'Authenticate';
       ctx.data.isRegister = true;
     },
     component: require('./components/auth/login.vue')
   });
 
+  app.add('auth.login', {
+    parent: 'authenticate',
+    path: '/auth/login',
+    enter(ctx) {
+    },
+    component: require('./components/auth/login.vue')
+  });
+
+  app.add('auth.logout', {
+    parent: 'authenticated',
+    path: '/auth/logout',
+    enter(ctx) {
+      // if(!ds.data.user)
+      //   return { redirect: 'do.auth' }
+    },
+    component: require('./components/auth/logout.vue')
+  });
+
+
+
   app.add('do.auth', {
     parent: 'do',
     enter(ctx) {
       var userPrm = userCheck(ctx);
-      // userPrm.catch(rep => ctx.data.menuItems = { register: true, login: true })
+      userPrm.catch(rep => ds.data.menuItems = { register: true, login: true })
 
       return userPrm;
     }
@@ -174,7 +245,19 @@ module.exports = function() {
     },
     enter(ctx) {
       ds.data.busyMsg = 'Logging in...';
-      console.log(ctx)
+      return userLogin(ctx, ds.data.username, ds.data.password);
+    }
+  });
+
+  app.add('do.auth.logout', {
+    parent: 'do',
+    params: {
+      username: null,
+      password: null
+    },
+    enter(ctx) {
+      ds.data.busyMsg = 'Logging out...';
+      return userLogout(ctx);
     }
   });
 
