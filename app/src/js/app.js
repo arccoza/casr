@@ -45,6 +45,11 @@ module.exports = function() {
       //     .catch(err => { redirect: 'auth.login' })
     }
   });
+  var _go = app.go.bind(app);
+  app.go = (function(dest) {
+    ds.data.destination = dest;
+    _go(dest);
+  }).bind(app);
   var goto = app.go.bind(app);
   var root = null;
   var ds = { // DataStore
@@ -63,8 +68,9 @@ module.exports = function() {
 
   ds.user.check = userCheck;
   ds.user.login = userLogin;
+  ds.user.logout = userLogout;
 
-  function userCheck(ctx) {
+  function userCheck() {
     if(!ds.data.user) {
       return sessions.get()
         .then(rep => {
@@ -75,8 +81,7 @@ module.exports = function() {
         })
         .then(rep => {
           ds.data.user = rep;
-          ctx.data.user = ds.data.user;
-          return ds.data.user;
+          return { redirect: ds.data.destination || 'reservations' };
         })
         .catch(err => {
           return { redirect: 'auth.login' }
@@ -86,14 +91,14 @@ module.exports = function() {
       return ds.data.user;
   }
 
-  function userLogin(ctx, username, password) {
+  function userLogin(username, password) {
     if(!ds.data.user) {
+      console.log(username, password)
       return sessions.add(username, password)
         .then(rep => {
           ds.data.user = rep.userCtx;
-          ctx.data.user = ds.data.user;
-          // ds.data.menuItems = { logout: true };
-          return { redirect: 'root' };
+          console.log('login ok', rep)
+          return { redirect: 'reservations' };
         })
         .catch(err => {
           ds.data.auth.error = err.reason;
@@ -102,20 +107,18 @@ module.exports = function() {
     }
   }
 
-  function userLogout(ctx) {
-    if(!ds.data.user) {
+  function userLogout() {
+    // if(ds.data.user) {
       return sessions.rem()
         .then(rep => {
           ds.data.user = null;
-          ctx.data.user = ds.data.user;
-          // ds.data.menuItems = { register: true, login: true };
           return { redirect: 'auth.login' };
         })
         .catch(err => {
           ds.data.auth.error = err.reason;
           return { redirect: 'auth.logout' }
         })
-    }
+    // }
   }
 
   app.add('root', {
@@ -186,7 +189,7 @@ module.exports = function() {
       ds.data.pageTitle = 'Authenticate';
       ds.data.isBusy = false;
       ds.data.busyMsg = 'Working...';
-      ds.data.menuItems = { register: true, login: true };
+      ds.data.menuItems = { register: false, login: true };
       console.log('--authenticate--');
     }
   });
@@ -212,8 +215,7 @@ module.exports = function() {
     parent: 'authenticated',
     path: '/auth/logout',
     enter(ctx) {
-      // if(!ds.data.user)
-      //   return { redirect: 'do.auth' }
+      ds.data.pageTitle = 'Authenticate';
     },
     component: require('./components/auth/logout.vue')
   });
@@ -223,8 +225,9 @@ module.exports = function() {
   app.add('do.auth', {
     parent: 'do',
     enter(ctx) {
-      var userPrm = userCheck(ctx);
-      userPrm.catch(rep => ds.data.menuItems = { register: true, login: true })
+      var userPrm = userCheck();
+      console.log('--do.auth--')
+      // userPrm.catch(rep => ds.data.menuItems = { register: true, login: true })
 
       return userPrm;
     }
@@ -245,19 +248,16 @@ module.exports = function() {
     },
     enter(ctx) {
       ds.data.busyMsg = 'Logging in...';
-      return userLogin(ctx, ds.data.username, ds.data.password);
+      return userLogin(ds.data.auth.username, ds.data.auth.password);
     }
   });
 
   app.add('do.auth.logout', {
     parent: 'do',
-    params: {
-      username: null,
-      password: null
-    },
     enter(ctx) {
+      console.log('--do.auth.logout--')
       ds.data.busyMsg = 'Logging out...';
-      return userLogout(ctx);
+      return userLogout();
     }
   });
 

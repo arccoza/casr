@@ -53,7 +53,7 @@ var db = new PouchDB(remote, opts);
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
-// db.enableSessions().get()
+// db.sessions().get()
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 //   .then(res => db.enableSessions())
@@ -61,6 +61,17 @@ var db = new PouchDB(remote, opts);
 //   .then(console.log.bind(console))
 //   .catch(console.log.bind(console))
 
+// db.sessions().add('jin', 'jin')
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+
+// db.sessions().rem()
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
+
+// db.users().add({name: 'jin', password: 'jin'})
+//   .then(console.log.bind(console))
+//   .catch(console.log.bind(console))
 
 // users.get('jin')
 //   .then(res => users.rem(res))

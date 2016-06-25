@@ -8,10 +8,14 @@
       |Logout
     .logout__error
       |{{ authError }}
-    h3
-      |{{ ds.data.user.name }}
+    div
+      |Would you like to logout,
+      strong
+        |&nbsp;{{ data.user.name }}
+      |&nbsp;?
+    br
     ui-btn(@tap="logout")
-      |LOGOUT
+      |YES
 
 </template>
 
