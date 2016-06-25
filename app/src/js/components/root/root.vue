@@ -6,9 +6,9 @@
   //- glyphs
   .main
     glyphs
-    app-header(:title="pageTitle", :show="menuItems")
-    .busy(v-show="isBusy")
-        .msg {{ busyMsg }}
+    app-header(:title="data.pageTitle", :show="data.menuItems")
+    .busy(v-show="data.isBusy")
+        .msg {{ data.busyMsg }}
         svg.ribbon
           defs
             circle(id="ribbon-circle", cx="50%", cy="50%", r="50%", fill="none", clip-path="url(#ribbon-circle-clip)")

@@ -17,7 +17,7 @@ comps(Vue);
 
 
 module.exports = function() {
-  var user = null;
+  // var user = null;
   var app = new StateManager({
     el: '#app',
     base: '/app',
@@ -47,9 +47,25 @@ module.exports = function() {
   });
   var goto = app.go.bind(app);
   var root = null;
+  var ds = { // DataStore
+    data: {
+      auth: {},
+      user: null,
+      pageTitle: '...',
+      menuItems: { register: true, login: true },
+      isBusy: false,
+      busyMsg: 'Working...'
+    },
+    user: {
+
+    }
+  };
+
+  ds.user.check = userCheck;
+  ds.user.login = userLogin;
 
   function userCheck(ctx) {
-    if(!user) {
+    if(!ds.data.user) {
       return sessions.get()
         .then(rep => {
           if(rep.userCtx.name)
@@ -58,9 +74,9 @@ module.exports = function() {
             throw rep.userCtx;
         })
         .then(rep => {
-          user = rep;
-          ctx.data.user = user;
-          return user;
+          ds.data.user = rep;
+          ctx.data.user = ds.data.user;
+          return ds.data.user;
         })
         .catch(err => {
           return { redirect: 'auth.login' }
@@ -69,12 +85,12 @@ module.exports = function() {
   }
 
   function userLogin(ctx, username, password) {
-    if(!user) {
+    if(!ds.data.user) {
       return sessions.add(username, password)
         .then(rep => {
-          user = rep.userCtx;
-          ctx.data.user = user;
-          return user;
+          ds.data.user = rep.userCtx;
+          ctx.data.user = ds.data.user;
+          return ds.data.user;
         })
         .catch(err => {
           return { redirect: 'auth.login' }
@@ -88,11 +104,8 @@ module.exports = function() {
     enter(ctx) {
       root = ctx;
       ctx.data = {
-        goto: goto,
-        pageTitle: '...',
-        menuItems: { register: true, login: true },
-        isBusy: false,
-        busyMsg: 'Working...'
+        data: ds.data,
+        goto: goto
       }
     },
     component: require('./components/root/root.vue')
@@ -101,8 +114,8 @@ module.exports = function() {
   app.add('do', {
     parent: 'root',
     enter(ctx) {
-      root.vm.isBusy = true;
-      root.vm.busyMsg = 'Working...';
+      ds.data.isBusy = true;
+      ds.data.busyMsg = 'Working...';
     }
   });
 
@@ -111,8 +124,8 @@ module.exports = function() {
     path: '/auth',
     redirect: 'auth.login',
     enter(ctx) {
-      root.vm.isBusy = false;
-      root.vm.busyMsg = 'Working...';
+      ds.data.isBusy = false;
+      ds.data.busyMsg = 'Working...';
       console.log('--auth--');
     }
   });
@@ -121,7 +134,7 @@ module.exports = function() {
     parent: 'auth',
     path: '/auth/login',
     enter(ctx) {
-      root.vm.$set('pageTitle', 'Authenticate');
+      ds.data.pageTitle = 'Authenticate';
     },
     component: require('./components/auth/login.vue')
   });
@@ -130,7 +143,7 @@ module.exports = function() {
     parent: 'auth',
     path: '/auth/register',
     enter(ctx) {
-      root.vm.$set('pageTitle', 'Authenticate');
+      ds.data.pageTitle = 'Authenticate';
       ctx.data.isRegister = true;
     },
     component: require('./components/auth/login.vue')
@@ -149,7 +162,7 @@ module.exports = function() {
   app.add('do.auth.register', {
     parent: 'do',
     enter(ctx) {
-      root.vm.busyMsg = 'Registering...';
+      ds.data.busyMsg = 'Registering...';
     }
   });
 
@@ -160,7 +173,7 @@ module.exports = function() {
       password: null
     },
     enter(ctx) {
-      root.vm.busyMsg = 'Logging in...';
+      ds.data.busyMsg = 'Logging in...';
       console.log(ctx)
     }
   });

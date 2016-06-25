@@ -39,9 +39,14 @@ export default {
   },
   methods: {
     register(ev) {
+      this.data.auth.username = this.username;
+      this.data.auth.password = this.password;
       this.goto({ name: 'do.auth.register' });
     },
     login(ev) {
+      this.data.auth.username = this.username;
+      this.data.auth.password = this.password;
+      console.log(this.data)
       this.goto({ name: 'do.auth.login', params: { username: this.username, password: this.password } });
     }
   }
