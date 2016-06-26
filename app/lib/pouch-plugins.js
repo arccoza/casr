@@ -311,8 +311,6 @@ var plugs = {
           if(err)
             callback(err, res);
           else {
-            // res.db = pdb;
-            // res.store = pdb;
             addStoreProp(res, pdb);
             callback(err, res);
           }

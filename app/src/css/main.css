@@ -591,6 +591,18 @@ pre {
   font-size: 1.2rem;
 }
 
+.datetime, .userid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: monospace;
+  font-size: 0.8em;
+  color: #ccc;
+}
+.userid {
+  top: 2em;
+}
+
 
 .login__error, .logout__error {
   color: #d81e1e;

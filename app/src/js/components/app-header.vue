@@ -4,7 +4,9 @@
 
 <template lang="jade">
   .header
-    h1 {{title}}
+    h1 {{ title }}
+    .datetime {{ datetime }}
+    .userid {{ data.user ? data.user.name : '' }}
     ul.main-menu
       li
         a(v-link="{name: 'accommodation'}", v-if="show.accommodation") Accommodation
@@ -31,10 +33,12 @@
 export default {
   data() {
     return {
-
+      datetime: null,
+      _intervalId: null
     }
   },
   props: {
+    data: Object,
     show: {
       type: Object,
       default() {
@@ -52,6 +56,12 @@ export default {
       }
     },
     title: String
+  },
+  attached() {
+    this._intervalId = setInterval(() => this.datetime = (new Date()).toLocaleString(), 1000);
+  },
+  detached() {
+    clearInterval(this._intervalId);
   }
   // mixins: require('./mixins')
 }

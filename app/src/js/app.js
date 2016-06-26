@@ -8,10 +8,11 @@ import plugs from '../../lib/pouch-plugins';
 PouchDB.plugin(plugs);
 var proxyDb = new PouchDB('http://localhost:8080/users', { skip_setup: true });
 var users = proxyDb.users('users');
-var remoteDb = new PouchDB('https://arccoza.cloudant.com/_users', { skip_setup: true });
+var remoteDb = new PouchDB('https://arccoza.cloudant.com/casr_store', { skip_setup: true });
 var sessions = remoteDb.sessions();
-var localDb = new PouchDB('users', { skip_setup: true });
-var stores = localDb.stores();
+// var localDb = new PouchDB('users', { skip_setup: true });
+var localDb = new PouchDB('casr_store', { skip_setup: false });
+// var stores = localDb.stores();
 var Promise = PouchDB.utils.Promise;
 comps(Vue);
 
@@ -56,6 +57,7 @@ module.exports = function() {
     data: {
       auth: {},
       user: null,
+      dbSync: {},
       pageTitle: '...',
       menuItems: { register: true, login: true },
       isBusy: false,
@@ -69,6 +71,25 @@ module.exports = function() {
   ds.user.check = userCheck;
   ds.user.login = userLogin;
   ds.user.logout = userLogout;
+
+  var syncHandler;
+  function dbSyncOn() {
+    if(localDb && remoteDb) {
+      console.log('--dbSync--')
+      syncHandler = localDb.sync(remoteDb, { live: true, retry: true })
+        // .on('error', err => data.dbSync.error = err)
+        // .on('complete', info => data.dbSync.info = info)
+        .on('active', console.log.bind(console, 'sync active: '))
+        .on('denied', console.log.bind(console, 'sync denied:'))
+        .on('error', console.log.bind(console, 'sync error: '))
+        .on('complete', console.log.bind(console, 'sync complete: '))
+    }
+  }
+
+  function dbSyncOff() {
+    if(syncHandler)
+      syncHandler.cancel();
+  }
 
   function userCheck() {
     if(!ds.data.user) {
@@ -98,13 +119,18 @@ module.exports = function() {
         .then(rep => {
           delete rep.ok;
           ds.data.user = rep;
+
+          dbSyncOn();
           return { redirect: 'reservations' };
         })
         .catch(err => {
+          console.log(err);
           ds.data.auth.error = err.reason;
           return { redirect: 'auth.login' }
         })
     }
+    else
+      return { redirect: 'reservations' }
   }
 
   function userLogout() {
@@ -112,6 +138,8 @@ module.exports = function() {
       return sessions.rem()
         .then(rep => {
           ds.data.user = null;
+
+          dbSyncOff();
           return { redirect: 'auth.login' };
         })
         .catch(err => {
@@ -152,7 +180,7 @@ module.exports = function() {
       ds.data.isBusy = false;
       ds.data.busyMsg = 'Working...';
       ds.data.menuItems = { accommodation: true, reservations: true, users: true, logout: true };
-      console.log('--authenticated--', ds.data.user);
+      console.log('--authenticated--');
 
       if(!ds.data.user)
         return { redirect: 'do.auth' }

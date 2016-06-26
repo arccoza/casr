@@ -17,7 +17,7 @@ PouchDB.plugin(pouchPlugs);
 // PouchDB.plugin(require('pouchdb-security'));
 var remote = 'https://arccoza.cloudant.com/_users';
 var opts = {
-    skipSetup: true,
+    skip_setup: true,
     auth: {
       // username: 'dautherhybertilsevandeve',
       // password: '2268b00792833903a4e6a76fb567e7fa04cdc683'
@@ -130,10 +130,24 @@ var db = new PouchDB(remote, opts);
 //   .catch(console.log.bind(console))
 
 
-var users = db.users();
-var stores = db.stores();
-var toHex = db.stores().toHex;
+var users = null;
+var stores = null;
+var toHex = null;
+var casrDb = null;
 
+function initDb() {
+  users = db.users();
+  stores = db.stores();
+  toHex = db.stores().toHex;
+
+  casrDb = db.use('casr_store', Object.assign({}, opts, { skip_setup: false }));
+  casrDb.get('')
+    .then(rep => casrDb.permissions().add('admins', { roles: ['admins'] }))
+    .then(console.log.bind(console))
+    .catch(console.log.bind(console))
+}
+
+initDb();
 
 var app = express();
 app.set('view engine', 'jade')
