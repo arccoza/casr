@@ -96,8 +96,8 @@ module.exports = function() {
       console.log(username, password)
       return sessions.add(username, password)
         .then(rep => {
-          ds.data.user = rep.userCtx;
-          console.log('login ok', rep)
+          delete rep.ok;
+          ds.data.user = rep;
           return { redirect: 'reservations' };
         })
         .catch(err => {
@@ -123,7 +123,7 @@ module.exports = function() {
 
   app.add('root', {
     path: '/',
-    redirect: 'do.auth',
+    redirect: 'reservations',
     enter(ctx) {
       root = ctx;
       ctx.data = {
@@ -131,6 +131,7 @@ module.exports = function() {
         goto: goto
       }
       console.log('--root--')
+      // return { redirect: 'reservations' }
     },
     component: require('./components/root/root.vue')
   });
@@ -146,12 +147,12 @@ module.exports = function() {
   app.add('authenticated', {
     parent: 'root',
     path: '/auth',
-    redirect: 'do.auth',
+    // redirect: 'do.auth',
     enter(ctx) {
       ds.data.isBusy = false;
       ds.data.busyMsg = 'Working...';
       ds.data.menuItems = { accommodation: true, reservations: true, users: true, logout: true };
-      console.log('--authenticated--');
+      console.log('--authenticated--', ds.data.user);
 
       if(!ds.data.user)
         return { redirect: 'do.auth' }
