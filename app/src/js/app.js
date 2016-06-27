@@ -97,7 +97,7 @@ module.exports = function() {
     if(!ds.data.user) {
       return sessions.get()
         .then(rep => {
-          if(rep.userCtx.name)
+          if(rep.userCtx.name && (rep.userCtx.roles && rep.userCtx.roles.indexOf('admins') > -1))
             return rep.userCtx;
           else
             throw rep.userCtx;
@@ -114,11 +114,15 @@ module.exports = function() {
           return { redirect: 'auth.login' }
         })
     }
-    else {
+
+    if(ds.data.user.roles && ds.data.user.roles.indexOf('admins') > -1) {
       if(!syncHandler)
         dbSyncOn();
 
       return { redirect: ds.data.destination || 'reservations' };
+    }
+    else {
+      return { redirect: 'auth.login' };
     }
   }
 
@@ -127,7 +131,14 @@ module.exports = function() {
       console.log(username, password)
       return sessions.add(username, password)
         .then(rep => {
-          delete rep.ok;
+          if(rep.roles && rep.roles.indexOf('admins') > -1) {
+            delete rep.ok;
+            return rep;
+          }
+          else
+            throw { reason: 'Privilege error' }
+        })
+        .then(rep => {
           ds.data.user = rep;
 
           if(!syncHandler)

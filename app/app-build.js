@@ -9,7 +9,7 @@ var b = browserify('js/main.js', [
   ]);
 b.bundle.transform('babelify', { presets: ['es2015'] });
 b.bundle.transform('vueify');
-b.bundle.transform('uglifyify',  { global: true });
+// b.bundle.transform('uglifyify',  { global: true });
 
 metalsmith(__dirname)
   .source('src')
