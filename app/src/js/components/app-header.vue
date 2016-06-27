@@ -21,13 +21,13 @@
       li
         a(v-link="{name: 'auth.logout'}", v-if="show.logout") Logout
       li.rem
-        ui-btn(look="round, negative", v-if="show.rem")
+        ui-btn(look="round, negative", @tap="rem", v-if="show.rem")
           glyph(kind="interface-minus")
       li.add
-        ui-btn(look="round", v-if="show.add")
+        ui-btn(look="round", @tap="add", v-if="show.add")
           glyph(kind="interface-plus")
       li.edit
-        ui-btn(look="round", v-if="show.edit")
+        ui-btn(look="round", @tap="edit", v-if="show.edit")
           glyph(kind="editorial-pencil-a")
 
 </template>
@@ -41,6 +41,7 @@ export default {
     }
   },
   props: {
+    goto: Function,
     data: Object,
     show: {
       type: Object,
@@ -60,6 +61,29 @@ export default {
       }
     },
     title: String
+  },
+  methods: {
+    rem(ev) {
+      var dest = Object.assign({}, this.data.destination);
+      console.log(this.data.destination);
+      this.data.origin = this.data.destination;
+      dest.name = dest.name + '.rem';
+      this.goto(dest);
+    },
+    add(ev) {
+      var dest = Object.assign({}, this.data.destination);
+      console.log(this.data.destination);
+      this.data.origin = this.data.destination;
+      dest.name = dest.name + '.add';
+      this.goto(dest);
+    },
+    edit(ev) {
+      var dest = Object.assign({}, this.data.destination);
+      console.log(this.data.destination);
+      this.data.origin = this.data.destination;
+      dest.name = dest.name + '.edit';
+      this.goto(dest);
+    }
   },
   attached() {
     this._intervalId = setInterval(() => this.datetime = (new Date()).toLocaleString(), 1000);

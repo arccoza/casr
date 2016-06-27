@@ -3,24 +3,43 @@
 </style>
 
 <template lang="jade">
-  .accommodation
-    table.docs-table
-      thead
-        tr
-          th
-            ui-tgl(name="all", @toggle="toggleAll")
-          th accomm. type
-          th units
-          th rate
-          th max occ.
+  .accommodation--edit
+    table.doc-table
       tbody
-        tr(v-for="a in accommodation", :class="'docs-table__item ' + selectedClass(a.id)")
+        tr()
           td
-            ui-tgl(name="a.id", :on.sync="data.docs.selected[a.id]", @toggle="toggleAny")
-          td {{ a.type }}
-          td {{ a.units.length }}
-          td {{ a.rate }}
-          td {{ a.max_ppl }}
+            ui-fld(name="type", :value.sync="accommodation.type", feel="floatHint", @change="clearErrors")
+              span(slot="hint")
+                |type
+              span(slot="messageStart")
+                |{{ typeError }}
+          td
+            ui-fld(name="units", :value.sync="accommodation.units", feel="floatHint", @change="clearErrors")
+              span(slot="hint")
+                |units
+              span(slot="messageStart")
+                |{{ unitsError }}
+        tr
+          td
+            ui-fld(name="rate", :value.sync="accommodation.rate", feel="floatHint", @change="clearErrors")
+              span(slot="hint")
+                |rate
+              span(slot="messageStart")
+                |{{ rateError }}
+          td
+            ui-fld(name="max_ppl", :value.sync="accommodation.max_ppl", feel="floatHint", @change="clearErrors")
+              span(slot="hint")
+                |max occupancy
+              span(slot="messageStart")
+                |{{ max_pplError }}
+    br
+    br
+    .savecancel
+      ui-btn
+        |SAVE
+      span &nbsp;
+      ui-btn(look="negative")
+        |CANCEL
 
 
 </template>

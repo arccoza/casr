@@ -57,6 +57,16 @@ module.exports = function() {
     data: {
       auth: {},
       user: null,
+      docs: {
+        selected: {},
+        get selectedCount() {
+          var count = 0;
+          for(var i in this.selected) {
+            count += this.selected[i] ? 1 : 0;
+          }
+          return count;
+        }
+      },
       dbSync: {},
       pageTitle: '...',
       menuItems: { register: true, login: true },
@@ -217,6 +227,36 @@ module.exports = function() {
       ds.data.pageTitle = 'Accommodation';
     },
     component: require('./components/accommodation/accommodation.vue')
+  });
+
+  app.add('accommodation.rem', {
+    parent: 'authenticated',
+    path: '/accommodation/rem',
+    enter(ctx) {
+      ds.data.pageTitle = 'Remove Accommodation';
+      ds.data.isEdit = false;
+    },
+    component: require('./components/accommodation/rem.vue')
+  });
+
+  app.add('accommodation.add', {
+    parent: 'authenticated',
+    path: '/accommodation/add',
+    enter(ctx) {
+      ds.data.pageTitle = 'Add Accommodation';
+      ds.data.isEdit = false;
+    },
+    component: require('./components/accommodation/add.vue')
+  });
+
+  app.add('accommodation.edit', {
+    parent: 'authenticated',
+    path: '/accommodation/edit',
+    enter(ctx) {
+      ds.data.pageTitle = 'Edit Accommodation';
+      ds.data.isEdit = true;
+    },
+    component: require('./components/accommodation/add.vue')
   });
 
   app.add('reservations', {

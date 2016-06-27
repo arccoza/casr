@@ -3,24 +3,17 @@
 </style>
 
 <template lang="jade">
-  .accommodation
-    table.docs-table
-      thead
-        tr
-          th
-            ui-tgl(name="all", @toggle="toggleAll")
-          th accomm. type
-          th units
-          th rate
-          th max occ.
-      tbody
-        tr(v-for="a in accommodation", :class="'docs-table__item ' + selectedClass(a.id)")
-          td
-            ui-tgl(name="a.id", :on.sync="data.docs.selected[a.id]", @toggle="toggleAny")
-          td {{ a.type }}
-          td {{ a.units.length }}
-          td {{ a.rate }}
-          td {{ a.max_ppl }}
+  .accommodation--rem
+    span
+      |Are you sure you want to remove this document?
+    br
+    br
+    .yesno
+      ui-btn
+        |YES
+      span &nbsp;
+      ui-btn
+        |NO
 
 
 </template>

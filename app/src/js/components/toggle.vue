@@ -120,8 +120,8 @@ export default {
           'toggle--on': this.isOn,
           'toggle--off': this.isOff,
           'toggle--disabled': this.isDisabled,
-          'switch--hover': this.hover,
-          'switch--active': this.active
+          'toggle--hover': this.hover,
+          'toggle--active': this.active
         },
         inner: {
           'toggle__inner': true
@@ -152,9 +152,10 @@ export default {
       this.on = !this.on;
     },
     change(ev) {
+      console.log('change')
       this.on = ev.target.checked;
-      this.$dispatch('change', {
-        eventType: 'change',
+      this.$emit('toggle', {
+        eventType: 'toggle',
         eventValue: { on: this.isOn, off: this.isOff },
         target: this,
         name: this.name,

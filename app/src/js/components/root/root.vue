@@ -6,7 +6,7 @@
   //- glyphs
   .main
     glyphs
-    app-header(:data="data", :title="data.pageTitle", :show="data.menuItems")
+    app-header(:goto="goto", :data="data", :title="data.pageTitle", :show="data.menuItems")
     .busy(v-show="data.isBusy")
         .msg {{ data.busyMsg }}
         svg.ribbon
