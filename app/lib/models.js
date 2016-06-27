@@ -1,9 +1,9 @@
 'use strict'
-var Ajv = require('ajv');
-var _debug = require('debug');
+// var Ajv = require('ajv');
+// var _debug = require('debug');
 
 
-var ajv = Ajv({ useDefaults: true, removeAdditional: false, verbose: true, allErrors: true });
+// var ajv = Ajv({ useDefaults: true, removeAdditional: false, verbose: true, allErrors: true });
 
 let privMap = new WeakMap();
 
@@ -17,66 +17,66 @@ class Base {
   constructor(obj, schema) {
     Object.assign(this, obj);
 
-    let validate = ajv.compile(schema);
-    priv(this).validate = () => {
-      let ret = validate(this);
-      priv(this).errors = validate.errors;
-      return ret;
-    }
+    // let validate = ajv.compile(schema);
+    // priv(this).validate = () => {
+    //   let ret = validate(this);
+    //   priv(this).errors = validate.errors;
+    //   return ret;
+    // }
   }
 
-  get isValid() {
-    return priv(this).validate();
-  }
+  // get isValid() {
+  //   return priv(this).validate();
+  // }
 
-  get errors() {
-    return priv(this).errors;
-  }
+  // get errors() {
+  //   return priv(this).errors;
+  // }
 }
 
 class User extends Base {
   constructor(obj) {
-    super(obj, User.schema);
+    super(obj/*, User.schema*/);
   }
 
-  static get schema() {
-    return {
-      type: 'object',
-      additionalProperties: true,
-      properties: {
-        _id: {
-          type: "string"
-        },
-        _rev: {
-          type: "string"
-        },
-        type: {
-          type: "string",
-          default: "user"
-        },
-        name: {
-          type: "string"
-        },
-        password_sha: {
-          type: "string"
-        },
-        salt: {
-          type: "string"
-        },
-        password_scheme: {
-          type: "string"
-        },
-        roles: {
-          type: "array",
-          items: {
-            "type": "string"
-          },
-          default: []
-        }
-      }
-      // required: ['name', 'password']
-    }
-  }
+  // static get schema() {
+  //   return {
+  //     type: 'object',
+  //     additionalProperties: true,
+  //     properties: {
+  //       _id: {
+  //         type: "string"
+  //       },
+  //       _rev: {
+  //         type: "string"
+  //       },
+  //       type: {
+  //         type: "string",
+  //         default: "user"
+  //       },
+  //       name: {
+  //         type: "string"
+  //       },
+  //       password_sha: {
+  //         type: "string"
+  //       },
+  //       salt: {
+  //         type: "string"
+  //       },
+  //       password_scheme: {
+  //         type: "string"
+  //       },
+  //       roles: {
+  //         type: "array",
+  //         items: {
+  //           "type": "string"
+  //         },
+  //         default: []
+  //       }
+  //     }
+  //     // required: ['name', 'password']
+  //   }
+  // }
 }
 
 // var user = new User({
@@ -88,7 +88,7 @@ class User extends Base {
 
 class CouchDbSecurity {
   constructor(obj) {
-    _debug('casr:CouchDbSecurity')('ctor()');
+    // _debug('casr:CouchDbSecurity')('ctor()');
     this.admins = {
       names: [],
       roles: []
@@ -118,7 +118,7 @@ class CouchDbSecurity {
   }
 
   merge(b) {
-    _debug('casr:CouchDbSecurity')('merge()');
+    // _debug('casr:CouchDbSecurity')('merge()');
 
     var a = this;
     var uniConcat = CouchDbSecurity.uniConcat;
@@ -136,7 +136,7 @@ class CouchDbSecurity {
   }
 
   separate(b) {
-    _debug('casr:CouchDbSecurity')('separate()');
+    // _debug('casr:CouchDbSecurity')('separate()');
 
     var a = this;
 
@@ -157,7 +157,7 @@ class CouchDbSecurity {
   }
 
   has(group, target, value) {
-    _debug('casr:CouchDbSecurity')('has()');
+    // _debug('casr:CouchDbSecurity')('has()');
 
     if(group && target && value)
       return this[group][target].indexOf(value) != -1;
@@ -168,7 +168,7 @@ class CouchDbSecurity {
   }
 
   add(group, target, value) {
-    _debug('casr:CouchDbSecurity')('add()');
+    // _debug('casr:CouchDbSecurity')('add()');
 
     var uniConcat = CouchDbSecurity.uniConcat;
 
@@ -183,13 +183,13 @@ class CouchDbSecurity {
     else if(group && !target && !value && (group.admins || group.members))
       this.merge(group);
     else
-      _debug('casr:CouchDbSecurity')('add() no valid arguments.');
+      // _debug('casr:CouchDbSecurity')('add() no valid arguments.');
 
     return this;
   }
 
   rem(group, target, value) {
-    _debug('casr:CouchDbSecurity')('rem()');
+    // _debug('casr:CouchDbSecurity')('rem()');
 
     if(group && target && value)
       if(Array.isArray(value))
@@ -205,7 +205,7 @@ class CouchDbSecurity {
     else if(group && !target && !value && (group.admins || group.members))
       this.separate(group);
     else
-      _debug('casr:CouchDbSecurity')('rem() no valid arguments.');
+      // _debug('casr:CouchDbSecurity')('rem() no valid arguments.');
 
     return this;
   }

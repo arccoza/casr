@@ -87,8 +87,10 @@ module.exports = function() {
   }
 
   function dbSyncOff() {
-    if(syncHandler)
+    if(syncHandler) {
       syncHandler.cancel();
+      syncHandler = null;
+    }
   }
 
   function userCheck() {
@@ -102,14 +104,22 @@ module.exports = function() {
         })
         .then(rep => {
           ds.data.user = rep;
+
+          if(!syncHandler)
+            dbSyncOn();
+
           return { redirect: ds.data.destination || 'reservations' };
         })
         .catch(err => {
           return { redirect: 'auth.login' }
         })
     }
-    else
-      return ds.data.user;
+    else {
+      if(!syncHandler)
+        dbSyncOn();
+
+      return { redirect: ds.data.destination || 'reservations' };
+    }
   }
 
   function userLogin(username, password) {
@@ -120,7 +130,9 @@ module.exports = function() {
           delete rep.ok;
           ds.data.user = rep;
 
-          dbSyncOn();
+          if(!syncHandler)
+            dbSyncOn();
+
           return { redirect: 'reservations' };
         })
         .catch(err => {

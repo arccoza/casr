@@ -7,8 +7,9 @@ var browserify = require('metalsmith-browserify');
 var b = browserify('js/main.js', [
     './src/js/main.js'
   ]);
-b.bundle.transform('babelify', {presets: ['es2015']});
+b.bundle.transform('babelify', { presets: ['es2015'] });
 b.bundle.transform('vueify');
+b.bundle.transform('uglifyify',  { global: true });
 
 metalsmith(__dirname)
   .source('src')
