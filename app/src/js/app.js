@@ -215,7 +215,8 @@ module.exports = function() {
     path: '/accommodation',
     enter(ctx) {
       ds.data.pageTitle = 'Accommodation';
-    }
+    },
+    component: require('./components/accommodation/accommodation.vue')
   });
 
   app.add('reservations', {

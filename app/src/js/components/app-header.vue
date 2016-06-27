@@ -26,6 +26,9 @@
       li.add
         ui-btn(look="round", v-if="show.add")
           glyph(kind="interface-plus")
+      li.edit
+        ui-btn(look="round", v-if="show.edit")
+          glyph(kind="editorial-pencil-a")
 
 </template>
 
@@ -51,7 +54,8 @@ export default {
           login: true,
           logout: false,
           add: true,
-          rem: true
+          rem: true,
+          edit: true
         }
       }
     },

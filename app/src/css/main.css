@@ -603,6 +603,37 @@ pre {
   top: 2em;
 }
 
+.content {
+  position: relative;
+  width: 1000px;
+  margin: 2em auto;
+}
+
+.docs-table {
+  position: relative;
+  width: 100%;
+  /*table-layout: fixed;*/
+  margin-top: 5em;
+}
+.docs-table tr {
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+}
+.docs-table td {
+  position: relative;
+  padding: 1em 0;
+}
+.docs-table td:nth-child(1) {
+  /*width: 1.5em;*/
+}
+.docs-table thead tr {
+  text-align: left;
+  text-transform: capitalize;
+  font-weight: bold;
+  color: #aaa;
+  /*border-bottom: 1px solid #ccc;*/
+}
+
 
 .login__error, .logout__error {
   color: #d81e1e;

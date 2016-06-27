@@ -15,7 +15,8 @@
             clipPath(id="ribbon-circle-clip")
               use(xlink:href="#ribbon-circle")
           use(class="ribbon__circle", xlink:href="#ribbon-circle", x="0", y="0")
-    v-view
+    .content
+      v-view
 
 </template>
 
